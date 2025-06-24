@@ -27,7 +27,7 @@ profile = client.profile.create_profile(create_profile_request)
 # Export the profile to a given path
 folder = os.path.dirname(os.path.realpath(__file__))
 path = os.path.join(folder, 'test.kameleo')
-result = client.profile.export_profile(profile.id, ExportProfileRequest(path=path))
+client.profile.export_profile(profile.id, ExportProfileRequest(path=path))
 print(f'Profile has been exported to {folder}')
 
 # You have to delete this profile if you want to import back

@@ -34,7 +34,7 @@ webdriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
 // Use any WebDriver command to drive the browser
 // and enjoy full protection from bot detection products
-webdriver.Navigate().GoToUrl("https://wikipedia.org");
+await webdriver.Navigate().GoToUrlAsync("https://wikipedia.org");
 webdriver.FindElement(By.Name("search")).SendKeys("Chameleon");
 webdriver.FindElement(By.Name("search")).SendKeys(Keys.Enter);
 webdriver.FindElement(By.Id("content"));

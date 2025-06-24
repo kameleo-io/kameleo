@@ -53,7 +53,8 @@ client.profile.stop_profile(profile.id)
 duplicated_profile = client.profile.duplicate_profile(profile.id)
 print(f'Profile {duplicated_profile.name} is created')
 
-# Change every property that you want to update
+# Change every property that you want to update on the duplicated profile
+# Send the update request and the response will be your updated profile
 update_profile_request = UpdateProfileRequest(
     name = 'duplicate profile example',
     webgl_meta = WebglMetaChoice(value='automatic')

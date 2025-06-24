@@ -63,7 +63,7 @@ while (sitesToVisit.Count < 5)
 foreach (var site in sitesToVisit)
 {
     // Navigate to the site
-    webdriver.Navigate().GoToUrl($"https://{site}");
+    await webdriver.Navigate().GoToUrlAsync($"https://{site}");
 
     // Wait for some random time
     await Task.Delay(Random.Shared.Next(5_000, 15_000));

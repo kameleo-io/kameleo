@@ -72,7 +72,7 @@ interceptor.AddRequestHandler(new NetworkRequestHandler
 await interceptor.StartMonitoring();
 
 // Navigate to the main wikipedia home page and observe that the French one is loaded
-webdriver.Navigate().GoToUrl("https://www.wikipedia.org/");
+await webdriver.Navigate().GoToUrlAsync("https://www.wikipedia.org/");
 
 await Task.Delay(10_000);
 

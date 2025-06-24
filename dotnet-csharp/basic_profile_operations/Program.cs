@@ -64,8 +64,8 @@ var duplicatedProfile = await client.Profile.DuplicateProfileAsync(profile.Id);
 
 Console.WriteLine($"Profile '{duplicatedProfile.Name}' is created");
 
-// Change every property that you want to update on the duplicate profile
-// Others should be the same
+// Change every property that you want to update on the duplicated profile
+// Send the update request and the response will be your updated profile
 var updateProfileRequest = new UpdateProfileRequest()
 {
     Name = "duplicate profile example",
