@@ -15,7 +15,6 @@ const fingerprints = await client.fingerprint.searchFingerprints("desktop", unde
 
 // Create a new profile with recommended settings
 // Choose one of the Chrome fingerprints
-// You can set your proxy up in the setProxy method
 /** @type {import('@kameleo/local-api-client').CreateProfileRequest} */
 const createProfileRequest = {
     fingerprintId: fingerprints[0].id,

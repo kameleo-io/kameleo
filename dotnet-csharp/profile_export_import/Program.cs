@@ -25,7 +25,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 
 // export the profile to a given path
 var exportPath = Path.Combine(Environment.CurrentDirectory, "test.kameleo");
-var result = await client.Profile.ExportProfileAsync(profile.Id, new ExportProfileRequest(exportPath));
+await client.Profile.ExportProfileAsync(profile.Id, new ExportProfileRequest(exportPath));
 Console.WriteLine("Profile has been exported to " + exportPath);
 
 // You have to delete this profile if you want to import back
