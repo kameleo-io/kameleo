@@ -25,7 +25,6 @@ var fingerprints = await client.Fingerprint.SearchFingerprintsAsync("desktop", n
 
 // Create a new profile with recommended settings
 // Choose one of the Firefox fingerprints
-// You can set your proxy up in the setProxy method
 var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 {
     Name = "start with proxy example",

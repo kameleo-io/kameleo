@@ -1,4 +1,4 @@
-kameleo.local_api_client==4.0.0
+kameleo.local_api_client==4.1.0
 selenium==4.31.0
 playwright==1.46.0
 pyppeteer==2.0.0

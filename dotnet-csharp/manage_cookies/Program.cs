@@ -33,13 +33,13 @@ var webdriver = new RemoteWebDriver(uri, opts);
 
 
 // Navigate to a site which give you cookies
-webdriver.Navigate().GoToUrl("https://www.nytimes.com");
+await webdriver.Navigate().GoToUrlAsync("https://www.nytimes.com");
 await Task.Delay(5_000);
 
-webdriver.Navigate().GoToUrl("https://whoer.net");
+await webdriver.Navigate().GoToUrlAsync("https://whoer.net");
 await Task.Delay(5_000);
 
-webdriver.Navigate().GoToUrl("https://www.youtube.com");
+await webdriver.Navigate().GoToUrlAsync("https://www.youtube.com");
 await Task.Delay(5_000);
 
 // Stop the profile
