@@ -14,7 +14,7 @@
   "author": "Kameleo Team",
   "license": "ISC",
   "dependencies": {
-    "@kameleo/local-api-client": "file:..",
+    "@kameleo/local-api-client": "4.1.0",
     "playwright": "^1.48.0",
     "puppeteer": "^24.1.1",
     "random-int": "^3.0.0",
