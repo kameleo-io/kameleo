@@ -38,28 +38,30 @@ var interceptor = webdriver.Manage().Network;
 interceptor.NetworkRequestSent += Interceptor_NetworkRequestSent;
 interceptor.NetworkResponseReceived += Interceptor_NetworkResponseReceived;
 
-// Set up redirect from main to French home page
+// Redirect from main to French Wikipedia home page
 interceptor.AddRequestHandler(new NetworkRequestHandler
 {
-    RequestMatcher = request => request.Url.Trim('/') == "https://www.wikipedia.org",
+    RequestMatcher = request => request.Url?.Trim('/') == "https://www.wikipedia.org",
     RequestTransformer = request =>
     {
-        Console.WriteLine($"Changing url");
+        Console.WriteLine("Changing url");
         request.Url = "https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal";
         return request;
     }
 });
 
-// Set up replacing wikipedia's logo with that of Kameleo
+var svgBytes = File.ReadAllBytes("kameleo.svg");
+
+// Replace Wikipedia's logo with Kameleo's logo
 interceptor.AddRequestHandler(new NetworkRequestHandler
 {
-    RequestMatcher = request => request.Url.Contains("wikipedia-wordmark-fr.svg"),
+    RequestMatcher = request => request.Url?.Contains("wikipedia-wordmark-fr.svg") ?? false,
     ResponseSupplier = request =>
     {
         var response = new HttpResponseData
         {
             StatusCode = 200,
-            Content = new HttpResponseContent(File.ReadAllBytes("kameleo.svg")),
+            Content = new HttpResponseContent(svgBytes),
             Url = request.Url,
             RequestId = request.RequestId
         };
@@ -71,7 +73,7 @@ interceptor.AddRequestHandler(new NetworkRequestHandler
 
 await interceptor.StartMonitoring();
 
-// Navigate to the main wikipedia home page and observe that the French one is loaded
+// Navigate to the main Wikipedia home page and observe that the French one is loaded
 await webdriver.Navigate().GoToUrlAsync("https://www.wikipedia.org/");
 
 await Task.Delay(10_000);
@@ -82,11 +84,7 @@ await interceptor.StopMonitoring();
 await client.Profile.StopProfileAsync(profile.Id);
 
 void Interceptor_NetworkRequestSent(object sender, NetworkRequestSentEventArgs e)
-{
-    Console.WriteLine($"[{e.RequestMethod}] {e.RequestUrl}");
-}
+     => Console.WriteLine($"[{e.RequestMethod}] {e.RequestUrl}");
 
 void Interceptor_NetworkResponseReceived(object sender, NetworkResponseReceivedEventArgs e)
-{
-    Console.WriteLine($"[{e.ResponseStatusCode}] {e.ResponseUrl}" );
-}
+    => Console.WriteLine($"[{e.ResponseStatusCode}] {e.ResponseUrl}");
