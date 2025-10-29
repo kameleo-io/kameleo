@@ -1,9 +1,8 @@
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
-import randomInteger from "random-int";
 import { setTimeout } from "timers/promises";
 
 // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
-const kameleoPort = process.env["KAMELEO_PORT"] || 5050;
+const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
@@ -22,11 +21,11 @@ const fingerprints = await client.fingerprint.searchFingerprints("desktop", "win
 // Create a new profile with recommended settings
 // Choose one of the Chrome fingerprints
 // You can setup here all of the profile options like WebGL, password manager and start page
-/** @type {import('@kameleo/local-api-client').CreateProfileRequest} */
+/** @type {import("@kameleo/local-api-client").CreateProfileRequest} */
 const createProfileRequest = {
-    fingerprintId: fingerprints[randomInteger(fingerprints.length - 1)].id,
+    fingerprintId: fingerprints[0].id,
     name: "create profile example",
-    language: "es-es",
+    language: "es-ES",
     webgl: "noise",
     webglMeta: {
         value: "manual",

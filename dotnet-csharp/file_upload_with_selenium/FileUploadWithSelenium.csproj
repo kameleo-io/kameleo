@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kameleo.LocalApiClient" Version="4.1.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.31.0" />
+    <PackageReference Include="Kameleo.LocalApiClient" Version="4.2.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.35.0" />
   </ItemGroup>
 
   <ItemGroup>

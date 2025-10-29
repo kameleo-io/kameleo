@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 import randomstring from "randomstring";
 
 // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
-const kameleoPort = process.env["KAMELEO_PORT"] || 5050;
+const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
@@ -17,7 +17,7 @@ const fingerprints = await client.fingerprint.searchFingerprints("desktop", unde
 
 // Create a new profile with recommended settings
 // for browser fingerprint protection
-/** @type {import('@kameleo/local-api-client').CreateProfileRequest} */
+/** @type {import("@kameleo/local-api-client").CreateProfileRequest} */
 const createProfileRequest = {
     fingerprintId: fingerprints[0].id,
     name: "take screenshot example",
@@ -37,14 +37,11 @@ const page = await browser.newPage();
 // and enjoy full protection from bot detection products
 await page.goto("https://en.wikipedia.org/wiki/Special:Random");
 
-const path = `${randomstring.generate({
-    length: 12,
-    charset: "alphabetic",
-})}.png`;
+const fileName = randomstring.generate({ length: 12, charset: "alphabetic" });
 
 // Take screenshot
 await page.screenshot({
-    path,
+    path: `${fileName}.png`,
 });
 
 // Stop the browser by stopping the Kameleo profile

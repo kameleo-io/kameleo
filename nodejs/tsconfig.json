@@ -10,7 +10,6 @@
     "noEmit": true,
     // strict includes multiple rules, see: https://www.typescriptlang.org/tsconfig/#strict
     "strict": true,
-    "strictNullChecks": false,
     // other rules
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,

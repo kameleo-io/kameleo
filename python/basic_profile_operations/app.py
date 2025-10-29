@@ -28,7 +28,7 @@ fingerprints = client.fingerprint.search_fingerprints(
 # You can setup here all of the profile options like WebGL
 create_profile_request = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    language="es-es",
+    language="es-ES",
     name='create profile example',
     webgl='noise',
     webgl_meta=WebglMetaChoice(

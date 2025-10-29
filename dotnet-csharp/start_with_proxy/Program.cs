@@ -28,7 +28,7 @@ var fingerprints = await client.Fingerprint.SearchFingerprintsAsync("desktop", n
 var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 {
     Name = "start with proxy example",
-    Proxy = new (ProxyConnectionType.Socks5, new Server(proxyHost, proxyPort, proxyUsername, proxyPassword))
+    Proxy = new(ProxyConnectionType.Socks5, new Server(proxyHost, proxyPort, proxyUsername, proxyPassword))
 };
 
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);

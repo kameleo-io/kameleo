@@ -4,7 +4,7 @@ const { setTimeout } = require("timers/promises");
 
 void (async () => {
     // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
-    const kameleoPort = process.env["KAMELEO_PORT"] || 5050;
+    const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 
     const client = new KameleoLocalApiClient({
         basePath: `http://localhost:${kameleoPort}`,
@@ -14,7 +14,7 @@ void (async () => {
     const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 
     // Create a new profile with recommended settings
-    /** @type {import('@kameleo/local-api-client').CreateProfileRequest} */
+    /** @type {import("@kameleo/local-api-client").CreateProfileRequest} */
     const createProfileRequest = {
         fingerprintId: fingerprints[0].id,
         name: "CommonJS example",
