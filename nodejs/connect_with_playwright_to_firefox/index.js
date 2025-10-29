@@ -3,7 +3,7 @@ import playwright from "playwright";
 import { setTimeout } from "timers/promises";
 
 // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
-const kameleoPort = process.env["KAMELEO_PORT"] || 5050;
+const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
@@ -16,7 +16,7 @@ const fingerprints = await client.fingerprint.searchFingerprints("desktop", unde
 
 // Create a new profile with recommended settings
 // for browser fingerprint protection
-/** @type {import('@kameleo/local-api-client').CreateProfileRequest} */
+/** @type {import("@kameleo/local-api-client").CreateProfileRequest} */
 const createProfileRequest = {
     fingerprintId: fingerprints[0].id,
     name: "connect with Playwright to Firefox example",

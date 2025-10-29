@@ -1,0 +1,9 @@
+{
+  "name": "modify_network_request_response_with_playwright",
+  "description": "This script uses Kameleo with Playwright to intercept and modify the browser's network traffic.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

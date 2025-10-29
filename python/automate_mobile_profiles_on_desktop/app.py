@@ -1,5 +1,5 @@
 from kameleo.local_api_client import KameleoLocalApiClient
-from kameleo.local_api_client.models import CreateProfileRequest
+from kameleo.local_api_client.models import CreateProfileRequest, BrowserSettings, Preference
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -32,16 +32,13 @@ create_profile_request = CreateProfileRequest(
 profile = client.profile.create_profile(create_profile_request)
 
 # Start the profile
-client.profile.start_profile(profile.id, {
+client.profile.start_profile(profile.id, BrowserSettings(
     # This allows you to click on elements using the cursor when emulating a touch screen in the browser.
     # If you leave this out, your script may time out after clicks and fail.
-    'additionalOptions': [
-        {
-            'key': 'disableTouchEmulation',
-            'value': True,
-        },
+    additional_options=[
+        Preference(key='disableTouchEmulation', value=True)
     ],
-})
+))
 
 # In this example we show how you can automate the mobile profile with Selenium
 # You can also do this with Puppeteer or Playwright

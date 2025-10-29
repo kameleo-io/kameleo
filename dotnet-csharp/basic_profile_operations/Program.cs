@@ -26,8 +26,8 @@ foreach (var fingerprint in fingerprints)
         $"{fingerprint.Os.Family} {fingerprint.Os.VarVersion} - {fingerprint.Browser.Product} {fingerprint.Browser.VarVersion}");
 }
 
-// Select a random fingerprint
-var selectedFingerprint = fingerprints[Random.Shared.Next(0, fingerprints.Count - 1)];
+// Select a fingerprint
+var selectedFingerprint = fingerprints[0];
 
 Console.WriteLine(
     $"Selected fingerprint: {selectedFingerprint.Os.Family} {selectedFingerprint.Os.VarVersion} - " +
@@ -38,9 +38,9 @@ Console.WriteLine(
 var createProfileRequest = new CreateProfileRequest(selectedFingerprint.Id)
 {
     Name = "create profile example",
-    Language = "es-es",
+    Language = "es-ES",
     Webgl = WebglSpoofingType.Noise,
-    WebglMeta = new (WebglMetaSpoofingType.Manual,
+    WebglMeta = new(WebglMetaSpoofingType.Manual,
         new WebglMetaSpoofingOptions("Google Inc.", "ANGLE (Intel(R) HD Graphics 630 Direct3D11 vs_5_0 ps_5_0)")),
     PasswordManager = PasswordManagerType.Enabled,
     StartPage = "https://kameleo.io",

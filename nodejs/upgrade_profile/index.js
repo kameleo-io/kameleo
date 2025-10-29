@@ -2,7 +2,7 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import { setTimeout } from "timers/promises";
 
 // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
-const kameleoPort = process.env["KAMELEO_PORT"] || 5050;
+const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
@@ -18,7 +18,7 @@ const fingerprint = fingerprints.sort((a, b) => (a.browser.major > b.browser.maj
 
 // Create a new profile with recommended settings
 // Choose one of the fingerprints
-/** @type {import('@kameleo/local-api-client').CreateProfileRequest} */
+/** @type {import("@kameleo/local-api-client").CreateProfileRequest} */
 const createProfileRequest = {
     fingerprintId: fingerprint.id,
     name: "upgrade profiles example",
@@ -28,7 +28,11 @@ let profile = await client.profile.createProfile(createProfileRequest);
 console.log(`Profile's browser before update is: ${profile.fingerprint.browser.product} ${profile.fingerprint.browser.version}`);
 
 // The fingerprint’s browser version will be updated if there is any available on our servers
-profile = await client.profile.upgradeProfileKernel(profile.id);
+const upgradedProfile = await client.profile.upgradeProfileKernel(profile.id);
+if (!upgradedProfile) {
+    throw new Error("Update unsuccessful");
+}
+profile = upgradedProfile;
 console.log(`Profile's browser after update is: ${profile.fingerprint.browser.product} ${profile.fingerprint.browser.version}`);
 
 // Start the profile
