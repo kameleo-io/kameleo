@@ -46,7 +46,7 @@ else if (pwBridgePath is null && OperatingSystem.IsMacOS())
 }
 
 var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
+var context = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
 {
     ExecutablePath = pwBridgePath,
     Args = new List<string> { $"-target {browserWsEndpoint}" },
@@ -56,7 +56,7 @@ var browser = await playwright.Firefox.LaunchPersistentContextAsync("", new Brow
 // Kameleo will open the a new page in the default browser context.
 // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
 //       with Kameleo's browser fingerprint modification features.
-var page = await browser.NewPageAsync();
+var page = await context.NewPageAsync();
 
 // Use any Playwright command to drive the browser
 // and enjoy full protection from bot detection products

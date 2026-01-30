@@ -1,6 +1,6 @@
 {
   "name": "connect_with_puppeteer",
-  "description": "This script uses Kameleo with Puppeteer to automate a Chrome browser, set up a profile to avoid bot detection, and carry out a Google search.",
+  "description": "This script uses Kameleo with Puppeteer to automate a Chrome browser, set up a profile to avoid bot detection, and perform a Wikipedia search.",
   "type": "module",
   "main": "index.js",
   "scripts": {

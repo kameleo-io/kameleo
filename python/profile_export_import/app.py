@@ -7,21 +7,20 @@ import os
 # This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
-client = KameleoLocalApiClient(
-    endpoint=f'http://localhost:{kameleo_port}'
-)
+client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
 # Search Chrome fingerprints
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
-    browser_product='chrome'
+    browser_product='chrome',
 )
 
 # Create a new profile with recommended settings for browser fingerprinting protection
 # Choose one of the Chrome fingerprints
 create_profile_request = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    name='profile export import example')
+    name='profile export import example',
+)
 profile = client.profile.create_profile(create_profile_request)
 
 # Export the profile to a given path

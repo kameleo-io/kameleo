@@ -1,6 +1,6 @@
 {
   "name": "connect_with_playwright_to_firefox",
-  "description": "This script uses Kameleo with Playwright to automate a Firefox browser, create a profile and execute a Google search.",
+  "description": "This script uses Kameleo with Playwright to automate a Firefox browser, create a profile and perform a Wikipedia search.",
   "type": "module",
   "main": "index.js",
   "scripts": {
