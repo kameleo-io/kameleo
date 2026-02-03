@@ -4,6 +4,7 @@ from kameleo.local_api_client.models import (
     UpdateProfileRequest,
     WebglMetaChoice,
     WebglMetaSpoofingOptions,
+    ProfileLifetimeState,
 )
 import time
 import os
@@ -48,6 +49,10 @@ profile = client.profile.create_profile(create_profile_request)
 
 # Start the browser profile
 client.profile.start_profile(profile.id)
+
+# List the running profiles
+running_profiles = client.profile.list_profiles(ProfileLifetimeState.RUNNING)
+print(f'Running profiles: {len(running_profiles)}')
 
 # Wait for 10 seconds
 time.sleep(10)

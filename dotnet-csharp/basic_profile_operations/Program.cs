@@ -53,6 +53,10 @@ Console.WriteLine($"Id of the created profile: {profile.Id}");
 // Start the profile
 await client.Profile.StartProfileAsync(profile.Id);
 
+// List the running profiles
+var profilesRunning = await client.Profile.ListProfilesAsync(ProfileLifetimeState.Running);
+Console.WriteLine($"Running profiles: {profilesRunning.Count}");
+
 // Wait for 10 seconds
 await Task.Delay(10_000);
 
