@@ -12,14 +12,12 @@ PROXY_PORT = int(os.getenv('PROXY_PORT', '<your_proxy_port>'))
 PROXY_USERNAME = os.getenv('PROXY_USERNAME', '<your_proxy_username>')
 PROXY_PASSWORD = os.getenv('PROXY_PASSWORD', '<your_proxy_password>')
 
-client = KameleoLocalApiClient(
-    endpoint=f'http://localhost:{kameleo_port}'
-)
+client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
 # Search Chrome fingerprints
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
-    browser_product='chrome'
+    browser_product='chrome',
 )
 
 # Create a new profile with recommended settings for browser fingerprinting protection
@@ -29,8 +27,9 @@ create_profile_request = CreateProfileRequest(
     name='start with proxy example',
     proxy=ProxyChoice(
         value='socks5',
-        extra=Server(host=PROXY_HOST, port=PROXY_PORT, id=PROXY_USERNAME, secret=PROXY_PASSWORD)
-    ))
+        extra=Server(host=PROXY_HOST, port=PROXY_PORT, id=PROXY_USERNAME, secret=PROXY_PASSWORD),
+    ),
+)
 profile = client.profile.create_profile(create_profile_request)
 
 # Start the browser profile

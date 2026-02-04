@@ -39,7 +39,7 @@ if (!pwBridgePath && process.platform === "win32") {
     pwBridgePath = "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge";
 }
 
-const browser = await playwright.firefox.launchPersistentContext("", {
+const context = await playwright.firefox.launchPersistentContext("", {
     executablePath: pwBridgePath,
     args: [`-target ${browserWSEndpoint}`],
     viewport: null,
@@ -48,7 +48,7 @@ const browser = await playwright.firefox.launchPersistentContext("", {
 // Kameleo will open the a new page in the default browser context.
 // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
 //       with Kameleo's browser fingerprint modification features.
-const page = await browser.newPage();
+const page = await context.newPage();
 
 // Use any Playwright command to drive the browser
 // and enjoy full protection from bot detection products

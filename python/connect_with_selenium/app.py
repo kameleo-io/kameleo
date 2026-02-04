@@ -8,29 +8,28 @@ import os
 # This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
-client = KameleoLocalApiClient(
-    endpoint=f'http://localhost:{kameleo_port}'
-)
+client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
 # Search Chrome fingerprints
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
-    browser_product='chrome'
+    browser_product='chrome',
 )
 
 # Create a new profile with recommended settings
 # Choose one of the fingerprints
 create_profile_request = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    name='connect to Selenium example')
+    name='connect to Selenium example',
+)
 profile = client.profile.create_profile(create_profile_request)
 
 # Start the Kameleo profile and connect using WebDriver protocol
 options = webdriver.ChromeOptions()
-options.add_experimental_option('kameleo:profileId', profile.id)
+options.set_capability('kameleo:profileId', profile.id)
 driver = webdriver.Remote(
     command_executor=f'http://localhost:{kameleo_port}/webdriver',
-    options=options
+    options=options,
 )
 
 # Use any WebDriver command to drive the browser

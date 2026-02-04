@@ -9,21 +9,20 @@ import os
 # This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
-client = KameleoLocalApiClient(
-    endpoint=f'http://localhost:{kameleo_port}'
-)
+client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
 # Search Firefox fingerprints
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
-    browser_product='firefox'
+    browser_product='firefox',
 )
 
 # Create a new profile with recommended settings
 # Choose one of the fingerprints
 create_profile_request = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    name='connect with Playwright to Firefox example')
+    name='connect with Playwright to Firefox example',
+)
 profile = client.profile.create_profile(create_profile_request)
 
 # Start the Kameleo profile and connect with Playwright
@@ -35,20 +34,21 @@ with sync_playwright() as playwright:
     # instance and this playwright script.
     # The exact path to the bridge executable is subject to change
     pw_bridge_path = getenv('PW_BRIDGE_PATH')
-    if pw_bridge_path == None and system() == 'Windows':
+    if pw_bridge_path is None and system() == 'Windows':
         pw_bridge_path = path.expandvars(r'%LOCALAPPDATA%\Programs\Kameleo\pw-bridge.exe')
-    elif pw_bridge_path == None and system() == 'Darwin':
+    elif pw_bridge_path is None and system() == 'Darwin':
         pw_bridge_path = '/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge'
-    browser = playwright.firefox.launch_persistent_context(
+    context = playwright.firefox.launch_persistent_context(
         '',
         executable_path=pw_bridge_path,
         args=[f'-target {browser_ws_endpoint}'],
-        viewport=None)
+        viewport=None,
+    )
 
     # Kameleo will open the a new page in the default browser context.
     # NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
     #       with Kameleo's browser fingerprint modification features.
-    page = browser.new_page()
+    page = context.new_page()
 
     # Use any Playwright command to drive the browser
     # and enjoy full protection from bot detection products

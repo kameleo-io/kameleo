@@ -1,5 +1,11 @@
 from kameleo.local_api_client import KameleoLocalApiClient
-from kameleo.local_api_client.models import CreateProfileRequest, UpdateProfileRequest, WebglMetaChoice, WebglMetaSpoofingOptions
+from kameleo.local_api_client.models import (
+    CreateProfileRequest,
+    UpdateProfileRequest,
+    WebglMetaChoice,
+    WebglMetaSpoofingOptions,
+    ProfileLifetimeState,
+)
 import time
 import os
 
@@ -7,9 +13,7 @@ import os
 # This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
-client = KameleoLocalApiClient(
-    endpoint=f'http://localhost:{kameleo_port}'
-)
+client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
 # Search Chrome fingerprints
 # Possible deviceType value: desktop, mobile
@@ -28,20 +32,27 @@ fingerprints = client.fingerprint.search_fingerprints(
 # You can setup here all of the profile options like WebGL
 create_profile_request = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    language="es-ES",
+    language='es-ES',
     name='create profile example',
     webgl='noise',
     webgl_meta=WebglMetaChoice(
         value='manual',
         extra=WebglMetaSpoofingOptions(
             vendor='Google Inc.',
-            renderer='ANGLE (Intel(R) HD Graphics 630 Direct3D11 vs_5_0 ps_5_0)')),
+            renderer='ANGLE (Intel(R) HD Graphics 630 Direct3D11 vs_5_0 ps_5_0)',
+        ),
+    ),
     start_page='https://kameleo.io',
-    password_manager='enabled')
+    password_manager='enabled',
+)
 profile = client.profile.create_profile(create_profile_request)
 
 # Start the browser profile
 client.profile.start_profile(profile.id)
+
+# List the running profiles
+running_profiles = client.profile.list_profiles(ProfileLifetimeState.RUNNING)
+print(f'Running profiles: {len(running_profiles)}')
 
 # Wait for 10 seconds
 time.sleep(10)
@@ -56,8 +67,8 @@ print(f'Profile {duplicated_profile.name} is created')
 # Change every property that you want to update on the duplicated profile
 # Send the update request and the response will be your updated profile
 update_profile_request = UpdateProfileRequest(
-    name = 'duplicate profile example',
-    webgl_meta = WebglMetaChoice(value='automatic')
+    name='duplicate profile example',
+    webgl_meta=WebglMetaChoice(value='automatic'),
 )
 
 # Send the update request and the response will be your updated profile
