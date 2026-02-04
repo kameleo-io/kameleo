@@ -8,29 +8,28 @@ import os
 # This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
-client = KameleoLocalApiClient(
-    endpoint=f'http://localhost:{kameleo_port}'
-)
+client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
 # Search Firefox fingerprints
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
-    browser_product='firefox'
+    browser_product='firefox',
 )
 
 # Create a new profile with recommended settings for browser fingerprinting protection
 # Choose one of the Firefox fingerprints
 create_profile_request = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    name='manage cookies example')
+    name='manage cookies example',
+)
 profile = client.profile.create_profile(create_profile_request)
 
 # Start the Kameleo profile and connect using WebDriver protocol
-options = webdriver.ChromeOptions()
-options.add_experimental_option('kameleo:profileId', profile.id)
+options = webdriver.FirefoxOptions()
+options.set_capability('kameleo:profileId', profile.id)
 driver = webdriver.Remote(
     command_executor=f'http://localhost:{kameleo_port}/webdriver',
-    options=options
+    options=options,
 )
 
 # Navigate to a site which give you cookies
@@ -52,9 +51,17 @@ print(f'There are {len(cookie_list)} cookies in the profile')
 
 # You can modify cookie or you can add new
 cookie = cookie_list[0]
-new_cookie = CookieRequest(domain=cookie.domain, name=cookie.name, path=cookie.path, value=cookie.value,
-                           host_only=cookie.host_only, http_only=cookie.http_only, secure=cookie.secure,
-                           same_site=cookie.same_site, expiration_date=cookie.expiration_date)
+new_cookie = CookieRequest(
+    domain=cookie.domain,
+    name=cookie.name,
+    path=cookie.path,
+    value=cookie.value,
+    host_only=cookie.host_only,
+    http_only=cookie.http_only,
+    secure=cookie.secure,
+    same_site=cookie.same_site,
+    expiration_date=cookie.expiration_date,
+)
 cookie_array = [new_cookie]
 client.cookie.add_cookies(profile.id, cookie_array)
 

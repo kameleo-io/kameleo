@@ -10,21 +10,20 @@ async def main():
     # This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
     kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
-    client = KameleoLocalApiClient(
-        endpoint=f'http://localhost:{kameleo_port}'
-    )
+    client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
     # Search Chrome fingerprints
     fingerprints = client.fingerprint.search_fingerprints(
         device_type='desktop',
-        browser_product='chrome'
+        browser_product='chrome',
     )
 
     # Create a new profile with recommended settings
     # Choose one of the fingerprints
     create_profile_request = CreateProfileRequest(
         fingerprint_id=fingerprints[0].id,
-        name='connect with Puppeteer example')
+        name='connect with Puppeteer example',
+    )
     profile = client.profile.create_profile(create_profile_request)
 
     # Start the Kameleo profile and connect through CDP
@@ -44,5 +43,6 @@ async def main():
 
     # Stop the browser by stopping the Kameleo profile
     client.profile.stop_profile(profile.id)
+
 
 asyncio.run(main())

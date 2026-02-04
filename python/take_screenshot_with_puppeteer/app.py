@@ -11,14 +11,12 @@ async def main():
     # This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
     kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
-    client = KameleoLocalApiClient(
-        endpoint=f'http://localhost:{kameleo_port}'
-    )
+    client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 
     # Search Chrome fingerprints
     fingerprints = client.fingerprint.search_fingerprints(
         device_type='desktop',
-        browser_product='chrome'
+        browser_product='chrome',
     )
 
     # Create a new profile with recommended settings for browser fingerprinting protection
@@ -26,7 +24,8 @@ async def main():
     # You can setup here all of the profile options like WebGL
     create_profile_request = CreateProfileRequest(
         fingerprint_id=fingerprints[0].id,
-        name='take screenshot example')
+        name='take screenshot example',
+    )
     profile = client.profile.create_profile(create_profile_request)
 
     # Start the Kameleo profile and connect through CDP
@@ -36,13 +35,14 @@ async def main():
 
     # Open a random page from wikipedia
     await page.goto('https://en.wikipedia.org/wiki/Special:Random')
-    
+
     res = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-    
+
     # Take screenshot
     await page.screenshot({'path': f'{res}.png', 'fullPage': True})
 
     # Stop the browser by stopping the Kameleo profile
     client.profile.stop_profile(profile.id)
+
 
 asyncio.run(main())

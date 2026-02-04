@@ -1,4 +1,4 @@
-import { KameleoLocalApiClient } from "@kameleo/local-api-client";
+import { KameleoLocalApiClient, ProfileLifetimeState } from "@kameleo/local-api-client";
 import { setTimeout } from "timers/promises";
 
 // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
@@ -41,6 +41,10 @@ const profile = await client.profile.createProfile(createProfileRequest);
 
 // Start the profile
 await client.profile.startProfile(profile.id);
+
+// List the running profiles
+const runningProfiles = await client.profile.listProfiles(ProfileLifetimeState.Running);
+console.log(`Running profiles: ${runningProfiles.length}`);
 
 // Wait for 10 seconds
 await setTimeout(10_000);
