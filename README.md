@@ -1,13 +1,9 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://kameleo.io/img/logo-text-light.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://kameleo.io/img/logo-text-dark.svg">
-  <img alt="Kameleo Anti-Detect Browser" src="https://kameleo.io/img/logo-text-dark.svg" width="300">
-</picture>
+<img alt="Kameleo Anti-Detect Browser" src="https://billing.kameleo.io/app/themes/bootscore-child/img/logo/logo.png" width="300">
 
 <h3>Automate browsers at scale. Stay undetected.</h3>
 
 [![Discord](https://img.shields.io/discord/1248220613055877173?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.com/invite/vNqxWuDkS4)
-[![GitHub stars](https://img.shields.io/github/stars/kameleo-io/app?style=social)](https://github.com/kameleo-io/app)
+[![GitHub stars](https://img.shields.io/github/stars/kameleo-io/kameleo?style=social)](https://github.com/kameleo-io/kameleo)
 [![Latest Release](https://img.shields.io/github/v/release/kameleo-io/releases?color=2cd05e&label=Latest)](https://github.com/kameleo-io/releases/releases)
 [![npm](https://img.shields.io/npm/v/%40kameleo%2Flocal-api-client?logo=npm)](https://www.npmjs.com/package/@kameleo/local-api-client)
 [![PyPI](https://img.shields.io/pypi/v/kameleo.local-api-client?logo=python&logoColor=white)](https://pypi.org/project/kameleo.local-api-client/)
@@ -308,7 +304,7 @@ Headless mode is available on Business and Enterprise plans. It launches UI-free
 - **Help Center**: [help.kameleo.io](https://help.kameleo.io/)
 - **Developer Docs**: [developer.kameleo.io](https://developer.kameleo.io/)
 
-**Found this useful? [⭐ Star us on GitHub!](https://github.com/kameleo-io/app)**
+**Found this useful? [⭐ Star us on GitHub!](https://github.com/kameleo-io/kameleo)**
 
 ---
 
@@ -326,7 +322,7 @@ We welcome contributions! Here's how you can help:
 
 - **Improve documentation** — Found something unclear? Submit a PR to `/docs`
 - **Add detection tests** — Know a bot detector we should test against? Check our [masking audit tests](./packages/client-browser-tests/Tests/MaskingAuditTests/)
-- **Report issues** — [Open an issue](https://github.com/kameleo-io/app/issues) for bugs or feature requests
+- **Report issues** — [Open an issue](https://github.com/kameleo-io/kameleo/issues) for bugs or feature requests
 
 ---
 
