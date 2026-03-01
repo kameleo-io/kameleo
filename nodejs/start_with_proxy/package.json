@@ -1,9 +1,0 @@
-{
-  "name": "start_with_proxy",
-  "description": "This script demonstrates how to create a Kameleo profile with a SOCKS5 proxy setup using the Kameleo Local API client.",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  }
-}

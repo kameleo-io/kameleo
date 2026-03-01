@@ -1,9 +1,0 @@
-{
-  "name": "basic_profile_operations",
-  "description": "Shows basic profile operations with the Kameleo API, like finding the right fingerprint, creating profiles, duplicating them, modifying their spoofing options, launching the browser",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  }
-}

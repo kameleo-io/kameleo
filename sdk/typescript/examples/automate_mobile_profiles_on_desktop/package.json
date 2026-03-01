@@ -1,0 +1,9 @@
+{
+  "name": "automate_mobile_profiles_on_desktop",
+  "description": "This example uses the Kameleo Local API to create a mobile browser profile emulating an iOS device with Safari, then automates it using Selenium WebDriver to perform a Wikipedia search for 'Chameleon' and prints the page title.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "commonjs",
+  "description": "A CommonJS example (other examples are ESM)",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

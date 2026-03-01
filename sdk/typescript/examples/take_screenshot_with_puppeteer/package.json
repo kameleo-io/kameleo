@@ -1,0 +1,9 @@
+{
+  "name": "take_screenshot_with_puppeteer",
+  "description": "This script uses Kameleo with Puppeteer to automate a Chrome browser, set up a profile to avoid bot detection, visit a random Wikipedia page, and take a screenshot.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

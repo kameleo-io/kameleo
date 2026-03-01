@@ -1,0 +1,12 @@
+{
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "printWidth": 140,
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": ["*.ts", "*.js", "*.mjs"],
+      "options": { "tabWidth": 4 }
+    }
+  ]
+}

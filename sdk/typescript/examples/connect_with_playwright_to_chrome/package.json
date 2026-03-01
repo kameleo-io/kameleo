@@ -1,0 +1,9 @@
+{
+  "name": "connect_with_playwright_to_chrome",
+  "description": "This script uses Kameleo with Playwright to automate a browser, create a profile to evade bot detection, and perform a Wikipedia search.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

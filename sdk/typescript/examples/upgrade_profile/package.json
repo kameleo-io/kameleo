@@ -1,0 +1,9 @@
+{
+  "name": "upgrade_profile",
+  "description": "This script creates a Kameleo profile with the oldest available Chrome version on Windows, upgrades the browser version if possible, then starts and stops the profile.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

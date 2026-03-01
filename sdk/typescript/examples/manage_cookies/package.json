@@ -1,0 +1,9 @@
+{
+  "name": "manage_cookies",
+  "description": "This example illustrates how to use Kameleo with Selenium WebDriver to automate a browser.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

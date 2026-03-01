@@ -1,0 +1,75 @@
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.17.0/modules/openapi-generator/src/main/resources/typescript-fetch/package.mustache }}
+{
+  "name": "{{npmName}}",
+  "version": "{{npmVersion}}",
+  "author": "Kameleo Team",
+  "description": "This JavaScript/TypeScript package provides convenient access to the Local API REST interface of the Kameleo Client.",
+  "engines": {
+    "node": ">=16"
+  },
+{{#licenseName}}
+  "license": "{{licenseName}}",
+{{/licenseName}}
+  "keywords": [
+    "kameleo",
+    "stealth browsing platform",
+    "anti-detect browser",
+    "selenium",
+    "webdriver",
+    "browser automation",
+    "web scraping",
+    "puppeteer",
+    "playwright",
+    "headless",
+    "chrome",
+    "firefox",
+    "chromium",
+    "safari",
+    "edge"
+  ],
+  "license": "MIT",
+  "homepage": "https://kameleo.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kameleo-io/local-api-client-typescript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kameleo-io/local-api-client-typescript/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+{{#packageAsSourceOnlyLibrary}}
+  "main": "./index.ts",
+{{/packageAsSourceOnlyLibrary}}
+{{^packageAsSourceOnlyLibrary}}
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+{{#supportsES6}}
+  "module": "./dist/esm/index.js",
+  "sideEffects": false,
+{{/supportsES6}}
+  "scripts": {
+    "build": "npm install && tsc{{#supportsES6}} && tsc -p tsconfig.esm.json{{/supportsES6}}"{{^sagasAndRecords}},
+    "prepack": "npm run build"{{/sagasAndRecords}}
+  },
+{{/packageAsSourceOnlyLibrary}}
+  "devDependencies": {
+{{#sagasAndRecords}}
+    "immutable": "^4.0.0-rc.12",
+    "normalizr": "^3.6.1",
+    "redux-saga": "^1.1.3",
+    "redux-ts-simple": "^3.2.0",
+    "reselect": "^4.0.0",
+{{/sagasAndRecords}}
+    "@types/node": "^16",
+    "typescript": "5.4.5"
+  }{{#npmRepository}},{{/npmRepository}}
+{{#npmRepository}}
+  "publishConfig": {
+    "registry": "{{npmRepository}}"
+  }
+{{/npmRepository}}
+}

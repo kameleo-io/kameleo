@@ -1,0 +1,9 @@
+{
+  "name": "connect_with_selenium",
+  "description": "This script initializes a Kameleo client, creates and starts a new browser profile with recommended settings, uses Selenium WebDriver to connect to the profile and perform a Wikipedia search.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

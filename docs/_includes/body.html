@@ -1,0 +1,59 @@
+<script>
+    // Sync selected tab across the whole page
+    (function () {
+        const SYNC_FLAG = "syncingTabs";
+        const TAB_HASHES = new Set(["#javascript", "#python", "#c", "#windows", "#macos"]);
+        const TAB_SELECTOR = Array.from(TAB_HASHES)
+            .map((h) => `a[href="${h}"]`)
+            .join(", ");
+
+        function attachTabListeners(root = document) {
+            root.querySelectorAll(TAB_SELECTOR).forEach((a) => {
+                if (a.dataset.syncTabsBound) return;
+                a.addEventListener("click", function (e) {
+                    const a = e.currentTarget;
+                    const hash = a.getAttribute("href");
+
+                    if (!TAB_HASHES.has(hash)) return;
+                    if (a.dataset[SYNC_FLAG]) return;
+
+                    setTimeout(() => {
+                        const peers = document.querySelectorAll(`a[href="${hash}"]`);
+                        peers.forEach((peer) => {
+                            if (peer === a) return;
+                            if (peer.dataset[SYNC_FLAG]) return;
+
+                            peer.dataset[SYNC_FLAG] = "1";
+                            peer.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+
+                            delete peer.dataset[SYNC_FLAG];
+                        });
+                    }, 0);
+                });
+                a.dataset.syncTabsBound = "1";
+            });
+        }
+
+        const mo = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+                if (m.type === "childList" && (m.addedNodes?.length || 0) > 0) {
+                    m.addedNodes.forEach((n) => {
+                        if (n.nodeType !== 1) return;
+
+                        // If the added node itself is a tab link or contains any.
+                        if (n.matches && n.matches(TAB_SELECTOR)) {
+                            attachTabListeners(n.parentNode || document);
+                        } else {
+                            attachTabListeners(n);
+                        }
+                    });
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => attachTabListeners());
+        mo.observe(document.documentElement, { childList: true, subtree: true });
+    })();
+</script>
+
+<script async data-agent="c98c082e-4887-42a2-bcb6-b6d448c38e87" src="https://helply.com/helply-agent.js"></script>

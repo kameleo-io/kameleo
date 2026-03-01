@@ -1,9 +1,0 @@
-{
-  "name": "start_browser_with_additional_options",
-  "description": "This script demonstrates how to use Kameleo's Local API client to create a Chrome profile with custom WebDriver settings, such as muting audio and blocking images.",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  }
-}
