@@ -60,9 +60,7 @@ const page = await browser.contexts()[0].newPage();
 await page.goto("https://example.com"); // You're undetectable ✓
 ```
 
-> Also available in **[Python](https://developer.kameleo.io/integrations/playwright/)** and **[C#](https://developer.kameleo.io/integrations/playwright/)**. Supports **[Selenium](https://developer.kameleo.io/integrations/selenium/)**, **[Puppeteer](https://developer.kameleo.io/integrations/puppeteer/)**, and **[Playwright](https://developer.kameleo.io/integrations/playwright/)**.
-
-**That's it. You're undetectable.** [Full documentation →](https://developer.kameleo.io/)
+Also available in **[Python](https://developer.kameleo.io/integrations/playwright/)** and **[C#](https://developer.kameleo.io/integrations/playwright/)**. Supports **[Selenium](https://developer.kameleo.io/integrations/selenium/)**, **[Puppeteer](https://developer.kameleo.io/integrations/puppeteer/)**, and **[Playwright](https://developer.kameleo.io/integrations/playwright/)**.
 
 ## ✅ Verified against real detection services
 
@@ -81,7 +79,7 @@ We run automated tests every week against real anti-bot and fingerprint detectio
 
 **[View live transparency report →](https://kameleo.io/masking-audit)**
 
-All test source code is open — check our [masking report tests](./masking-report/tests/sites/) for full transparency.
+All test source code is open — check our [masking report](./masking-report/) for full transparency.
 
 ## 💡 Why Kameleo?
 
