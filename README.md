@@ -87,15 +87,15 @@ All test source code is open — check our [masking report tests](./masking-repo
 
 Built for developers who want control.
 
-### 🏠 On-premise
+### On-premise
 
-Your data stays on **your servers**. No per-request pricing. No vendor lock-in. Run on your own infrastructure, even air-gapped.
+Your data stays on **your servers**. No per-request pricing. No vendor lock-in. Run on your own infrastructure.
 
-### 🔄 Always current
+### Always current
 
 Stop chasing browser updates. We ship **Chroma kernels within 5 days** of every Chrome stable release. Junglefox every 2 months. Multikernel support lets you run multiple browser versions simultaneously.
 
-### 🛠️ Your stack
+### Your stack
 
 Works with **Selenium, Puppeteer, and Playwright**. SDKs in **Python, JavaScript, and C#**. Docker-ready for cloud deployments.
 
@@ -195,7 +195,7 @@ Yes! The free tier includes 2 concurrent browsers, 300 minutes of browser usage 
 - **Data ownership** — Your scraped data never leaves your infrastructure
 - **No per-request costs** — Run unlimited requests locally
 - **No rate limits on scraping** — Only API calls to fetch fingerprints are rate-limited
-- **Compliance** — Deploy in air-gapped environments for sensitive use cases
+- **Compliance** — Deploy on-premise for sensitive or regulated use cases
 
 </details>
 
@@ -219,14 +219,6 @@ Stealth plugins patch Puppeteer/Playwright after the fact. Kameleo uses custom-b
 Headless mode is available on Business and Enterprise plans. It launches UI-free browser sessions to reduce resource overhead.
 
 </details>
-
-## 👥 Community & Support
-
-**Your ⭐ helps us stay ahead of the detectors. [Star on GitHub →](https://github.com/kameleo-io/kameleo)**
-
-- **Discord**: [Join Kameleo Insider](https://discord.com/invite/vNqxWuDkS4) — Tips, discussions, and direct support
-- **Telegram**: [Subscribe to updates](https://t.me/kameleoapp)
-- **Developer Docs**: [developer.kameleo.io](https://developer.kameleo.io/)
 
 ## 🤝 Contributing
 
