@@ -1,6 +1,8 @@
+<!-- markdownlint-disable MD033 MD041 -->
 <img alt="Kameleo Anti-Detect Browser" src="https://billing.kameleo.io/app/themes/bootscore-child/img/logo/logo.png" width="300">
 
-<h3>Automate browsers at scale. Stay undetected.</h3>
+<h3>We maintain the masking. You ship the product.</h3>
+<p>Cloud-quality browser unblocking — self-hosted, on your infrastructure.</p>
 
 [![Discord](https://img.shields.io/discord/1248220613055877173?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.com/invite/vNqxWuDkS4)
 [![GitHub stars](https://img.shields.io/github/stars/kameleo-io/kameleo?style=social)](https://github.com/kameleo-io/kameleo)
@@ -12,143 +14,79 @@
 ---
 
 <div align="center">
-
-**⭐ Star us if Kameleo helps you stay undetected!**
-
-🆓 **[Free to try](https://billing.kameleo.io/my-account/get-app/?method_hint=register)** — no credit card required
-
+  <!-- TODO: Replace with before/after screen recording (plain Chromium blocked vs. Kameleo passing Cloudflare) -->
+  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="700">
 </div>
 
 ---
 
-Tired of stealth plugins that break every Chrome update? We handle fingerprint masking. You focus on your product.
+Stealth plugins break on every Chrome update. Open-source alternatives like Camoufox lag months behind — or go unmaintained entirely. And stitching together CDP patches, canvas fixes, WebGL overrides, and timezone spoofing into one working stack is exactly the kind of Frankenstein nobody wants to maintain.
+
+Kameleo gives you browser-level fingerprint masking built into the engine itself — no plugins, no patching, no assembly required. Fresh kernels within 5 days of every Chrome release, runs on your infrastructure, works with Selenium, Puppeteer, and Playwright out of the box.
 
 ## 🚀 Get started in 5 minutes
 
-**1. [Download and install Kameleo](https://github.com/kameleo-io/releases/releases)**
+**1. Install Kameleo:**
+
+```bash
+# Windows
+winget install Kameleo.App
+
+# macOS
+brew install --cask kameleo
+
+# Docker (Linux & Windows containers available)
+docker pull kameleo/kameleo-app:latest
+```
 
 **2. Install the SDK:**
 
 ```bash
-# Python
-pip install kameleo.local-api-client playwright
-
-# JavaScript
 npm install @kameleo/local-api-client playwright
-
-# C# - Add NuGet packages
-dotnet add package Kameleo.LocalApiClient
-dotnet add package Microsoft.Playwright
 ```
 
-**3. Run this code:**
+**3. Run your code:**
 
-<details open>
-<summary><b>Python</b></summary>
-
-```python
-from kameleo.local_api_client import KameleoLocalApiClient
-from kameleo.local_api_client.models import CreateProfileRequest
-from playwright.sync_api import sync_playwright
-
-client = KameleoLocalApiClient(endpoint='http://localhost:5050')
-
-# Search for a Chrome fingerprint and create a profile
-fingerprints = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='chrome')
-profile = client.profile.create_profile(CreateProfileRequest(fingerprint_id=fingerprints[0].id))
-
-# Connect with Playwright and automate
-with sync_playwright() as p:
-    browser = p.chromium.connect_over_cdp(f'ws://localhost:5050/playwright/{profile.id}')
-    page = browser.contexts[0].new_page()
-    page.goto('https://example.com')  # You're undetectable ✓
-
-client.profile.stop_profile(profile.id)
-```
-
-</details>
-
-<details>
-<summary><b>JavaScript</b></summary>
-
-```javascript
+```typescript
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
-import playwright from "playwright";
+import { chromium } from "playwright";
 
-const client = new KameleoLocalApiClient({ basePath: 'http://localhost:5050' });
+const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
 
-// Search for a Chrome fingerprint and create a profile
-const fingerprints = await client.fingerprint.searchFingerprints('desktop', undefined, 'chrome');
+// Pick a real Chrome fingerprint and create a profile
+const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 const profile = await client.profile.createProfile({ fingerprintId: fingerprints[0].id });
 
 // Connect with Playwright and automate
-const browser = await playwright.chromium.connectOverCDP(`ws://localhost:5050/playwright/${profile.id}`);
+const browser = await chromium.connectOverCDP(`ws://localhost:5050/playwright/${profile.id}`);
 const page = await browser.contexts()[0].newPage();
-await page.goto('https://example.com');  // You're undetectable ✓
-
-await client.profile.stopProfile(profile.id);
+await page.goto("https://example.com"); // You're undetectable ✓
 ```
 
-</details>
-
-<details>
-<summary><b>C#</b></summary>
-
-```csharp
-using Kameleo.LocalApiClient;
-using Microsoft.Playwright;
-
-var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
-
-// Search for a Chrome fingerprint and create a profile
-var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
-var profile = await client.Profile.CreateProfileAsync(new(fingerprints[0].Id));
-
-// Connect with Playwright and automate
-var pw = await Playwright.CreateAsync();
-var browser = await pw.Chromium.ConnectOverCDPAsync($"ws://localhost:5050/playwright/{profile.Id}");
-var page = await browser.Contexts[0].NewPageAsync();
-await page.GotoAsync("https://example.com");  // You're undetectable ✓
-
-await client.Profile.StopProfileAsync(profile.Id);
-```
-
-</details>
+> Also available in **[Python](https://developer.kameleo.io/integrations/playwright/)** and **[C#](https://developer.kameleo.io/integrations/playwright/)**. Supports **[Selenium](https://developer.kameleo.io/integrations/selenium/)**, **[Puppeteer](https://developer.kameleo.io/integrations/puppeteer/)**, and **[Playwright](https://developer.kameleo.io/integrations/playwright/)**.
 
 **That's it. You're undetectable.** [Full documentation →](https://developer.kameleo.io/)
 
 ---
 
-## 🎬 See it pass real detection tests
+## ✅ Verified against real detection services
 
-We test Kameleo weekly against real anti-bot services. Here's what it looks like:
+We run automated tests every week against real anti-bot and fingerprint detection services. Here's how plain Chromium compares to Kameleo's Chroma:
 
-<!-- TODO: Replace with actual video embeds -->
-| Pixelscan ✓ | Cloudflare ✓ | CreepJS ✓ |
-|-------------|--------------|-----------|
-| ![Pixelscan](https://via.placeholder.com/280x180?text=Video+Coming+Soon) | ![Cloudflare](https://via.placeholder.com/280x180?text=Video+Coming+Soon) | ![CreepJS](https://via.placeholder.com/280x180?text=Video+Coming+Soon) |
+<!-- TODO: Link each cell to a video recording of the test run -->
+| Detection Service | Regular Chromium | Kameleo Chroma |
+| --- | :---: | :---: |
+| [Pixelscan](https://pixelscan.net/) | ❌ | ✅ |
+| [BrowserScan](https://www.browserscan.net/) | ❌ | ✅ |
+| [Brotector](https://ttlns.github.io/brotector/) | ❌ | ✅ |
+| [CreepJS](https://abrahamjuliot.github.io/creepjs/) | ❌ | ✅ |
+| [Bot Sannysoft](https://bot.sannysoft.com/) | ❌ | ✅ |
+| [Cloudflare Turnstile](https://2captcha.com/demo/cloudflare-turnstile) | ❌ | ✅ |
+| [Google](https://google.com/) | ❌ | ✅ |
 
 **[View live transparency report →](https://kameleo.io/masking-audit)**
 
-We automatically test against **7 detection services** every week: Pixelscan, Browserscan, CreepJS, Cloudflare, Adscore, and more. Check our [masking audit test source code](./packages/client-browser-tests/Tests/MaskingAuditTests/) for full transparency.
-
----
-
-## 🆓 Generous free tier
-
-Start building without a credit card:
-
-| Feature | Free |
-|---------|------|
-| Concurrent browsers | 2 |
-| Browser usage | 300 min/month |
-| Cloud profiles | 100 |
-| Team members | 3 |
-| Fresh fingerprints | ✅ Unlimited |
-| Selenium/Puppeteer/Playwright | ✅ |
-| Credit card required | ❌ No |
-
-**[Start free →](https://billing.kameleo.io/my-account/get-app/?method_hint=register)** | [View all plans →](https://kameleo.io/pricing)
+All test source code is open — check our [masking report tests](./masking-report/tests/sites/) for full transparency.
 
 ---
 
@@ -173,9 +111,11 @@ Works with **Selenium, Puppeteer, and Playwright**. SDKs in **Python, JavaScript
 ## 📊 How we compare
 
 | Feature | Kameleo | browser-use | Rebrowser | ScrapeNinja | Camoufox |
-|---------|:-------:|:-----------:|:---------:|:-----------:|:--------:|
+| --------- | :-------: | :-----------: | :---------: | :-----------: | :--------: |
 | Self-hosted | ✅ | ❌ Cloud | ❌ Cloud | ❌ Cloud | ✅ |
-| Kernel updates | 5-day | N/A | N/A | N/A | Community |
+| Chrome engine | ✅ Chroma | ❌ | ✅ | ✅ | ❌ |
+| Firefox engine | ✅ Junglefox | ❌ | ❌ | ❌ | ✅ |
+| Kernel updates | Frequent | N/A | N/A | N/A | Community |
 | Free tier | ✅ Generous | Limited | Limited | Limited | ✅ |
 | Frameworks | All 3 | Playwright | Playwright | ❌ | Playwright |
 | SDKs | Py/JS/C# | Python | ❌ | ❌ | Python |
@@ -299,36 +239,21 @@ Headless mode is available on Business and Enterprise plans. It launches UI-free
 
 ## 👥 Community & Support
 
-- **Discord**: [Join Kameleo Insider](https://discord.com/invite/vNqxWuDkS4) — Tips, discussions, and direct support
-- **Telegram**: [Subscribe to updates](https://t.me/kameleoapp)
-- **Help Center**: [help.kameleo.io](https://help.kameleo.io/)
-- **Developer Docs**: [developer.kameleo.io](https://developer.kameleo.io/)
-
 **Found this useful? [⭐ Star us on GitHub!](https://github.com/kameleo-io/kameleo)**
 
+- **Discord**: [Join Kameleo Insider](https://discord.com/invite/vNqxWuDkS4) — Tips, discussions, and direct support
+- **Telegram**: [Subscribe to updates](https://t.me/kameleoapp)
+- **Developer Docs**: [developer.kameleo.io](https://developer.kameleo.io/)
+
 ---
-
-## 📁 What's in this repo
-
-| Directory | Description |
-|-----------|-------------|
-| [`/docs`](./docs) | Developer documentation source |
-| [`/packages/client-browser-tests`](./packages/client-browser-tests/Tests/MaskingAuditTests/) | Masking audit tests against detection services |
-| [Releases](https://github.com/kameleo-io/releases/releases) | Latest Kameleo downloads |
 
 ## 🤝 Contributing
 
 We welcome contributions! Here's how you can help:
 
 - **Improve documentation** — Found something unclear? Submit a PR to `/docs`
-- **Add detection tests** — Know a bot detector we should test against? Check our [masking audit tests](./packages/client-browser-tests/Tests/MaskingAuditTests/)
+- **Add detection tests** — Know a bot detector we should test against? Check our [masking report tests](./masking-report/tests/sites/)
 - **Report issues** — [Open an issue](https://github.com/kameleo-io/kameleo/issues) for bugs or feature requests
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
