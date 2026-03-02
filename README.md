@@ -11,18 +11,18 @@
 [![PyPI](https://img.shields.io/pypi/v/kameleo.local-api-client?logo=python&logoColor=white)](https://pypi.org/project/kameleo.local-api-client/)
 [![NuGet](https://img.shields.io/nuget/v/Kameleo.LocalApiClient?logo=nuget)](https://www.nuget.org/packages/Kameleo.LocalApiClient)
 
+Every Chrome update breaks your stealth plugins. Open-source alternatives lag months behind — or die entirely. Stitching it all together yourself isn't a strategy, it's a maintenance nightmare.
+
+Kameleo builds masking into the engine itself. No plugins, no patching, no assembly required. Frequently updated browser kernels, works with Selenium, Puppeteer, and Playwright — on Windows, macOS, and Docker.
+
 ---
 
 <div align="center">
   <!-- TODO: Replace with before/after screen recording (plain Chromium blocked vs. Kameleo passing Cloudflare) -->
-  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="700">
+  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="800">
 </div>
 
 ---
-
-Stealth plugins break on every Chrome update. Open-source alternatives like Camoufox lag months behind — or go unmaintained entirely. And stitching together CDP patches, canvas fixes, WebGL overrides, and timezone spoofing into one working stack is exactly the kind of Frankenstein nobody wants to maintain.
-
-Kameleo gives you browser-level fingerprint masking built into the engine itself — no plugins, no patching, no assembly required. Fresh kernels within 5 days of every Chrome release, runs on your infrastructure, works with Selenium, Puppeteer, and Playwright out of the box.
 
 ## 🚀 Get started in 5 minutes
 
