@@ -62,8 +62,6 @@ await page.goto("https://example.com"); // You're undetectable ✓
 
 **That's it. You're undetectable.** [Full documentation →](https://developer.kameleo.io/)
 
----
-
 ## ✅ Verified against real detection services
 
 We run automated tests every week against real anti-bot and fingerprint detection services. Here's how plain Chromium compares to Kameleo's Chroma:
@@ -83,8 +81,6 @@ We run automated tests every week against real anti-bot and fingerprint detectio
 
 All test source code is open — check our [masking report tests](./masking-report/tests/sites/) for full transparency.
 
----
-
 ## 💡 Why Kameleo?
 
 Built for developers who want control.
@@ -101,8 +97,6 @@ Stop chasing browser updates. We ship **Chroma kernels within 5 days** of every 
 
 Works with **Selenium, Puppeteer, and Playwright**. SDKs in **Python, JavaScript, and C#**. Docker-ready for cloud deployments.
 
----
-
 ## 📊 How we compare
 
 | Feature | Kameleo | browser-use | Rebrowser | ScrapeNinja | Camoufox |
@@ -117,8 +111,6 @@ Works with **Selenium, Puppeteer, and Playwright**. SDKs in **Python, JavaScript
 | macOS ARM | ✅ | ❌ | ❌ | N/A | ✅ |
 | Per-request cost | ❌ | ✅ | ✅ | ✅ | ❌ |
 
----
-
 ## ✨ Features
 
 - **Fresh fingerprints** — Millions of real fingerprints from actual devices
@@ -130,8 +122,6 @@ Works with **Selenium, Puppeteer, and Playwright**. SDKs in **Python, JavaScript
 - **Docker support** — Scalable container deployments
 - **No device limits** — Use as many machines as you want
 - **Multikernel** — Run multiple Chroma & Junglefox versions simultaneously
-
----
 
 ## 🔌 Integrations
 
@@ -188,8 +178,6 @@ with sync_playwright() as p:
 
 </details>
 
----
-
 ## ❓ FAQ
 
 <details>
@@ -230,8 +218,6 @@ Headless mode is available on Business and Enterprise plans. It launches UI-free
 
 </details>
 
----
-
 ## 👥 Community & Support
 
 **Found this useful? [⭐ Star us on GitHub!](https://github.com/kameleo-io/kameleo)**
@@ -239,8 +225,6 @@ Headless mode is available on Business and Enterprise plans. It launches UI-free
 - **Discord**: [Join Kameleo Insider](https://discord.com/invite/vNqxWuDkS4) — Tips, discussions, and direct support
 - **Telegram**: [Subscribe to updates](https://t.me/kameleoapp)
 - **Developer Docs**: [developer.kameleo.io](https://developer.kameleo.io/)
-
----
 
 ## 🤝 Contributing
 
