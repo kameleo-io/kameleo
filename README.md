@@ -15,14 +15,9 @@ Every Chrome update breaks your stealth plugins. Open-source alternatives lag mo
 
 Kameleo builds masking into the engine itself. No plugins, no patching, no assembly required. Frequently updated browser kernels, works with Selenium, Puppeteer, and Playwright — on Windows, macOS, and Docker.
 
----
-
 <div align="center">
-  <!-- TODO: Replace with before/after screen recording (plain Chromium blocked vs. Kameleo passing Cloudflare) -->
   <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="600">
 </div>
-
----
 
 ## 🚀 Get started in 5 minutes
 
