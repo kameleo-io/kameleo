@@ -177,6 +177,14 @@ with sync_playwright() as p:
 
 </details>
 
+## 📂 Example Code
+
+Working examples for every common scenario:
+
+- [Python examples](sdk/python/examples/)
+- [TypeScript examples](sdk/typescript/examples/)
+- [C# examples](sdk/csharp/examples/)
+
 ## ❓ FAQ
 
 <details>
