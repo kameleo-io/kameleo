@@ -1,22 +1,24 @@
 <!-- markdownlint-disable MD033 MD041 -->
+<div align="center">
 <img alt="Kameleo Anti-Detect Browser" src="https://billing.kameleo.io/app/themes/bootscore-child/img/logo/logo.png" width="300">
 
-<h3>We maintain the masking. You ship the product.</h3>
-<p>Cloud-quality browser unblocking — self-hosted, on your infrastructure.</p>
+<h3>Automate browsers at scale. Stay undetected.</h3>
+<p>Self-hosted stealth browser infrastructure — Windows, macOS, and Docker.</p>
 
 [![Discord](https://img.shields.io/discord/1248220613055877173?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.com/invite/vNqxWuDkS4)
-[![GitHub stars](https://img.shields.io/github/stars/kameleo-io/kameleo?style=social)](https://github.com/kameleo-io/kameleo)
-[![Latest Release](https://img.shields.io/github/v/release/kameleo-io/releases?color=2cd05e&label=Latest)](https://github.com/kameleo-io/releases/releases)
 [![npm](https://img.shields.io/npm/v/%40kameleo%2Flocal-api-client?logo=npm)](https://www.npmjs.com/package/@kameleo/local-api-client)
 [![PyPI](https://img.shields.io/pypi/v/kameleo.local-api-client?logo=python&logoColor=white)](https://pypi.org/project/kameleo.local-api-client/)
 [![NuGet](https://img.shields.io/nuget/v/Kameleo.LocalApiClient?logo=nuget)](https://www.nuget.org/packages/Kameleo.LocalApiClient)
+
+⭐ Detectors evolve daily. Star us to keep Kameleo one step ahead.
+</div>
 
 Every Chrome update breaks your stealth plugins. Open-source alternatives lag months behind — or die entirely. Stitching it all together yourself isn't a strategy, it's a maintenance nightmare.
 
 Kameleo builds masking into the engine itself. No plugins, no patching, no assembly required. Frequently updated browser kernels, works with Selenium, Puppeteer, and Playwright — on Windows, macOS, and Docker.
 
 <div align="center">
-  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="600">
+  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="700">
 </div>
 
 ## 🚀 Get started in 5 minutes
@@ -220,7 +222,7 @@ Headless mode is available on Business and Enterprise plans. It launches UI-free
 
 ## 👥 Community & Support
 
-**Found this useful? [⭐ Star us on GitHub!](https://github.com/kameleo-io/kameleo)**
+**Your ⭐ helps us stay ahead of the detectors. [Star on GitHub →](https://github.com/kameleo-io/kameleo)**
 
 - **Discord**: [Join Kameleo Insider](https://discord.com/invite/vNqxWuDkS4) — Tips, discussions, and direct support
 - **Telegram**: [Subscribe to updates](https://t.me/kameleoapp)
