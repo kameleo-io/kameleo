@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <div align="center">
-<img alt="Kameleo Anti-Detect Browser" src="https://billing.kameleo.io/app/themes/bootscore-child/img/logo/logo.png" width="300">
+<img alt="Kameleo Anti-Detect Browser" src="./assets/logo.png" width="300">
 
 <h3>Automate browsers at scale. Stay undetected.</h3>
 <p>Self-hosted stealth browser infrastructure — Windows, macOS, and Docker</p>
@@ -18,7 +18,7 @@
 Tired of patching CDP leaks, WebRTC, canvas, and timezone — only to get blocked again? Kameleo handles the arms race. You focus on your product.
 
 <div align="center">
-  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="650">
+  <img src="./assets/demo.gif" alt="Blocked Without Kameleo. Undetected With Kameleo." width="650">
 </div>
 
 ## 🚀 Get started in 5 minutes
@@ -110,7 +110,6 @@ Works with **Selenium, Puppeteer, and Playwright**. SDKs in **Python, JavaScript
 | Free tier | ✅ Generous | Limited | Limited | Limited | ✅ |
 | Frameworks | All 3 | Playwright | Playwright | ❌ | Playwright |
 | SDKs | Py/JS/C# | Python | ❌ | ❌ | Python |
-| macOS ARM | ✅ | ❌ | ❌ | N/A | ✅ |
 | Per-request cost | ❌ | ✅ | ✅ | ✅ | ❌ |
 
 ## ✨ Features
