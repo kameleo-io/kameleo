@@ -3,7 +3,7 @@
 <img alt="Kameleo Anti-Detect Browser" src="https://billing.kameleo.io/app/themes/bootscore-child/img/logo/logo.png" width="300">
 
 <h3>Automate browsers at scale. Stay undetected.</h3>
-<p>Self-hosted stealth browser infrastructure — Windows, macOS, and Docker.</p>
+<p>Self-hosted stealth browser infrastructure — Windows, macOS, and Docker</p>
 
 [![Discord](https://img.shields.io/discord/1248220613055877173?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.com/invite/vNqxWuDkS4)
 [![npm](https://img.shields.io/npm/v/%40kameleo%2Flocal-api-client?logo=npm)](https://www.npmjs.com/package/@kameleo/local-api-client)
@@ -13,12 +13,12 @@
 ⭐ Detectors evolve daily. Star us to keep Kameleo one step ahead.
 </div>
 
-Every Chrome update breaks your stealth plugins. Open-source alternatives lag months behind — or die entirely. Stitching it all together yourself isn't a strategy, it's a maintenance nightmare.
+---
 
-Kameleo builds masking into the engine itself. No plugins, no patching, no assembly required. Frequently updated browser kernels, works with Selenium, Puppeteer, and Playwright — on Windows, macOS, and Docker.
+Tired of patching CDP leaks, WebRTC, canvas, and timezone — only to get blocked again? Kameleo handles the arms race. You focus on your product.
 
 <div align="center">
-  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="700">
+  <img src="./demo.gif" alt="Without Kameleo: blocked. With Kameleo: undetected." width="650">
 </div>
 
 ## 🚀 Get started in 5 minutes
