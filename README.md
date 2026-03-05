@@ -25,15 +25,15 @@ Manually maintaining fingerprint configurations that get detected within hours? 
 
 We run automated tests frequently. Here are the results with recordings of each run.
 
-| Detection Service | Playwright + Chromium | Playwright + Kameleo |
+| Website | Playwright + Chromium | Playwright + Kameleo |
 | --- | :---: | :---: |
-| [Pixelscan](./masking-report/tests/sites/pixelscan.test.ts) | [▶️ Watch](#) | [▶️ Watch](#) |
-| [BrowserScan](./masking-report/tests/sites/browserscan.test.ts) | [▶️ Watch](#) | [▶️ Watch](#) |
-| [Brotector](./masking-report/tests/sites/brotector.test.ts) | [▶️ Watch](#) | [▶️ Watch](#) |
-| [CreepJS](./masking-report/tests/sites/creepjs.test.ts) | [▶️ Watch](#) | [▶️ Watch](#) |
-| [Bot Sannysoft](./masking-report/tests/sites/bot-sannysoft.test.ts) | [▶️ Watch](#) | [▶️ Watch](#) |
-| [Cloudflare Turnstile](./masking-report/tests/sites/cloudflare-turnstile.test.ts) | [▶️ Watch](#) | [▶️ Watch](#) |
-| [Google Search](./masking-report/tests/sites/google.test.ts) | [▶️ Watch](#) | [▶️ Watch](#) |
+| [Pixelscan](./masking-report/tests/sites/synthetic/pixelscan.spec.ts) | [▶️ Watch](./masking-report/videos/pixelscan-macos-chromium-260223053608.webm) | [▶️ Watch](./masking-report/videos/pixelscan-macos-chrome-260223053742.webm) |
+| [BrowserScan](./masking-report/tests/sites/synthetic/browserscan.spec.ts) | [▶️ Watch](./masking-report/videos/browserscan-macos-chromium-260223053608.webm) | [▶️ Watch](./masking-report/videos/browserscan-macos-chrome-260223053751.webm) |
+| [Brotector](./masking-report/tests/sites/synthetic/brotector.spec.ts) | [▶️ Watch](./masking-report/videos/brotector-macos-chromium-260223053538.webm) | [▶️ Watch](./masking-report/videos/brotector-macos-chrome-260223053706.webm) |
+| [CreepJS](./masking-report/tests/sites/synthetic/creepjs.spec.ts) | [▶️ Watch](./masking-report/videos/creepjs-macos-chromium-260223053604.webm) | [▶️ Watch](./masking-report/videos/creepjs-macos-chrome-260223053746.webm) |
+| [Bot Sannysoft](./masking-report/tests/sites/synthetic/bot-sannysoft.spec.ts) | [▶️ Watch](./masking-report/videos/sannysoft-macos-chromium-260223053538.webm) | [▶️ Watch](./masking-report/videos/sannysoft-macos-chrome-260223053741.webm) |
+| [Cloudflare Turnstile](./masking-report/tests/sites/anti-bot/cloudflare-turnstile.spec.ts) | [▶️ Watch](./masking-report/videos/cloudflare-turnstile-macos-chromium-260223053512.webm) | [▶️ Watch](./masking-report/videos/cloudflare-turnstile-macos-chrome-260223053708.webm) |
+| [Google Search](./masking-report/tests/sites/anti-bot/google.spec.ts) | [▶️ Watch](./masking-report/videos/google-macos-chromium-260223053510.webm) | [▶️ Watch](./masking-report/videos/google-macos-chrome-260223053722.webm) |
 
 **[View masking report →](https://kameleo.io/masking-audit)**
 

@@ -44,6 +44,3 @@ retype.manifest
 # System Files
 .DS_Store
 Thumbs.db
-
-# Generated files
-videos
