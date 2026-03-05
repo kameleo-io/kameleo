@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo><!-- setting GenerateAssemblyInfo to false causes this bug https://github.com/dotnet/project-system/issues/3934 -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PlatformTarget>anycpu</PlatformTarget>
+    <AssemblyName>Kameleo.LocalApiClient</AssemblyName>
+    <PackageId>Kameleo.LocalApiClient</PackageId>
+    <OutputType>Library</OutputType>
+    <Authors>Kameleo Team</Authors>
+    <Company>Kameleo</Company>
+    <AssemblyTitle>Kameleo.LocalApiClient</AssemblyTitle>
+    <Description>This .NET Standard package provides convenient access to the Local API REST interface of the Kameleo Client.</Description>
+    <RootNamespace>Kameleo.LocalApiClient</RootNamespace>
+    <Version>4.2.1</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/kameleo-io/local-api-client-csharp.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>kameleo; stealth browsing platform; anti-detect browser; selenium; webdriver; browser automation; web scraping; puppeteer; playwright; headless; chrome; firefox; chromium; edge</PackageTags>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- allow obsolete: https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0612 -->
+    <NoWarn>CS0612</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JsonSubTypes" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RestSharp" Version="112.0.0" />
+    <PackageReference Include="Polly" Version="8.1.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="bin/**" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Remove="examples/**" />
+    <Compile Remove="examples/**" />
+    <EmbeddedResource Remove="examples/**" />
+  </ItemGroup>
+</Project>

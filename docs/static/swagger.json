@@ -1,0 +1,3989 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "kameleo-local-api",
+    "description": "You can use the following API endpoints to communicate with the local running Kameleo programmatically.",
+    "termsOfService": "https://kameleo.io",
+    "contact": {
+      "name": "Kameleo Team",
+      "url": "https://developer.kameleo.io"
+    },
+    "version": "4.2.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5050"
+    }
+  ],
+  "paths": {
+    "/profiles/{guid}/cookies": {
+      "get": {
+        "tags": ["Cookie"],
+        "summary": "Retrieves the list of cookies stored in the profile's browser. Note that this list does not include session cookies, which are not\r\npersisted between browser launches.",
+        "operationId": "ListCookies",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BrowserCookie"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Profile must be terminated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Cookie"],
+        "summary": "Adds a list of cookies to the profile, allowing you to inject cookies before starting the profile. If cookies already exist for a domain,\r\nthey will be replaced with the new ones.",
+        "operationId": "AddCookies",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CookieRequest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BrowserCookie"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Profile must be terminated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Cookie"],
+        "summary": "Deletes all the cookies stored in the profile, which will likely log the profile out of all websites.",
+        "operationId": "DeleteCookies",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Profile must be terminated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fingerprints": {
+      "get": {
+        "tags": ["Fingerprint"],
+        "summary": "Retrieves a set of 25 fingerprints based on specified criteria, with the most recent browser versions at the beginning of the list. Note\r\nthat calling this method multiple times will return different sets of fingerprints.",
+        "operationId": "SearchFingerprints",
+        "parameters": [
+          {
+            "name": "deviceType",
+            "in": "query",
+            "description": "Filter option for the Device Type. Possible values are 'desktop', 'mobile'.\r\nYou can also use a comma-separated list to provide more than one value.",
+            "schema": {
+              "type": "string",
+              "example": "desktop"
+            },
+            "example": "desktop"
+          },
+          {
+            "name": "osFamily",
+            "in": "query",
+            "description": "Filter option for os family. Possible values are 'windows', 'macos', 'linux', 'android', 'ios'.\r\nYou can also use a comma-separated list to provide more than one value.",
+            "schema": {
+              "type": "string",
+              "example": "windows"
+            },
+            "example": "windows"
+          },
+          {
+            "name": "browserProduct",
+            "in": "query",
+            "description": "Filter option for browser product. Possible values are 'chrome', 'firefox', 'edge', 'safari'.\r\nYou can also use a comma-separated list to provide more than one value.",
+            "schema": {
+              "type": "string",
+              "example": "safari"
+            },
+            "example": "safari"
+          },
+          {
+            "name": "browserVersion",
+            "in": "query",
+            "description": "Filter option for the browser version.\r\nIncludes an optional sign (<, >=, etc.) and a major version number (e.g. 135)",
+            "schema": {
+              "type": "string",
+              "example": "135"
+            },
+            "example": "135"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FingerprintPreview"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment Required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Retrieve the complete list of folders in your workspace. Use this endpoint to see the entire folder hierarchy - including subfolders and\r\nunassigned profiles.",
+        "operationId": "ListFolders",
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListFoldersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/{guid}": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Fetch detailed information for a specific folder by its unique GUID. Use this to review the folder’s metadata, contained profiles, and\r\nsharing settings.",
+        "operationId": "ReadFolder",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the folder.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder is not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Folder"],
+        "summary": "Updates the details of an existing folder, not including its content.",
+        "operationId": "UpdateFolder",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the folder.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateFolderRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder is not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The provided data failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Folder"],
+        "summary": "Deletes a folder along with all its subfolders. Profiles within the folder will either be deleted or moved to the top-level based on the\r\nquery parameters.",
+        "operationId": "DeleteFolder",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the folder.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "includeProfiles",
+            "in": "query",
+            "description": "Flag to indicate if the contained profiles should be deleted (true) or moved to the top-level (false).",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteFolderResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Folder is not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/new": {
+      "post": {
+        "tags": ["Folder"],
+        "summary": "Create a new folder in your workspace by providing a human-readable name in the request body. Use this to organize your profiles\r\neffectively.",
+        "operationId": "CreateFolder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateFolderRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The provided data failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/{guid}/add": {
+      "post": {
+        "tags": ["Folder"],
+        "summary": "Adds the given profile to the specified folder.",
+        "operationId": "AddProfileToFolder",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the folder.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AddProfileToFolderRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/{guid}/{profileId}": {
+      "delete": {
+        "tags": ["Folder"],
+        "summary": "Removes the given profile from the specified folder.",
+        "operationId": "RemoveProfileFromFolder",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "description": "The unique identifier of the folder.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/share": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Retrieve the sharing options available for folders. Use this endpoint to review the list of users and roles that can access your folder\r\nresources.",
+        "operationId": "ReadSharingOptions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharingOptionsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folders/{guid}/share": {
+      "post": {
+        "tags": ["Folder"],
+        "summary": "Update the sharing settings for a folder by submitting a list of share access rules (user and role details) in the request body. Use this\r\nto adjust access permissions as needed.",
+        "operationId": "ShareGroup",
+        "parameters": [
+          {
+            "name": "guid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ShareGroupRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/general/healthcheck": {
+      "get": {
+        "tags": ["General"],
+        "summary": "Health check request to test if Kameleo has been started and accepting connections.",
+        "operationId": "Healthcheck",
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/general/user-info": {
+      "get": {
+        "tags": ["General"],
+        "summary": "Fetch detailed information about your user account.",
+        "operationId": "GetUserInfo",
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/general/terminate": {
+      "post": {
+        "tags": ["General"],
+        "summary": "Terminate your current Kameleo session by deauthenticating and exiting the CLI. Use this to safely close your session and release any\r\nassociated resources.",
+        "operationId": "TerminateApplication",
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kernels": {
+      "get": {
+        "tags": ["Kernel"],
+        "summary": "Gets the list of all the available kernels.",
+        "operationId": "ListKernels",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KernelResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kernels/{id}/install": {
+      "post": {
+        "tags": ["Kernel"],
+        "summary": "Installs a kernel to the local file system.",
+        "operationId": "InstallKernel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the kernel.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KernelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The kernel is not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kernels/{id}/remove": {
+      "post": {
+        "tags": ["Kernel"],
+        "summary": "Removes a kernel from the local file system.",
+        "operationId": "RemoveKernel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the kernel.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KernelResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The kernel is not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The kernel can't be removed because it is currently in use, but it was marked for deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KernelResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Retrieve a list of all profiles loaded in your workspace. Use this endpoint to view a preview of each profile so you can quickly assess\r\navailable profiles.",
+        "operationId": "ListProfiles",
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProfilePreview"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/new": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Create a new profile based on a selected fingerprint. Supply the required configuration in the request body, then receive the newly\r\ncreated profile’s full details.",
+        "operationId": "CreateProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateProfileRequest"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fingerprint not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}": {
+      "put": {
+        "tags": ["Profile"],
+        "summary": "Update an existing profile’s settings by providing the new configuration options in the request body. Use this to modify aspects like\r\nspoofing options or proxy settings, then receive the updated profile details.",
+        "operationId": "UpdateProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateProfileRequest"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Cannot edit profile because it is running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Gets the profile with the specified GUID from the current workspace. On startup, Kameleo will automatically scan and load profiles stored\r\nin your workspace folder on startup.",
+        "operationId": "ReadProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Profile"],
+        "summary": "Permanently delete a profile from your workspace.",
+        "operationId": "DeleteProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Profile is running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}/status": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Check the current status of a profile, including its lifecycle and persistence states.",
+        "operationId": "GetProfileStatus",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}/start": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Starts the selected profile by transitioning its status to 'starting', launching the kernel (Chroma or Junglefox) associated with the\r\nprofile, and then changing its status to 'running'.\r\nIf there is an error during start-up, it will be 'terminated'. Note that the required kernel might not be available locally, so it may be\r\ndownloaded during the profile start.\r\nOptional command line arguments or settings can be passed to the browser engines.",
+        "operationId": "StartProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/BrowserSettings"
+                  }
+                ],
+                "description": "Extra settings and preferences that can be applied to the browser at startup."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment Required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Profile already running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}/stop": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Stop a running profile by gracefully shutting down its browser engine and releasing allocated resources. Use this endpoint to transition\r\nthe profile from 'running' to 'terminated' state.",
+        "operationId": "StopProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Profile is not running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}/export": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Export a profile to a .kameleo file by providing the target file path in the request body. Use this to back up all profile attributes —\r\nincluding settings, browsing data, cookies, history, bookmarks, and extensions — for later restoration or migration.",
+        "operationId": "ExportProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ExportProfileRequest"
+                  }
+                ],
+                "description": "Defines the target location for profile export."
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Cannot export profile if currently running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}/duplicate": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Duplicate an existing profile by creating an exact copy with a new unique identifier. Use this endpoint to clone a profile while preserving\r\nall its configuration details and data.",
+        "operationId": "DuplicateProfile",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Cannot save profile because currently running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/import": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Imports a profile from a .kameleo file, effectively recreating the profile with all its attributes, including settings, browsing data,\r\ncookies, history, bookmarks, and any installed extensions/addons. If the profile is already loaded, the import process will fail.",
+        "operationId": "ImportProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ImportProfileRequest"
+                  }
+                ],
+                "description": "Specifies the source location for profile import."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}/upgrade": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Upgrades the profile's fingerprint to the most recent browser version available from the server.\r\nThis also updates the profile's corresponding kernel if there's a better match available for the new fingerprint.\r\nThe new fingerprint is tailored to the profile's current device, browser and operating system. Note that upgrading a profile's kernel will alter its browser fingerprint.",
+        "operationId": "UpgradeProfileKernel",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No new browser version is available for this profile."
+          },
+          "409": {
+            "description": "Cannot upgrade profile because it is running."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddProfileToFolderRequest": {
+        "required": ["profileId"],
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "description": "Unique identifier of the profile.",
+            "format": "uuid",
+            "example": "0036135c-6f62-429b-a9db-fd541aca96a7"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AudioSpoofingType": {
+        "enum": ["off", "noise", "block"],
+        "type": "string",
+        "description": "Specifies how the audio will be spoofed. Possible values:\r\n'noise': Add some noise to the Audio generation\r\n'block': Completely block the Audio API\r\n'off': Turn off the spoofing, use the original settings"
+      },
+      "Browser": {
+        "required": ["major", "product", "version"],
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": "string",
+            "description": "Product of the browser. Possible values are 'chrome', 'firefox', 'edge', 'safari'.",
+            "example": "chrome"
+          },
+          "major": {
+            "type": "integer",
+            "description": "Major version of the browser.",
+            "format": "int32",
+            "example": 81
+          },
+          "version": {
+            "type": "string",
+            "description": "Exact version of the browser.",
+            "example": "81.0.4044"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BrowserCookie": {
+        "required": ["domain", "hostOnly", "httpOnly", "name", "path", "sameSite", "secure", "value"],
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain attribute signifies the domain for which the cookie is valid and can be submitted with every request for this domain or its\r\nsubdomains. If this attribute is not specified, then the hostname of the originating server is used as the default value.",
+            "example": ".google.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the Cookie.",
+            "example": "_ga"
+          },
+          "path": {
+            "type": "string",
+            "description": "The path attribute indicates a URL path that must exist in the requested URL in order to send the Cookie header. The %x2F (\"/\") character\r\nis considered a directory separator, and subdirectories match as well.",
+            "example": "/gmail/about"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the Cookie.",
+            "example": "GA1.2-3.982544754.9825342343"
+          },
+          "hostOnly": {
+            "type": "boolean",
+            "description": "Host Only cookie means that the cookie should be handled by the browser to the server only to the same host/server that firstly sent it to\r\nthe browser.",
+            "example": false
+          },
+          "httpOnly": {
+            "type": "boolean",
+            "description": "When this attribute is set, client-side scripts are not allowed to access the cookie.",
+            "example": true
+          },
+          "secure": {
+            "type": "boolean",
+            "description": "A cookie with the Secure attribute is sent to the server only with an encrypted request over the HTTPS protocol, never with unsecured HTTP,\r\nand therefore can't easily be accessed by a man-in-the-middle attacker. Insecure sites (with http: in the URL) can't set cookies with the\r\nSecure attribute.",
+            "example": true
+          },
+          "sameSite": {
+            "type": "string",
+            "description": "The sameSite attribute lets servers require that a cookie shouldn't be sent with cross-origin requests (where Site is defined by the\r\nregistrable domain), which provides some protection against cross-site request forgery attacks (CSRF).\r\nIt takes three possible values: Strict, Lax, and None.With Strict, the cookie is sent only to the same site as the one that originated it;\r\nLax is similar, with an exception for when the user navigates to a URL from an external site, such as by following a link; None has no\r\nrestrictions on cross-site requests.",
+            "example": "unspecified"
+          },
+          "expirationDate": {
+            "type": "integer",
+            "description": "This unix timestamp formatted attribute is used to set persistent cookies. It signifies how long the browser should use the persistent\r\ncookie and when the cookie should be deleted.\r\nIf this attribute is not specified, then the lifetime of the cookie is the same as that of browser session, i.e.it will be a non-persistent\r\ncookie.",
+            "format": "int64",
+            "nullable": true,
+            "example": 1568986993
+          },
+          "session": {
+            "type": "boolean",
+            "description": "Session cookies are deleted when the current session ends. The browser defines when the \"current session\" ends, and some browsers use\r\nsession restoring when restarting, which can cause session cookies to last indefinitely long.",
+            "example": false
+          },
+          "storeId": {
+            "type": "string",
+            "description": "The ID of the cookie store containing this cookie.",
+            "nullable": true,
+            "example": "0"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Representation of a cookie."
+      },
+      "BrowserSettings": {
+        "type": "object",
+        "properties": {
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Command line arguments that can be passed to the browser at startup. This applies to both Chroma and Junglefox browsers. Do not include the\r\nstarting double dash (--).",
+            "nullable": true,
+            "example": ["disable-notifications"]
+          },
+          "preferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Preference"
+            },
+            "description": "List of preferences for browsers that can be passed at startup. In case of Chromium based options it will be a user profile preference. In\r\ncase of Firefox profiles it will be a preference.",
+            "nullable": true,
+            "example": [
+              {
+                "key": "signin.allowed_on_next_startup",
+                "value": false
+              }
+            ]
+          },
+          "additionalOptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Preference"
+            },
+            "description": "Special options available only in Kameleo, such as device scale factor for mobile emulated profiles. See the docs for more details.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Extra settings and preferences that can be applied to the browser at startup."
+      },
+      "CanvasSpoofingType": {
+        "enum": ["intelligent", "noise", "block", "off"],
+        "type": "string",
+        "description": "Specifies how the canvas will be spoofed. Possible values:\r\n'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.\r\n'noise': Add some noise to canvas generation.\r\n'block': Completely block the 2D API.\r\n'off': Turn off the spoofing, use the original settings."
+      },
+      "CookieRequest": {
+        "required": ["domain", "name", "path", "value"],
+        "type": "object",
+        "properties": {
+          "domain": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The domain attribute signifies the domain for which the cookie is valid and can be submitted with every request for this domain or its\r\nsubdomains. If this attribute is not specified, then the hostname of the originating server is used as the default value.",
+            "example": ".google.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name for the Cookie.",
+            "example": "_ga"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The path attribute indicates a URL path that must exist in the requested URL in order to send the Cookie header. The %x2F (\"/\") character\r\nis considered a directory separator, and subdirectories match as well.",
+            "example": "/gmail/about"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the Cookie.",
+            "example": "GA1.2-3.982544754.9825342343"
+          },
+          "hostOnly": {
+            "type": "boolean",
+            "description": "Host Only cookie means that the cookie should be handled by the browser to the server only to the same host/server that firstly sent it to\r\nthe browser.",
+            "example": false
+          },
+          "httpOnly": {
+            "type": "boolean",
+            "description": "When this attribute is set, client-side scripts are not allowed to access the cookie.",
+            "example": true
+          },
+          "secure": {
+            "type": "boolean",
+            "description": "A cookie with the Secure attribute is sent to the server only with an encrypted request over the HTTPS protocol, never with unsecured HTTP,\r\nand therefore can't easily be accessed by a man-in-the-middle attacker. Insecure sites (with http: in the URL) can't set cookies with the\r\nSecure attribute.",
+            "example": true
+          },
+          "sameSite": {
+            "type": "string",
+            "description": "The sameSite attribute lets servers require that a cookie shouldn't be sent with cross-origin requests (where Site is defined by the\r\nregistrable domain), which provides some protection against cross-site request forgery attacks (CSRF).\r\nIt takes three possible values: Strict, Lax, and None.With Strict, the cookie is sent only to the same site as the one that originated it;\r\nLax is similar, with an exception for when the user navigates to a URL from an external site, such as by following a link; None has no\r\nrestrictions on cross-site requests.",
+            "nullable": true,
+            "example": "unspecified"
+          },
+          "expirationDate": {
+            "type": "integer",
+            "description": "This attribute is used to set persistent cookies. It signifies how long the browser should use the persistent cookie and when the cookie\r\nshould be deleted.\r\nIf this attribute is not specified, then the lifetime of the cookie is the same as that of browser session, i.e.it will be a non-persistent\r\ncookie.",
+            "format": "int64",
+            "nullable": true,
+            "example": 1568986993
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateFolderRequest": {
+        "required": ["name"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "Human readable name of the new folder.",
+            "example": "My first folder"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateProfileRequest": {
+        "required": ["fingerprintId"],
+        "type": "object",
+        "properties": {
+          "fingerprintId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The unique identifier of the fingerprint. This references the fingerprint which should be used to build the new profile.",
+            "example": "555b894595b5cd242ead1533218a5ee93dd7c7ebfbff4dccb80fdb112f6cda27"
+          },
+          "name": {
+            "type": "string",
+            "description": "Sets a human-readable name for the profile, which is modifiable at any time.",
+            "nullable": true
+          },
+          "folderId": {
+            "type": "string",
+            "description": "Id of the folder the profile should be created in. If null or empty (00000000-0000-0000-0000-000000000000) the profile will be created in root.",
+            "format": "uuid",
+            "nullable": true,
+            "example": "0036135c-6f62-429b-a9db-fd541aca96a7"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Use tags to categorize profiles by labeling them accordingly.",
+            "nullable": true,
+            "example": ["facebook", "instagram"]
+          },
+          "canvas": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CanvasSpoofingType"
+              }
+            ],
+            "description": "Specifies how the canvas will be spoofed. Possible values:\r\n'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.\r\n'noise': Add some noise to canvas generation.\r\n'block': Completely block the 2D API.\r\n'off': Turn off the spoofing, use the original settings."
+          },
+          "webgl": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglSpoofingType"
+              }
+            ],
+            "description": "Specifies how the WebGL will be spoofed. Possible values:\r\n'noise': Add some noise to the WebGL generation\r\n'block': Completely block the 3D API\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "webglMeta": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglMetaChoice"
+              }
+            ],
+            "description": "Sets how the WebGL Vendor and Renderer will be spoofed. Values can be 'automatic', 'manual', 'off'.",
+            "nullable": true
+          },
+          "audio": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AudioSpoofingType"
+              }
+            ],
+            "description": "Specifies how the audio will be spoofed. Possible values:\r\n'noise': Add some noise to the Audio generation\r\n'block': Completely block the Audio API\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "timezone": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimezoneChoice"
+              }
+            ],
+            "description": "Sets how the Timezone will be spoofed. Values can be 'automatic', 'manual', 'off'.",
+            "nullable": true
+          },
+          "geolocation": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GeolocationChoice"
+              }
+            ],
+            "description": "Sets how the Geolocation will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.",
+            "nullable": true
+          },
+          "proxy": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyChoice"
+              }
+            ],
+            "description": "Sets the Proxy connection settings of the profile. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server must\r\nbe provided.",
+            "nullable": true
+          },
+          "webRtc": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebRtcChoice"
+              }
+            ],
+            "description": "Sets how the WebRTC will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.",
+            "nullable": true
+          },
+          "fonts": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FontSpoofingType"
+              }
+            ],
+            "description": "Specifies how the fonts will be spoofed. Possible values:\r\n'automatic': Spoof fonts based on the browser fingerpint.\r\n'off': Don't spoof fonts, use the real fonts of your machine."
+          },
+          "screen": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScreenChoice"
+              }
+            ],
+            "description": "Sets how the Screen will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a ScreenSize must be\r\nprovided.",
+            "nullable": true
+          },
+          "hardwareConcurrency": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HardwareConcurrencyChoice"
+              }
+            ],
+            "description": "Sets how the Hardware Concurrency will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a numeric value\r\n(1, 2, 4, 8, 12 or 16) must be provided.",
+            "nullable": true
+          },
+          "deviceMemory": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceMemoryChoice"
+              }
+            ],
+            "description": "Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a numeric value (0.25,\r\n0.5, 1, 2, 4, 8) must be provided.",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
+            "nullable": true,
+            "example": "en-US"
+          },
+          "startPage": {
+            "type": "string",
+            "description": "This website will be opened in the browser when the profile launches.",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://whoer.net/"
+          },
+          "passwordManager": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PasswordManagerType"
+              }
+            ],
+            "description": "Defines whether the browser can save login credentials. Possible values are:\r\n'enabled': Credential saving is allowed.\r\n'disabled': Credential saving is blocked.",
+            "example": "enabled"
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of abolute paths from where the profile should load extensions or addons when starting the browser. For chrome and edge use CRX3\r\nformat extensions. For firefox use signed xpi format addons.",
+            "nullable": true,
+            "example": ["C:\\Users\\Windows 10\\Kameleo Extensions\\necessary-extension.crx"]
+          },
+          "notes": {
+            "type": "string",
+            "description": "A free text including any notes written by the user.",
+            "nullable": true,
+            "example": "I used this profile for affiliate marketing."
+          },
+          "storage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProfileStorageLocation"
+              }
+            ],
+            "description": "Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile\r\nwill be migrated.",
+            "example": "local"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeleteFolderResponse": {
+        "required": ["deletedFolders", "deletedProfiles", "movedProfiles"],
+        "type": "object",
+        "properties": {
+          "deletedFolders": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Ids of the deleted folders."
+          },
+          "deletedProfiles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Ids of the deleted profiles."
+          },
+          "movedProfiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfilePreview"
+            },
+            "description": "Ids of the profiles moved to top-level."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Device": {
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of the device. Possible values are: 'desktop', 'mobile'.",
+            "example": "desktop"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the device. This is only available for mobile profiles.",
+            "nullable": true,
+            "example": "Samsung SM-A705FN"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceMemoryChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceMemorySpoofingType"
+              }
+            ],
+            "description": "Specifies how the deviceMemory will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.\r\n'off': Turn off the spoofing, use the original settings."
+          },
+          "extra": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceMemorySpoofingType": {
+        "enum": ["automatic", "manual", "off"],
+        "type": "string",
+        "description": "Specifies how the deviceMemory will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.\r\n'off': Turn off the spoofing, use the original settings."
+      },
+      "ExportProfileRequest": {
+        "required": ["path"],
+        "type": "object",
+        "properties": {
+          "path": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Specifies the file path for exporting the profile.",
+            "example": "C:\\Users\\Windows 10\\Kameleo Profiles\\profile1.kameleo"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Defines the target location for profile export."
+      },
+      "Fingerprint": {
+        "required": ["browser", "device", "fonts", "id", "os", "resolution", "userAgent", "version", "webglMeta"],
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "The version of the fingerprint. As time passes new fingerprint versions will be introduced. It is recommended to use the latest one."
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the fingerprint. You can use this as a reference to create a new profile from this fingerprint.",
+            "example": "555b894595b5cd242ead1533218a5ee93dd7c7ebfbff4dccb80fdb112f6cda27"
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "The user agent of the browser fingerprint.",
+            "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+          },
+          "device": {
+            "required": ["type"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Device"
+              }
+            ],
+            "description": "Information about the device of the fingerprint."
+          },
+          "os": {
+            "required": ["family", "version", "platform"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Os"
+              }
+            ],
+            "description": "Information about the OS of the fingerprint."
+          },
+          "browser": {
+            "required": ["product", "major", "version"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Browser"
+              }
+            ],
+            "description": "Information about the browser of the fingerprint."
+          },
+          "webglMeta": {
+            "required": ["vendor"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglMeta"
+              }
+            ],
+            "description": "The GPU details extracted from WebGL parameters."
+          },
+          "resolution": {
+            "type": "string",
+            "description": "The screen size of the device in pixels.",
+            "example": "1920x1080"
+          },
+          "fonts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of font types included in the profile.",
+            "example": ["Arial", "Tahoma"]
+          }
+        },
+        "additionalProperties": false,
+        "description": "Provides a full view of a fingerprint, which encapsulates real-world browser fingerprint configurations used to\r\ninstantiate virtual browser profiles."
+      },
+      "FingerprintPreview": {
+        "required": ["browser", "device", "fontsCount", "id", "os", "userAgent", "webglMeta"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the fingerprint. You can use this as a reference to create a new profile from this fingerprint.",
+            "example": "BPID1CC227DG69B5M56E5DE4TW8P48B47NB8BB5967XEA501UZXP019FZGOX4A61"
+          },
+          "device": {
+            "required": ["type"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Device"
+              }
+            ],
+            "description": "Information about the device of the fingerprint."
+          },
+          "os": {
+            "required": ["family", "version", "platform"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Os"
+              }
+            ],
+            "description": "Information about the OS of the fingerprint."
+          },
+          "browser": {
+            "required": ["product", "major", "version"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Browser"
+              }
+            ],
+            "description": "Information about the browser of the fingerprint."
+          },
+          "webglMeta": {
+            "required": ["vendor"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglMeta"
+              }
+            ],
+            "description": "The GPU details of the fingerprint extracted from WebGL parameters."
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "The user agent of the fingerprint."
+          },
+          "fontsCount": {
+            "type": "integer",
+            "description": "The number of fonts in the fingerprint.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Provides a summarized view of a fingerprint, which encapsulates real-world browser fingerprint configurations used to\r\ninstantiate virtual browser profiles. This preview aids in selecting the appropriate fingerprint from hundreds of thousands available."
+      },
+      "FolderResponse": {
+        "required": ["createdAt", "createdBy", "id", "lastModifiedAt", "lastModifiedBy", "name", "profiles", "shareAccesses"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier of the folder.",
+            "format": "uuid",
+            "example": "a7cafbbe-6bc0-4575-8c6e-f1adf391f180"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the folder.",
+            "example": "mystic-turtle"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "description": "Timestamp of the last modification.",
+            "format": "date-time",
+            "example": "2020-05-02T03:10:32.2452701+10:00"
+          },
+          "lastModifiedBy": {
+            "type": "string",
+            "description": "Name of the user who last modified the folder.",
+            "example": "Demo user"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Timestamp of the creation.",
+            "format": "date-time",
+            "example": "2020-05-02T03:10:32.2452701+10:00"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "Name of the user who created the folder.",
+            "example": "Demo user"
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfilePreview"
+            },
+            "description": "List of profiles in the current folder."
+          },
+          "shareAccesses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShareAccess"
+            },
+            "description": "List of users accessing this folder."
+          }
+        },
+        "additionalProperties": false
+      },
+      "FontSpoofingType": {
+        "enum": ["automatic", "off"],
+        "type": "string",
+        "description": "Specifies how the fonts will be spoofed. Possible values:\r\n'automatic': Spoof fonts based on the browser fingerpint.\r\n'off': Don't spoof fonts, use the real fonts of your machine."
+      },
+      "GeolocationChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GeolocationSpoofingType"
+              }
+            ],
+            "description": "Specifies how the geolocation will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the IP address\r\n'manual': Manually set the longitude and latitude in the profile\r\n'block': Completely block the Geolocation API\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "extra": {
+            "required": ["latitude", "longitude"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GeolocationSpoofingOptions"
+              }
+            ],
+            "description": "When the Geolocation spoofing is set to manual these extra settings will be used as well.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GeolocationSpoofingOptions": {
+        "required": ["latitude", "longitude"],
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "From -90 to 90",
+            "format": "float",
+            "example": 59.43984
+          },
+          "longitude": {
+            "type": "number",
+            "description": "From -180 to 180",
+            "format": "float",
+            "example": 24.75815
+          }
+        },
+        "additionalProperties": false,
+        "description": "When the Geolocation spoofing is set to manual these extra settings will be used as well."
+      },
+      "GeolocationSpoofingType": {
+        "enum": ["automatic", "manual", "block", "off"],
+        "type": "string",
+        "description": "Specifies how the geolocation will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the IP address\r\n'manual': Manually set the longitude and latitude in the profile\r\n'block': Completely block the Geolocation API\r\n'off': Turn off the spoofing, use the original settings"
+      },
+      "GroupRole": {
+        "required": ["description", "id", "name"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the role.",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the role."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the role."
+          }
+        },
+        "additionalProperties": false
+      },
+      "HardwareConcurrencyChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HardwareConcurrencySpoofingType"
+              }
+            ],
+            "description": "Specifies how the hardwareConcurrency will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 1, 2, 4, 8, 12, 16.\r\n'off': Turn off the spoofing, use the original settings."
+          },
+          "extra": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HardwareConcurrencySpoofingType": {
+        "enum": ["automatic", "manual", "off"],
+        "type": "string",
+        "description": "Specifies how the hardwareConcurrency will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 1, 2, 4, 8, 12, 16.\r\n'off': Turn off the spoofing, use the original settings."
+      },
+      "ImportProfileRequest": {
+        "required": ["path"],
+        "type": "object",
+        "properties": {
+          "path": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The file path from which the profile will be imported.",
+            "example": "C:\\Users\\Windows 10\\Kameleo Profiles\\profile1.kameleo"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Specifies the source location for profile import."
+      },
+      "KernelResponse": {
+        "required": ["browser", "builtAt", "downloadSize", "id", "isInUse", "isInstalled", "isMarkedForRemoval", "platform", "version"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the kernel.",
+            "format": "uuid"
+          },
+          "platform": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The operating system this kernel supports (e.g: win-x64, osx-arm64)."
+          },
+          "browser": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The browser this kernel contains (e.g: chroma, junglefox)."
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the browser."
+          },
+          "builtAt": {
+            "type": "string",
+            "description": "Build timestamp of the kernel.",
+            "format": "date-time"
+          },
+          "downloadSize": {
+            "type": "integer",
+            "description": "Size of the download package in bytes.",
+            "format": "int64"
+          },
+          "diskSize": {
+            "type": "integer",
+            "description": "Size of the extracted package on the local file system in bytes or null if the kernel is not installed.",
+            "format": "int64",
+            "nullable": true
+          },
+          "isInstalled": {
+            "type": "boolean",
+            "description": "Flag indicating if the kernel is locally available (true) or it has to be installed before usage (false)."
+          },
+          "isInUse": {
+            "type": "boolean",
+            "description": "Flag indicating if the kernel is currently in use."
+          },
+          "isMarkedForRemoval": {
+            "type": "boolean",
+            "description": "Flag indicating that the kernel will be removed from the local file system when it is not in use."
+          }
+        },
+        "additionalProperties": false
+      },
+      "ListFoldersResponse": {
+        "required": ["folders", "profiles"],
+        "type": "object",
+        "properties": {
+          "folders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolderResponse"
+            },
+            "description": "List of top-level folders, each folder may contain nested folders and cloud profiles."
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfilePreview"
+            },
+            "description": "List of profiles not associated with any folder. This includes both cloud and local profiles."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Os": {
+        "required": ["family", "platform", "version"],
+        "type": "object",
+        "properties": {
+          "family": {
+            "type": "string",
+            "description": "Specifies the operating system family. Possible values are 'windows', 'macos', 'linux', 'android', 'ios'.",
+            "example": "windows"
+          },
+          "version": {
+            "type": "string",
+            "description": "The specific version of the OS. For example it helps you determine the exact version of the macOS.",
+            "example": "10.15.4"
+          },
+          "platform": {
+            "type": "string",
+            "description": "The OS's platform, indicating the processor architecture (e.g., 64-bit, 32-bit)",
+            "example": "64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PasswordManagerType": {
+        "enum": ["enabled", "disabled"],
+        "type": "string",
+        "description": "Defines whether the browser can save login credentials. Possible values are:\r\n'enabled': Credential saving is allowed.\r\n'disabled': Credential saving is blocked."
+      },
+      "Preference": {
+        "required": ["key", "value"],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Key of the preference",
+            "example": "profile.managed_default_content_settings.images"
+          },
+          "value": {
+            "description": "Value of the preference. It can a string or a boolean or an integer",
+            "example": 2
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a Key-Value pair where Value can be a string or a boolean or an integer"
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "ProblemResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "error": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProfileLifetimeState": {
+        "enum": ["created", "starting", "running", "terminating", "terminated", "locked", "loading", "unknown"],
+        "type": "string",
+        "description": "Represents the lifetime states of a profile, indicating which actions\r\ncan be performed with the associated browser engine at each state. Possible values are:\r\n- Created: Profile is created; the associated browser engine is not started.\r\n- Starting: The associated browser engine is starting.\r\n- Running: The associated browser engine is currently running.\r\n- Terminating: The associated browser engine is in the process of terminating.\r\n- Terminated: The associated browser engine is not running but has been started at least once.\r\n- Locked: The profile is currently being used by another user.\r\n- Loading: The profile data or the browser engine is syncing with the cloud storage.\r\n- Unknown: State of the profile is undefined."
+      },
+      "ProfileMinutesQuota": {
+        "type": "object",
+        "properties": {
+          "currentUsage": {
+            "type": "string",
+            "format": "date-span"
+          },
+          "maximumLimit": {
+            "type": "string",
+            "format": "date-span",
+            "nullable": true
+          },
+          "nextResetAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProfilePreview": {
+        "required": ["browser", "createdAt", "device", "id", "language", "name", "os", "proxy", "status", "tags"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier of the profile",
+            "format": "uuid",
+            "example": "a7cafbbe-6bc0-4575-8c6e-f1adf391f180"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the profile",
+            "example": "mystic-turtle"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Profile tags",
+            "example": ["facebook", "instagram"]
+          },
+          "proxy": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyChoice"
+              }
+            ],
+            "description": "Proxy connection settings of the profiles. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server is provided."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date when the profile was created.",
+            "format": "date-time",
+            "example": "2020-05-02T03:10:32.2452701+10:00"
+          },
+          "device": {
+            "required": ["type"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Device"
+              }
+            ],
+            "description": "Device information about the profile. This is derived from the fingerprint."
+          },
+          "os": {
+            "required": ["family", "version", "platform"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Os"
+              }
+            ],
+            "description": "Information about the OS of the profile. This is derived from the fingerprint."
+          },
+          "browser": {
+            "required": ["product", "major", "version"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Browser"
+              }
+            ],
+            "description": "Information about the browser of the profile. This is derived from the fingerprint."
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
+            "example": "en-US"
+          },
+          "status": {
+            "required": ["lifetimeState"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatusResponse"
+              }
+            ],
+            "description": "Status information about the profile."
+          },
+          "storage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProfileStorageLocation"
+              }
+            ],
+            "description": "Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile\r\nwill be migrated.",
+            "example": "local"
+          },
+          "folderId": {
+            "type": "string",
+            "description": "A unique identifier of the containing folder, or empty (00000000-0000-0000-0000-000000000000) if not in a folder.\r\nThis will always be empty for locally stored profiles, as only cloud profiles can be added to folders.",
+            "format": "uuid",
+            "nullable": true,
+            "example": "c7aafbbe-b6c0-5475-c66e-1fadf39180f1"
+          }
+        },
+        "additionalProperties": false,
+        "description": "A preview about the profile with some of its properties."
+      },
+      "ProfileResponse": {
+        "required": [
+          "audio",
+          "canvas",
+          "createdAt",
+          "deviceMemory",
+          "extensions",
+          "fingerprint",
+          "fonts",
+          "geolocation",
+          "hardwareConcurrency",
+          "id",
+          "language",
+          "name",
+          "notes",
+          "passwordManager",
+          "proxy",
+          "screen",
+          "startPage",
+          "status",
+          "tags",
+          "timezone",
+          "webRtc",
+          "webgl",
+          "webglMeta"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "A unique identifier of the profile",
+            "format": "uuid",
+            "example": "a7cafbbe-6bc0-4575-8c6e-f1adf391f180"
+          },
+          "name": {
+            "type": "string",
+            "description": "Profile name property. The value obtained by file name for existing profiles. For new profiles the value is generated by a random name\r\ngenerator.",
+            "example": "mystic-turtle"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Profile tags",
+            "example": ["facebook", "instagram"]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date when the profile was created.",
+            "format": "date-time",
+            "example": "2020-05-02T03:10:32.2452701+10:00"
+          },
+          "fingerprint": {
+            "required": ["version", "id", "userAgent", "device", "os", "browser", "webglMeta", "resolution", "fonts"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Fingerprint"
+              }
+            ],
+            "description": "Provides a full view of a fingerprint, which encapsulates real-world browser fingerprint configurations used to\r\ninstantiate virtual browser profiles."
+          },
+          "canvas": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CanvasSpoofingType"
+              }
+            ],
+            "description": "Specifies how the canvas will be spoofed. Possible values:\r\n'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.\r\n'noise': Add some noise to canvas generation.\r\n'block': Completely block the 2D API.\r\n'off': Turn off the spoofing, use the original settings."
+          },
+          "webgl": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglSpoofingType"
+              }
+            ],
+            "description": "Specifies how the WebGL will be spoofed. Possible values:\r\n'noise': Add some noise to the WebGL generation\r\n'block': Completely block the 3D API\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "webglMeta": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglMetaChoice"
+              }
+            ],
+            "description": "Sets how the WebGL Vendor and Renderer will be spoofed. Possible values:\r\n'automatic': The vendor and renderer values comes from the fingerprint.\r\n'manual': Manually set the vendor and renderer values.\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "audio": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AudioSpoofingType"
+              }
+            ],
+            "description": "Specifies how the audio will be spoofed. Possible values:\r\n'noise': Add some noise to the Audio generation\r\n'block': Completely block the Audio API\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "timezone": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimezoneChoice"
+              }
+            ],
+            "description": "Sets how the Timezone will be spoofed. Values can be 'automatic', 'manual', 'off'."
+          },
+          "geolocation": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GeolocationChoice"
+              }
+            ],
+            "description": "Sets how the Geolocation will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'."
+          },
+          "proxy": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyChoice"
+              }
+            ],
+            "description": "Proxy connection settings of the profiles. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server is provided."
+          },
+          "webRtc": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebRtcChoice"
+              }
+            ],
+            "description": "Sets how the WebRTC will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'."
+          },
+          "fonts": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FontSpoofingType"
+              }
+            ],
+            "description": "Specifies how the fonts will be spoofed. Possible values:\r\n'automatic': Spoof fonts based on the browser fingerpint.\r\n'off': Don't spoof fonts, use the real fonts of your machine."
+          },
+          "screen": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScreenChoice"
+              }
+            ],
+            "description": "Sets how the Screen will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a ScreenSize must be provided"
+          },
+          "hardwareConcurrency": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HardwareConcurrencyChoice"
+              }
+            ],
+            "description": "Sets how the Hardware Concurrency will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a\r\nHardwareConcurrencyType must be provided (valid values:1, 2, 4, 8, 12, 16)"
+          },
+          "deviceMemory": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceMemoryChoice"
+              }
+            ],
+            "description": "Sets the level of device memory spoofing. Values can be 'automatic', 'manual', 'off'.\r\nWhen value is set to manual, a specific amount of device memory must be provided (valid values: 0.25, 0.5, 1, 2, 4, 8)",
+            "example": {
+              "value": "automatic"
+            }
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
+            "example": "en-US"
+          },
+          "startPage": {
+            "type": "string",
+            "description": "This website will be opened in the browser when the profile launches.",
+            "example": "https://whoer.net/"
+          },
+          "passwordManager": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PasswordManagerType"
+              }
+            ],
+            "description": "Defines whether the browser can save login credentials. Possible values are:\r\n'enabled': Credential saving is allowed.\r\n'disabled': Credential saving is blocked.",
+            "example": "enabled"
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of extensions or addons that will be loaded to the profile when the profile is started. For chrome and edge use CRX3 format\r\nextensions. For firefox use signed xpi format addons.",
+            "example": ["C:\\Users\\Windows 10\\Kameleo Extensions\\necessary-extension.crx"]
+          },
+          "notes": {
+            "type": "string",
+            "description": "A free text including any notes written by the user.",
+            "example": "I used this profile for ad verification."
+          },
+          "status": {
+            "required": ["lifetimeState"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatusResponse"
+              }
+            ],
+            "description": "Status information about the profile."
+          },
+          "storage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProfileStorageLocation"
+              }
+            ],
+            "description": "Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile\r\nwill be migrated.",
+            "example": "local"
+          },
+          "folderId": {
+            "type": "string",
+            "description": "A unique identifier of the containing folder or empty (00000000-0000-0000-0000-000000000000) if it is not in folder.",
+            "format": "uuid",
+            "nullable": true,
+            "example": "c7aafbbe-b6c0-5475-c66e-1fadf39180f1"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProfileStorageLocation": {
+        "enum": ["local", "cloud"],
+        "type": "string"
+      },
+      "ProxyChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyConnectionType"
+              }
+            ],
+            "description": "Proxy connection settings of the profiles. Possible values:\r\n'none': Direct connection without any proxy.\r\n'http': Use a HTTP proxy for upstream communication.\r\n'socks5': Use a SOCKS5 proxy for upstream communication.\r\n'ssh': Use an SSH connection for upstream communication. Basically a SOCKS5 proxy created at the given SSH host."
+          },
+          "extra": {
+            "required": ["host", "port"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Server"
+              }
+            ],
+            "description": "Represents a server connection. It can be used as a proxy server connection as well.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProxyConnectionType": {
+        "enum": ["none", "http", "socks5", "ssh"],
+        "type": "string",
+        "description": "Proxy connection settings of the profiles. Possible values:\r\n'none': Direct connection without any proxy.\r\n'http': Use a HTTP proxy for upstream communication.\r\n'socks5': Use a SOCKS5 proxy for upstream communication.\r\n'ssh': Use an SSH connection for upstream communication. Basically a SOCKS5 proxy created at the given SSH host."
+      },
+      "QuotaStatistics": {
+        "required": ["currentUsage", "maximumLimit"],
+        "type": "object",
+        "properties": {
+          "currentUsage": {
+            "type": "integer",
+            "description": "Indicates the current usage, always a non-negative value.",
+            "format": "int32",
+            "readOnly": true
+          },
+          "maximumLimit": {
+            "type": "integer",
+            "description": "Indicates the maximum permitted value, with -1 implying no limit.",
+            "format": "int32",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RunningProfilesStatistics": {
+        "type": "object",
+        "properties": {
+          "automated": {
+            "required": ["currentUsage", "maximumLimit"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuotaStatistics"
+              }
+            ],
+            "description": "Quota usage of the profiles that are running with an automation framework.",
+            "nullable": true
+          },
+          "manual": {
+            "required": ["currentUsage", "maximumLimit"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuotaStatistics"
+              }
+            ],
+            "description": "Quota usage of the profiles that are running manually (were started from GUI or API).",
+            "nullable": true
+          },
+          "total": {
+            "required": ["currentUsage", "maximumLimit"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuotaStatistics"
+              }
+            ],
+            "description": "Quota usage of the profiles that are running either manually or with an automation framework.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ScreenChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScreenSpoofingType"
+              }
+            ],
+            "description": "Specifies how the screen will be spoofed. Possible values:\r\n'automatic': Automatically override the screen resolution based on the fingerprint.\r\n'manual': Manually override the screen resolution.\r\n'off': Turn off the spoofing, use the original settings."
+          },
+          "extra": {
+            "type": "string",
+            "description": "The screen size of the device in CSS pixels.\r\nCSS values correspond to bigger physical pixel values when scaled, so provide values accordingly. (Kameleo's default scaling is 1x for desktop and 2x for mobile profiles.)\r\nExamples for 1080p: 1920x1080 (desktop), 412x732 (mobile).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ScreenSpoofingType": {
+        "enum": ["automatic", "manual", "off"],
+        "type": "string",
+        "description": "Specifies how the screen will be spoofed. Possible values:\r\n'automatic': Automatically override the screen resolution based on the fingerprint.\r\n'manual': Manually override the screen resolution.\r\n'off': Turn off the spoofing, use the original settings."
+      },
+      "Server": {
+        "required": ["host", "port"],
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "description": "Gets or sets the hostname where the service is provided from.",
+            "example": "127.0.0.1"
+          },
+          "port": {
+            "type": "integer",
+            "description": "Gets or sets the port where the service is provided from.",
+            "format": "int32",
+            "example": 9951
+          },
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the identity information provided for the service. This could be a custom id or username or anything which identifies a\r\nresource on the remote service. Use it as a proxy username. This field is optional.",
+            "nullable": true,
+            "example": "username"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Gets or sets the shared secret between the client and the service provider. Use it as a proxy password. This field is optional.",
+            "nullable": true,
+            "example": "password"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a server connection. It can be used as a proxy server connection as well."
+      },
+      "ShareAccess": {
+        "required": ["role", "sharedAt", "user"],
+        "type": "object",
+        "properties": {
+          "user": {
+            "required": ["id", "name", "email"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/User"
+              }
+            ],
+            "description": "User accessing this folder."
+          },
+          "role": {
+            "required": ["id", "name", "description"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupRole"
+              }
+            ],
+            "description": "Level of access to the folder."
+          },
+          "sharedAt": {
+            "type": "string",
+            "description": "Timestamp when the acess was granted to the user.",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShareAccessRequest": {
+        "required": ["roleId", "userId"],
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string",
+            "description": "Id of the selected role.",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Id of the selected user.",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShareGroupRequest": {
+        "required": ["shareAccesses"],
+        "type": "object",
+        "properties": {
+          "shareAccesses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShareAccessRequest"
+            },
+            "description": "List of share accesses to the folder."
+          }
+        },
+        "additionalProperties": false
+      },
+      "SharingOptionsResponse": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            },
+            "description": "List of users in your team.",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupRole"
+            },
+            "description": "List of roles you can give the users.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StatusResponse": {
+        "required": ["lifetimeState"],
+        "type": "object",
+        "properties": {
+          "lifetimeState": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProfileLifetimeState"
+              }
+            ],
+            "description": "Represents the lifetime states of a profile, indicating which actions\r\ncan be performed with the associated browser engine at each state. Possible values are:\r\n- Created: Profile is created; the associated browser engine is not started.\r\n- Starting: The associated browser engine is starting.\r\n- Running: The associated browser engine is currently running.\r\n- Terminating: The associated browser engine is in the process of terminating.\r\n- Terminated: The associated browser engine is not running but has been started at least once.\r\n- Locked: The profile is currently being used by another user.\r\n- Loading: The profile data or the browser engine is syncing with the cloud storage.\r\n- Unknown: State of the profile is undefined.",
+            "example": "terminated"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Status information about the profile"
+      },
+      "TimezoneChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimezoneSpoofingType"
+              }
+            ],
+            "description": "Specifies how the timezone will be spoofed. Possble values:\r\n'automatic': Timezone is automatically set by the IP\r\n'manual': Timezone is manually overridden in the profile\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "extra": {
+            "type": "string",
+            "description": "When the Timezone spoofing is set to manual the timezone in Iana format is required. For example: America/Grenada",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimezoneSpoofingType": {
+        "enum": ["automatic", "manual", "off"],
+        "type": "string",
+        "description": "Specifies how the timezone will be spoofed. Possble values:\r\n'automatic': Timezone is automatically set by the IP\r\n'manual': Timezone is manually overridden in the profile\r\n'off': Turn off the spoofing, use the original settings"
+      },
+      "UpdateFolderRequest": {
+        "required": ["name"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "Human readable name of the folder.",
+            "example": "My renamed folder"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Profile name property. The value obtained by file name for existing profiles. For new profiles the value is generated by a random name\r\ngenerator.",
+            "nullable": true
+          },
+          "folderId": {
+            "type": "string",
+            "description": "Id of the folder the profile should be moved to. If null it won't be changed, if empty (00000000-0000-0000-0000-000000000000) it will be moved to root.",
+            "format": "uuid",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Profile tags",
+            "nullable": true,
+            "example": ["facebook", "instagram"]
+          },
+          "canvas": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CanvasSpoofingType"
+              }
+            ],
+            "description": "Sets how the canvas will be spoofed. Values can be 'intelligent', 'noise', 'block', 'off'.",
+            "nullable": true
+          },
+          "webgl": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglSpoofingType"
+              }
+            ],
+            "description": "Sets how the WebGL will be spoofed. Values can be 'noise', 'block', 'off'.",
+            "nullable": true
+          },
+          "webglMeta": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglMetaChoice"
+              }
+            ],
+            "description": "Sets how the WebGL Vendor and Renderer will be spoofed. Possible values:\r\n'automatic': The vendor and renderer values comes from the fingerprint.\r\n'manual': Manually set the vendor and renderer values.\r\n'off': Turn off the spoofing, use the original settings",
+            "nullable": true
+          },
+          "audio": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AudioSpoofingType"
+              }
+            ],
+            "description": "Sets how the Audio will be spoofed. Values can be 'noise', 'block', 'off'.",
+            "nullable": true
+          },
+          "timezone": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimezoneChoice"
+              }
+            ],
+            "description": "Sets how the Timezone will be spoofed. Values can be 'automatic', 'manual', 'off'.",
+            "nullable": true
+          },
+          "geolocation": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GeolocationChoice"
+              }
+            ],
+            "description": "Sets how the Geolocation will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.",
+            "nullable": true
+          },
+          "proxy": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyChoice"
+              }
+            ],
+            "description": "Proxy connection settings of the profiles. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server must be\r\nprovided.",
+            "nullable": true
+          },
+          "webRtc": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebRtcChoice"
+              }
+            ],
+            "description": "Sets how the WebRTC will be spoofed. Values can be 'automatic', 'manual', 'block', 'off'.",
+            "nullable": true
+          },
+          "fonts": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FontSpoofingType"
+              }
+            ],
+            "description": "Sets how the Fonts will be spoofed. Values can be 'enabled', 'disabled'.",
+            "nullable": true
+          },
+          "screen": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScreenChoice"
+              }
+            ],
+            "description": "Sets how the Screen will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a ScreenSize must be provided",
+            "nullable": true
+          },
+          "hardwareConcurrency": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HardwareConcurrencyChoice"
+              }
+            ],
+            "description": "Sets how the Hardware Concurrency will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a\r\nHardwareConcurrencyType must be provided (valid values:1, 2, 4, 8, 12, 16)",
+            "nullable": true
+          },
+          "deviceMemory": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceMemoryChoice"
+              }
+            ],
+            "description": "Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a DeviceMemoryType\r\nmust be provided (valid values: 0.25, 0.5, 1, 2, 4, 8)",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
+            "nullable": true,
+            "example": "en-US"
+          },
+          "startPage": {
+            "type": "string",
+            "description": "This website will be opened in the browser when the profile launches.",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://kameleo.io/"
+          },
+          "passwordManager": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PasswordManagerType"
+              }
+            ],
+            "description": "Indicates whether the browser supports saving login credentials.",
+            "nullable": true,
+            "example": "enabled"
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of extensions or addons should be loaded to the browser when starting the profile. For extensions that are added now, it should be\r\nan absolute path.\r\nFor extensions already added to the profile in a previous update, the name is only enough.\r\nFor chrome and edge use CRX3 format extensions. For firefox use signed xpi format addons.",
+            "nullable": true,
+            "example": ["C:\\Users\\Windows 10\\Kameleo Extensions\\necessary-extension.crx"]
+          },
+          "notes": {
+            "type": "string",
+            "description": "A free text including any notes written by the user.",
+            "nullable": true,
+            "example": "I used this profile for affiliate marketing."
+          },
+          "storage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProfileStorageLocation"
+              }
+            ],
+            "description": "Profile storage property which determines where the profile is stored. The default value is 'local'. When the value is changed the profile\r\nwill be migrated.",
+            "nullable": true,
+            "example": "local"
+          }
+        },
+        "additionalProperties": false
+      },
+      "User": {
+        "required": ["email", "id", "name"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the user.",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "description": "Dispaly name of the user."
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address of the user."
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserInfoResponse": {
+        "required": [
+          "capabilities",
+          "cloudStorage",
+          "displayName",
+          "email",
+          "emailConfirmed",
+          "gracePeriod",
+          "hasTeamSubscription",
+          "lastAppLogin",
+          "localStorage",
+          "plan",
+          "subscriptionEnd",
+          "userId",
+          "workspaceFolder"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "Unique identifier for the user in Guid v4 format.",
+            "format": "uuid",
+            "example": "054c78aa-efef-4a15-a348-cbf1766f8970"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the user, updated on each login.",
+            "example": "user"
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of the user.",
+            "example": "user@email.com"
+          },
+          "emailConfirmed": {
+            "type": "boolean",
+            "description": "Indicates if the user's email address has been verified.",
+            "example": true
+          },
+          "subscriptionEnd": {
+            "type": "string",
+            "description": "The subscription end date for the user. If the user is part of a team, this is the team's subscription end date.",
+            "format": "date-time",
+            "example": "2038-01-19T03:14:07Z"
+          },
+          "plan": {
+            "type": "string",
+            "description": "The subscription plan associated with the user.",
+            "example": "free"
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of features available to the user based on their current subscription or their team's subscription.",
+            "example": ["clone_profile", "cloud", "cookie", "groups", "impex", "local", "mobile", "proxy_test", "start", "upgrade_profile"]
+          },
+          "gracePeriod": {
+            "type": "boolean",
+            "description": "Indicates if the user's subscription is currently in a grace period and requires instant renewal.",
+            "example": true
+          },
+          "lastAppLogin": {
+            "type": "string",
+            "description": "The date and time of the user's last login via the app.",
+            "format": "date-time",
+            "example": "2020-01-01T00:00:00Z"
+          },
+          "workspaceFolder": {
+            "type": "string",
+            "description": "Path to the user's workspace folder where profiles are stored. Modifying these files outside of Kameleo is strictly prohibited.",
+            "example": "C:\\Users\\Tomi\\AppData\\Local\\Programs\\Kameleo\\Workspace\\cb2bdd5e-6777-4d9b-9573-d3209186f686"
+          },
+          "localStorage": {
+            "required": ["currentUsage", "maximumLimit"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuotaStatistics"
+              }
+            ],
+            "description": "Current usage and maximum limit for local profiles."
+          },
+          "cloudStorage": {
+            "required": ["currentUsage", "maximumLimit"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuotaStatistics"
+              }
+            ],
+            "description": "Current usage and maximum limit for cloud profiles."
+          },
+          "hasTeamSubscription": {
+            "type": "boolean",
+            "description": "Indicates if the user has a team subscription. This can also be true if the user does not have any team members yet.",
+            "example": true
+          },
+          "teamId": {
+            "type": "string",
+            "description": "The team ID if the user is part of a team.",
+            "format": "uuid",
+            "nullable": true,
+            "example": "099c78aa-efef-4a15-a348-cbf1766f8000"
+          },
+          "teamRole": {
+            "type": "string",
+            "description": "The user's role within the team, such as 'owner' or 'member'.",
+            "nullable": true,
+            "example": "member"
+          },
+          "runningUserProfiles": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunningProfilesStatistics"
+              }
+            ],
+            "description": "Current usage and maximum limit of running manual and automated profiles for the logged-in user.",
+            "nullable": true
+          },
+          "runningTeamProfiles": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunningProfilesStatistics"
+              }
+            ],
+            "description": "Current usage and maximum limit of running manual and automated profiles across the user's team.",
+            "nullable": true
+          },
+          "runningTenantProfiles": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunningProfilesStatistics"
+              }
+            ],
+            "description": "Current usage and maximum limit of running manual and automated profiles across the tenant.",
+            "nullable": true
+          },
+          "profileMinutes": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProfileMinutesQuota"
+              }
+            ],
+            "description": "Current usage and maximum limit of profile minutes across the tenant.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": {}
+      },
+      "WebRtcChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebRtcSpoofingType"
+              }
+            ],
+            "description": "Specifies how the WebRTC will be spoofed. Possible values:\r\n'automatic': Automatically set the webRTC public IP by the IP\r\n'manual': Manually override the webRTC public IP and private IP in the profile\r\n'block': Block the WebRTC functionality\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "extra": {
+            "required": ["publicIp"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebRtcSpoofingOptions"
+              }
+            ],
+            "description": "When the WebRTC spoofing is set to manual these extra settings will be used as well.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WebRtcSpoofingOptions": {
+        "required": ["publicIp"],
+        "type": "object",
+        "properties": {
+          "publicIp": {
+            "type": "string",
+            "description": "The WebRTC public IP address of the machine.",
+            "example": "193.40.239.9"
+          }
+        },
+        "additionalProperties": false,
+        "description": "When the WebRTC spoofing is set to manual these extra settings will be used as well."
+      },
+      "WebRtcSpoofingType": {
+        "enum": ["automatic", "manual", "block", "off"],
+        "type": "string",
+        "description": "Specifies how the WebRTC will be spoofed. Possible values:\r\n'automatic': Automatically set the webRTC public IP by the IP\r\n'manual': Manually override the webRTC public IP and private IP in the profile\r\n'block': Block the WebRTC functionality\r\n'off': Turn off the spoofing, use the original settings"
+      },
+      "WebglMeta": {
+        "required": ["vendor"],
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string",
+            "description": "The UnmaskedVendor field from WebGL context",
+            "example": "Google Inc. (AMD)"
+          },
+          "renderer": {
+            "type": "string",
+            "description": "The UnmaskedRenderer field from WebGL context",
+            "nullable": true,
+            "example": "ANGLE (AMD, AMD Radeon(TM) RX Vega 11 Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WebglMetaChoice": {
+        "required": ["value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglMetaSpoofingType"
+              }
+            ],
+            "description": "Specifies how the WebGL vendor and renderer will be spoofed. Possible values:\r\n'automatic': The vendor and renderer values comes from the fingerprint.\r\n'manual': Manually configure WebGL metadata. For optimal results, choose a video card model similar to your device's to ensure realistic\r\nprofile masking.\r\n'off': Turn off the spoofing, use the original settings"
+          },
+          "extra": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WebglMetaSpoofingOptions"
+              }
+            ],
+            "description": "When the WebGL Meta spoofing is used, these settings can override the values in the fingerprint.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WebglMetaSpoofingOptions": {
+        "type": "object",
+        "properties": {
+          "vendor": {
+            "type": "string",
+            "description": "Unmasked vendor",
+            "nullable": true,
+            "example": "Google Inc."
+          },
+          "renderer": {
+            "type": "string",
+            "description": "Unmasked renderer",
+            "nullable": true,
+            "example": "ANGLE (Intel(R) HD Graphics 630 Direct3D11 vs_5_0 ps_5_0)"
+          }
+        },
+        "additionalProperties": false,
+        "description": "When the WebGL Meta spoofing is used, these settings can override the values in the fingerprint."
+      },
+      "WebglMetaSpoofingType": {
+        "enum": ["automatic", "manual", "off"],
+        "type": "string",
+        "description": "Specifies how the WebGL vendor and renderer will be spoofed. Possible values:\r\n'automatic': The vendor and renderer values comes from the fingerprint.\r\n'manual': Manually configure WebGL metadata. For optimal results, choose a video card model similar to your device's to ensure realistic\r\nprofile masking.\r\n'off': Turn off the spoofing, use the original settings"
+      },
+      "WebglSpoofingType": {
+        "enum": ["noise", "block", "off"],
+        "type": "string",
+        "description": "Specifies how the WebGL will be spoofed. Possible values:\r\n'noise': Add some noise to the WebGL generation\r\n'block': Completely block the 3D API\r\n'off': Turn off the spoofing, use the original settings"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Cookie"
+    },
+    {
+      "name": "Fingerprint"
+    },
+    {
+      "name": "Folder"
+    },
+    {
+      "name": "General"
+    },
+    {
+      "name": "Kernel"
+    },
+    {
+      "name": "Profile"
+    }
+  ]
+}

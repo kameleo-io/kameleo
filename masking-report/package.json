@@ -1,0 +1,37 @@
+{
+  "name": "masking-audit",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Kameleo Team",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "pretest": "playwright install chromium ffmpeg",
+    "test": "playwright test",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint --max-warnings 0",
+    "lint:fix": "eslint --fix"
+  },
+  "dependencies": {
+    "@kameleo/local-api-client": "4.2.0",
+    "dotenv": "^17.2.3",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@getbrevo/brevo": "^3.0.1",
+    "@octokit/rest": "^22.0.1",
+    "@playwright/test": "^1.57.0",
+    "@types/node": "~22.15.31",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0"
+  }
+}

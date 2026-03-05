@@ -1,0 +1,11 @@
+{
+  "useTabs": false,
+  "printWidth": 140,
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.jsonc",
+      "options": { "trailingComma": "none" }
+    }
+  ]
+}

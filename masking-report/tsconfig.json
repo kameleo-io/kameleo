@@ -1,0 +1,28 @@
+{
+  "include": ["**/*.ts", "**/*.js", "**/*.mjs"],
+  "exclude": ["dist", "playwright-report"],
+  "compilerOptions": {
+    "module": "Node16",
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    "allowJs": true,
+    "checkJs": true,
+    "importHelpers": true,
+    "sourceMap": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "target": "es2024",
+    "lib": ["dom", "ES2024", "ESNext.Array"],
+    // strict includes multiple rules, see: https://www.typescriptlang.org/tsconfig/#strict
+    "strict": true,
+    // other rules
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  }
+}

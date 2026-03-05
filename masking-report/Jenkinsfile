@@ -1,0 +1,57 @@
+def runCommand(String cmd) {
+    isUnix() ? sh(cmd) : powershell(cmd)
+}
+
+def isBranchPrish() {
+    return env.BRANCH_NAME == 'master' ||
+        env.BRANCH_NAME == 'develop' ||
+        env.BRANCH_NAME.matches('release/.*') ||
+        env.BRANCH_NAME.matches('hotfix/.*') ||
+        env.CHANGE_ID != null
+}
+
+pipeline {
+    agent none
+    options {
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Ubuntu') {
+            agent {
+                label "ubuntu"
+            }
+            stages {
+                stage('Init Repository') {
+                    options { timeout(time: 5, unit: 'MINUTES') }
+                    steps {
+                        runCommand 'git clean -fd'
+                        runCommand 'git reset --hard HEAD'
+                        runCommand 'npm ci'
+                    }
+                }
+                stage('Lint & Type-Check') {
+                    options { timeout(time: 10, unit: 'MINUTES') }
+                    steps {
+                        runCommand "npm run lint"
+                        runCommand "npm run type-check"
+                    }
+                }
+                stage('Sync to GitHub') {
+                    /*when {
+                        expression {
+                            return env.BRANCH_NAME == 'master'
+                        }
+                    }*/
+                    options { timeout(time: 10, unit: 'MINUTES') }
+                    steps {
+                        withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                            // TODO: remove flag when agent's Node is updated to 22.18+
+                            runCommand 'node --experimental-strip-types build/publishGitHub.ts'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

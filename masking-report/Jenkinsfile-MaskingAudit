@@ -1,0 +1,93 @@
+String emailOverride = null
+
+def runCommand(String cmd) {
+    isUnix() ? sh(cmd) : powershell(cmd)
+}
+
+pipeline {
+    agent none
+    options { disableConcurrentBuilds() }
+    environment {
+        ARTIFACTORY_REPOSITORY = 'masking-audit'
+    }
+
+    stages {
+        stage('Enter Inputs') {
+            steps {
+                script {
+                    try {
+                        timeout(time: 1, unit: 'MINUTES') {
+                            def inputValue = input(
+                                id: 'userInput',
+                                message: 'Audit email recipient',
+                                parameters: [string(defaultValue: emailOverride, name: 'emailOverride')]
+                            )
+
+                            if (!inputValue?.trim()) {
+                                error('No input provided')
+                            }
+
+                            emailOverride = inputValue
+                        }
+                    } catch(err) {}
+
+                    echo "Audit email recipient override: ${emailOverride}"
+                }
+            }
+        }
+        stage('Matrix') {
+            matrix {
+                axes {
+                    axis {
+                        name 'AGENT'
+                        values 'windows11', 'macos'
+                    }
+                }
+                agent { label AGENT }
+                stages {
+                    stage('Init Repository') {
+                        options { timeout(time: 5, unit: 'MINUTES') }
+                        steps {
+                            runCommand 'git clean -fd'
+                            runCommand 'git reset --hard HEAD'
+                            runCommand 'npm ci'
+                        }
+                    }
+                    stage('Run Masking Audit') {
+                        options { timeout(time: 25, unit: 'MINUTES') }
+                        steps {
+                            withCredentials([
+                                string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
+                                usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
+                                usernamePassword(credentialsId: 'ma-app-login', usernameVariable: 'EMAIL', passwordVariable: 'PASSWORD'),
+                                string(credentialsId: 'ma-proxy-url', variable: 'PROXY_URL'),
+                            ]) {
+                                runCommand 'npm test'
+                            }
+                        }
+                        post {
+                            always {
+                                junit skipPublishingChecks: true, testResults: 'dist/test-result.xml', skipOldReports: false
+                                withCredentials([
+                                    string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
+                                    usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
+                                    string(credentialsId: 'brevo-api-key', variable: 'BREVO_API_KEY'),
+                                    string(credentialsId: 'ma-email-sender', variable: 'AUDIT_EMAIL_SENDER'),
+                                    string(credentialsId: 'ma-email-recipient', variable: 'AUDIT_EMAIL_RECIPIENT'),
+                                ]) {
+                                    script {
+                                        if (emailOverride != null) {
+                                            env.AUDIT_EMAIL_RECIPIENT = emailOverride
+                                        }
+                                        // TODO: remove flag when agent's Node is updated to 22.18+
+                                        runCommand 'node --experimental-strip-types sendEmail.ts'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
