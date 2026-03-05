@@ -1,0 +1,97 @@
+String videoPathsInput = null
+
+def runCommand(String cmd) {
+    isUnix() ? sh(cmd) : powershell(cmd)
+}
+
+pipeline {
+    agent any
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 20, unit: 'MINUTES')
+    }
+    environment {
+        ARTIFACTORY_REPOSITORY = 'masking-audit'
+        GIT_BRANCH = 'master'
+    }
+
+    stages {
+        stage('Get Video Paths') {
+            steps {
+                script {
+                    try {
+                        timeout(time: 10, unit: 'MINUTES') {
+                            def repo = env.ARTIFACTORY_REPOSITORY
+                            def example1 = 'Windows/123/Google-Windows-chrome-passed-2025-11-19T07_35_07.620Z.webm'
+                            def example2 = 'macOS/124/Brotector-macOS-firefox-passed-2025-11-19T08_15_30.456Z.webm'
+                            def desc = "Comma-separated paths relative to repository root (DO NOT include the ${repo}/ prefix). Example: ${example1},${example2}"
+
+                            videoPathsInput = input(
+                                id: 'videoPathsInput',
+                                message: 'Enter Nexus video file paths to publish (comma-separated)',
+                                parameters: [ text(description: desc, name: 'VIDEO_PATHS') ]
+                            )
+
+                            if (videoPathsInput == null || videoPathsInput.trim().isEmpty()) {
+                                error('No video paths provided')
+                            }
+
+                            // Validate paths: ensure .webm extension; strip any accidental leading repo prefix
+                            def paths = videoPathsInput.split(',')
+                            def cleaned = paths.collect { p ->
+                                def trimmed = p.trim()
+                                if (!trimmed.endsWith('.webm')) {
+                                    error("Invalid file path: ${trimmed}. All paths must be .webm video files.")
+                                }
+                                def prefix = env.ARTIFACTORY_REPOSITORY + '/'
+                                trimmed.startsWith(prefix) ? trimmed.substring(prefix.length()) : trimmed
+                            }
+                            videoPathsInput = cleaned.join(',')
+                        }
+                    } catch(err) {
+                        error("Failed to get valid video paths: ${err.getMessage()}")
+                    }
+                    echo "Video paths to publish: ${videoPathsInput}"
+                }
+            }
+        }
+
+        stage('Init Repository') {
+            options { timeout(time: 5, unit: 'MINUTES') }
+            steps {
+                runCommand 'git clean -fd'
+                runCommand 'git reset --hard HEAD'
+
+                runCommand "git checkout ${env.GIT_BRANCH}"
+                runCommand "git pull origin ${env.GIT_BRANCH}"
+
+                runCommand 'npm ci'
+            }
+        }
+
+        stage('Publish Videos') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
+                    usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
+                ]) {
+                    withEnv(["VIDEO_PATHS=${videoPathsInput}"]) {
+                        // TODO: remove flag when agent's Node is updated to 22.18+
+                        runCommand 'node --experimental-strip-types publishVideos.ts'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Videos published successfully'
+            echo "Published video paths: ${videoPathsInput}"
+        }
+        failure {
+            echo 'Failed to publish videos'
+            echo "Attempted paths: ${videoPathsInput ?: 'none provided'}"
+        }
+    }
+}

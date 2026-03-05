@@ -1,0 +1,9 @@
+{
+  "line-length": false,
+  "ul-indent": { "indent": 4 },
+  "no-emphasis-as-heading": false,
+  "no-duplicate-heading": false,
+  "MD033": {
+    "allowed_elements": ["br", "style"]
+  }
+}
