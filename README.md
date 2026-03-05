@@ -117,7 +117,7 @@ Free to run, but the maintenance cost lands entirely on you — keeping up with 
 | Commercial support | ✅ | ❌ | ❌ |
 | Chrome engine | ✅ | ❌ | ✅ |
 | Firefox engine | ✅ | ✅ | ❌ |
-| Evasion method | ✅ C++ engine-level | C++ engine-level | ⚠️ Binary patch / JS injection |
+| Evasion method | ✅ C++ engine-level | ✅ C++ engine-level | ⚠️ Binary patch / JS injection |
 | Multi-framework SDKs | ✅ Py / JS / C# | Python only | Py / JS |
 | Mobile profiles | ✅ | ❌ | ❌ |
 | Docker / container deployment | ✅ | ❌ | ❌ |
