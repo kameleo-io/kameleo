@@ -64,12 +64,12 @@ Works with **Selenium, Puppeteer, and Playwright** with no framework rewrite. SD
 ## ✨ Features
 
 - **Fingerprints from real devices, always current** — Millions of profiles sourced from real hardware, updated continuously. When anti-bot systems update, so do the fingerprints
-- **Mobile browser profiles (Android & iOS)** — Engine-level mobile emulation across Android and iOS profiles. Supports Chrome on Android and Safari on iOS out of the box
+- **Mobile browser profiles** — Engine-level mobile emulation across Android and iOS profiles. Supports Chrome on Android and Safari on iOS out of the box
 - **Multi-engine browser pool** — Run Chroma (Chrome) and Junglefox (Firefox) simultaneously to diversify fingerprints across targets
 - **Persistent profiles and session warmup** — Reuse profiles, import/export cookies. Profiles behave like returning users, reducing block and shadow-ban risk
 - **Proxy integration** — HTTP, HTTPS, SOCKS5, and SSH tunnel support. Geo-location and timezone auto-matched to your proxy IP
 - **Headless mode** — UI-free sessions on Business plan and above; same fingerprint masking quality as headed mode
-- **Docker & Linux containers** — Linux and Windows Docker images; horizontal scaling without Windows-only constraints
+- **Docker containers** — Linux and Windows Docker images; horizontal scaling without Windows-only constraints
 - **Multikernel — pin any browser version** — Run multiple Chroma and Junglefox versions side-by-side; upgrade on your schedule
 - **No device limits** — Licensing is per concurrent browser, not per machine. Deploy across as many servers as your workload demands
 
