@@ -82,7 +82,7 @@ GUI-first tools built around manual workflows. If you're automating at scale, yo
 | Feature | Kameleo | Multilogin | GoLogin |
 | --------- | :-------: | :-----------: | :---------: |
 | Chrome engine | ✅ Chroma | ✅ Mimic | ✅ Chromium-based |
-| Firefox engine | ✅ Junglefox | ✅ Stealthfox | ❌ |
+| Firefox engine | ✅ Junglefox | ❌ | ❌ |
 | Kernel update speed | ≤5 days | No SLA | No SLA |
 | Pricing unit | Concurrent browsers | Profiles | Profiles |
 | Typed SDK packages | ✅ Python / JS / C# | ❌ | ❌ |
