@@ -64,7 +64,7 @@ Works with **Selenium, Puppeteer, and Playwright** with no framework rewrite. SD
 ## ✨ Features
 
 - **Fingerprints from real devices, always current** — Millions of profiles sourced from real hardware, updated continuously. When anti-bot systems update, so do the fingerprints
-- **Mobile browser profiles (Android & iOS)** — Engine-level spoofing of device signals, not a user-agent swap. Covers Chrome-on-Android and Safari-on-iOS
+- **Mobile browser profiles (Android & iOS)** — Engine-level mobile emulation across Android and iOS profiles. Supports Chrome on Android and Safari on iOS out of the box
 - **Multi-engine browser pool** — Run Chroma (Chrome) and Junglefox (Firefox) simultaneously to diversify fingerprints across targets
 - **Persistent profiles and session warmup** — Reuse profiles, import/export cookies. Profiles behave like returning users, reducing block and shadow-ban risk
 - **Proxy integration** — HTTP, HTTPS, SOCKS5, and SSH tunnel support. Geo-location and timezone auto-matched to your proxy IP
@@ -300,7 +300,7 @@ Kameleo is deployed in production by teams running multi-day, high-volume scrapi
 We welcome contributions! Here's how you can help:
 
 - **Improve documentation** — Found something unclear? Submit a PR to `/docs`
-- **Add detection tests** — Know a bot detector we should test against? Check our [masking report tests](masking-report/tests/sites/)
+- **Add detection tests** — Know a bot detector we should test against? Check our [masking report tests](masking-report/)
 - **Report issues** — [Open an issue](https://github.com/kameleo-io/kameleo/issues) for bugs or feature requests
 
 ---
