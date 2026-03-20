@@ -1,7 +1,7 @@
-import { expect, type Page, test } from "../../../utils/kameleoBrowserFixture.js";
+import { expect, type Page, test } from "../../../utils/browserFixture.js";
 import { autoScroll } from "../../../utils/pageUtils.js";
 
-test("Pixelscan Fingerprint", async ({ page }) => {
+test("Pixelscan", async ({ page }) => {
     await page.goto("https://pixelscan.net/");
 
     const browserIntegritySelector = "pxlscn-browser-integrity";
@@ -9,16 +9,17 @@ test("Pixelscan Fingerprint", async ({ page }) => {
     const botDetectionSelector = "pxlscn-bot-detection";
     const locationMaskingSelector = "pxlscn-location-masking";
 
-    // click "Start check" button
+    // click "Scan My Browser Now" button
     await page.locator("pxlscn-main-banner a[href='/fingerprint-check']").click();
 
     // wait for loading
     await Promise.all(
         [browserIntegritySelector, fingerPrintMaskingSelector, botDetectionSelector, locationMaskingSelector].map((selector) =>
-            page.locator(`${selector}:not(:has(.shimmer))`).waitFor({ timeout: 60_000 }),
+            page.locator(`${selector}:not(:has(.checker-card__icon--loading))`).waitFor({ timeout: 60_000 }),
         ),
     );
 
+    await page.waitForTimeout(5_000); // makes video smoother
     await autoScroll(page);
 
     // get results
@@ -39,8 +40,8 @@ test("Pixelscan Fingerprint", async ({ page }) => {
 });
 
 async function getSuccess(page: Page, selector: string): Promise<boolean> {
-    const locator = page.locator(`${selector} .tool-icon-svg`);
+    const locator = page.locator(`${selector} .checker-card`);
     await locator.waitFor();
     const classList = await locator.getAttribute("class");
-    return !!classList && !classList.includes("bg-err");
+    return !!classList && !classList.includes("checker-card--failed");
 }

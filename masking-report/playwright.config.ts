@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 import { PLAYWRIGHT_RETRIES, PLAYWRIGHT_WORKERS } from "./config.ts";
-import type { ConfiguredContextOptions } from "./utils/kameleoBrowserFixture.js";
+import type { ConfiguredContextOptions } from "./utils/browserFixture.js";
 
 /** @see https://playwright.dev/docs/test-configuration */
 export default defineConfig<ConfiguredContextOptions>({
@@ -25,6 +25,7 @@ export default defineConfig<ConfiguredContextOptions>({
         actionTimeout: 15_000,
     },
 
+    // see ConfiguredContextOptions for custom options
     projects: [
         // global setup & teardown
         {
@@ -51,7 +52,12 @@ export default defineConfig<ConfiguredContextOptions>({
         {
             name: "Chromium",
             testIgnore: ["launch.kameleo.ts", "terminate.kameleo.ts"],
-            use: { browserProduct: "chrome", useKameleo: false },
+            retries: 0,
+            use: {
+                channel: "chrome",
+                useKameleo: false,
+                browserProduct: "chromium",
+            },
         },
     ],
 });

@@ -1,4 +1,6 @@
 String emailOverride = null
+String kernelsOverride = null
+String artifactUrlOverrides = null
 
 def runCommand(String cmd) {
     isUnix() ? sh(cmd) : powershell(cmd)
@@ -20,18 +22,24 @@ pipeline {
                             def inputValue = input(
                                 id: 'userInput',
                                 message: 'Audit email recipient',
-                                parameters: [string(defaultValue: emailOverride, name: 'emailOverride')]
+                                parameters: [string(name: 'emailOverride', defaultValue: emailOverride),
+                                             string(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides),
+                                             string(name: 'kernelsOverride', defaultValue: kernelsOverride)]
                             )
 
-                            if (!inputValue?.trim()) {
+                            if (inputValue == null) {
                                 error('No input provided')
                             }
 
-                            emailOverride = inputValue
+                            emailOverride = inputValue['emailOverride']?.trim() ?: emailOverride
+                            artifactUrlOverrides = inputValue['artifactUrlOverrides']?.trim() ?: artifactUrlOverrides
+                            kernelsOverride = inputValue['kernelsOverride']?.trim() ?: kernelsOverride
                         }
                     } catch(err) {}
 
                     echo "Audit email recipient override: ${emailOverride}"
+                    echo "Artifact url override: ${artifactUrlOverrides}"
+                    echo "Kernels override: ${kernelsOverride}"
                 }
             }
         }
@@ -48,7 +56,7 @@ pipeline {
                     stage('Init Repository') {
                         options { timeout(time: 5, unit: 'MINUTES') }
                         steps {
-                            runCommand 'git clean -fd'
+                            runCommand 'git clean -fxd'
                             runCommand 'git reset --hard HEAD'
                             runCommand 'npm ci'
                         }
@@ -58,16 +66,27 @@ pipeline {
                         steps {
                             withCredentials([
                                 string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
+                                string(credentialsId: 'nma-adscore-api', variable: 'ADSCORE_API_KEY'),
                                 usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
-                                usernamePassword(credentialsId: 'ma-app-login', usernameVariable: 'EMAIL', passwordVariable: 'PASSWORD'),
-                                string(credentialsId: 'ma-proxy-url', variable: 'PROXY_URL'),
+                                usernamePassword(credentialsId: 'ma-app-login', usernameVariable: 'KAM_EMAIL', passwordVariable: 'KAM_PASSWORD'),
+                                usernamePassword(credentialsId: 'ma-proxy', usernameVariable: 'PROXY_USERNAME', passwordVariable: 'PROXY_PASSWORD'),
                             ]) {
-                                runCommand 'npm test'
+                                script {
+                                    if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
+                                    if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride
+
+                                    int testExitCode = isUnix()
+                                        ? sh(script: 'npm test', returnStatus: true)
+                                        : powershell(script: 'npm test', returnStatus: true)
+
+                                    echo "npm test exited with ${testExitCode} (ignored by design)"
+                                }
                             }
                         }
                         post {
                             always {
                                 junit skipPublishingChecks: true, testResults: 'dist/test-result.xml', skipOldReports: false
+
                                 withCredentials([
                                     string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
@@ -76,11 +95,11 @@ pipeline {
                                     string(credentialsId: 'ma-email-recipient', variable: 'AUDIT_EMAIL_RECIPIENT'),
                                 ]) {
                                     script {
-                                        if (emailOverride != null) {
-                                            env.AUDIT_EMAIL_RECIPIENT = emailOverride
-                                        }
-                                        // TODO: remove flag when agent's Node is updated to 22.18+
-                                        runCommand 'node --experimental-strip-types sendEmail.ts'
+                                        if (emailOverride != null) env.AUDIT_EMAIL_RECIPIENT = emailOverride
+                                        if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
+                                        if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride
+
+                                        runCommand 'node build/sendEmail.ts'
                                     }
                                 }
                             }
