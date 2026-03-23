@@ -7,6 +7,7 @@
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
     "allowJs": true,
     "checkJs": true,
     "importHelpers": true,

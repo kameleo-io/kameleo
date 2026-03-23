@@ -1,9 +1,7 @@
-import { setTimeout } from "timers/promises";
-
-import { expect, test } from "../../../utils/kameleoBrowserFixture.js";
+import { expect, test } from "../../../utils/browserFixture.js";
 
 test("Google", async ({ page }) => {
-    await page.goto("https://google.com/?hl=en");
+    await page.goto("https://google.com/?hl=en", { waitUntil: "domcontentloaded" });
 
     // Dismiss consent popup if present
     await page.click("button:has-text('Accept all')").catch(() => undefined);
@@ -12,7 +10,7 @@ test("Google", async ({ page }) => {
     await page.press("[name='q']", "Enter");
 
     await page.waitForSelector("h1:has-text('Search Results')");
-    await setTimeout(3_000);
+    await page.waitForTimeout(5_000); // makes video smoother
 
     const pageText = await page.textContent("body");
     expect(pageText).toContain("en.wikipedia.org");

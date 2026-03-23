@@ -4,6 +4,28 @@ import { mkdir, rm } from "fs/promises";
 import path from "path";
 import { Writable } from "stream";
 
+export function envOptional(key: string): string | undefined {
+    const trimmed = process.env[key]?.trim();
+    return trimmed === "" ? undefined : trimmed;
+}
+
+export function env(key: string): string {
+    const value = envOptional(key);
+    if (!value) {
+        throw new Error(`Missing required environment variable: ${key}`);
+    }
+    return value;
+}
+
+export function envNumberOptional(key: string): number | undefined {
+    const value = envOptional(key);
+    if (value) {
+        const parsed = Number(value);
+        if (Number.isFinite(parsed)) return parsed;
+    }
+    return undefined;
+}
+
 export function isWindows(): boolean {
     return process.platform == "win32";
 }

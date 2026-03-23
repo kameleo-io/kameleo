@@ -37,6 +37,7 @@ export default tseslint.config(
             "@typescript-eslint/no-base-to-string": "off",
         },
     },
+    // forbid importing from the outside in build/
     {
         files: ["build/**/*.{ts,js,mjs}"],
         rules: {
@@ -48,6 +49,7 @@ export default tseslint.config(
             ],
         },
     },
+    // forbid importing build/ from non-build files
     {
         files: ["**/*.{ts,js,mjs}"],
         ignores: ["build/**/*.{ts,js,mjs}"],
