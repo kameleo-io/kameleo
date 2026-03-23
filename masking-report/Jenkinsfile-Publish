@@ -74,10 +74,10 @@ pipeline {
                 withCredentials([
                     string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
+                    string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
                 ]) {
                     withEnv(["VIDEO_PATHS=${videoPathsInput}"]) {
-                        // TODO: remove flag when agent's Node is updated to 22.18+
-                        runCommand 'node --experimental-strip-types publishVideos.ts'
+                        runCommand 'node build/publishVideos.ts'
                     }
                 }
             }

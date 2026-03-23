@@ -1,8 +1,8 @@
-import { expect, test } from "../../../utils/kameleoBrowserFixture.js";
+import { expect, test } from "../../../utils/browserFixture.js";
 import { autoScroll } from "../../../utils/pageUtils.js";
 
 test("BrowserScan", async ({ page }) => {
-    await page.goto("https://www.browserscan.net/");
+    await page.goto("https://www.browserscan.net/", { waitUntil: "networkidle" });
 
     // Dismiss consent popup if present
     await page.click("button.fc-close").catch(() => undefined);

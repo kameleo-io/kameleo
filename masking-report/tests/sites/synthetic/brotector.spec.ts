@@ -1,9 +1,8 @@
-import { expect, test } from "../../../utils/kameleoBrowserFixture.js";
+import { expect, test } from "../../../utils/browserFixture.js";
 
 test("Brotector", async ({ page }) => {
-    await page.goto("https://ttlns.github.io/brotector/");
-
-    await page.waitForLoadState("networkidle");
+    await page.goto("https://ttlns.github.io/brotector/", { waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(5_000); // makes video smoother
 
     await page.click("#clickHere");
     await page.mouse.move(100, 100);

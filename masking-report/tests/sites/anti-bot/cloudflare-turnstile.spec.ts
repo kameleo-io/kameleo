@@ -1,4 +1,4 @@
-import { expect, test } from "../../../utils/kameleoBrowserFixture.js";
+import { expect, test } from "../../../utils/browserFixture.js";
 
 test.describe(() => {
     test.use({
@@ -12,7 +12,7 @@ test.describe(() => {
         const iframeLocator = page.frameLocator("#cf-turnstile iframe[src^='https://challenges.cloudflare.com']");
         await iframeLocator.locator("text=Verify you are human").click();
 
-        await page.waitForTimeout(5_000);
+        await page.waitForTimeout(5_000); // makes video smoother
 
         const successLocator = iframeLocator.locator("#success");
         await successLocator.waitFor({ state: "attached" });

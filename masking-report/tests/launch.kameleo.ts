@@ -7,10 +7,12 @@ import path from "path";
 import { setTimeout } from "timers/promises";
 
 import {
+    ARTIFACT_URL_OVERRIDES,
     ARTIFACTORY_HOSTNAME,
     ARTIFACTORY_PASSWORD,
     ARTIFACTORY_USERNAME,
     KAMELEO_EMAIL,
+    KAMELEO_KERNELS,
     KAMELEO_PASSWORD,
     KAMELEO_PORT,
     KAMELEO_VERBOSE,
@@ -19,8 +21,29 @@ import {
 import { downloadFile, extractSevenZip, httpRequest, isWindows } from "../utils/common.ts";
 
 setup("launch Kameleo CLI", async () => {
-    const baseDirectory = path.resolve(`dist/cli/${KAMELEO_VERSION}`);
+    let artifactUrl =
+        `https://${ARTIFACTORY_HOSTNAME}/repository/kamono-releases/` +
+        (isWindows() ? `win-x64/${KAMELEO_VERSION}/client-stack-master-win-x64.7z` : `osx-arm64/${KAMELEO_VERSION}/Kameleo-osx-arm64.zip`);
+    let artifactDirectoryName = KAMELEO_VERSION;
 
+    if (ARTIFACT_URL_OVERRIDES) {
+        const currentPlatform = isWindows() ? "win-x64" : "osx-arm64";
+        const matchingArtifact = ARTIFACT_URL_OVERRIDES.find((artifact) => artifact.includes(currentPlatform));
+        assert.ok(
+            matchingArtifact,
+            `No matching artifact for ${currentPlatform} platform in ARTIFACT_URL_OVERRIDES artifacts: ${ARTIFACT_URL_OVERRIDES.toString()}`,
+        );
+        artifactUrl = matchingArtifact;
+
+        artifactDirectoryName = artifactUrl
+            .replaceAll(currentPlatform, "")
+            .slice(-30)
+            .replace(/[^\w\d-]/g, "-")
+            .toLowerCase();
+    }
+
+    const artifactsDirectory = "dist/cli";
+    const baseDirectory = path.resolve(`${artifactsDirectory}/${artifactDirectoryName}`);
     const cliPath = path.join(
         baseDirectory,
         ...(isWindows() ? ["Kameleo.CLI.exe"] : ["Kameleo.app", "Contents", "Resources", "CLI", "Kameleo.CLI"]),
@@ -29,14 +52,7 @@ setup("launch Kameleo CLI", async () => {
 
     // Download and extract Kameleo if not already present
     if (!existsSync(cliPath) || !existsSync(pwBridgePath)) {
-        assert.ok(ARTIFACTORY_HOSTNAME, "ARTIFACTORY_HOSTNAME environment variable is required");
-
-        const artifactUrl =
-            `https://${ARTIFACTORY_HOSTNAME}/repository/kamono-releases/` +
-            (isWindows()
-                ? `win-x64/${KAMELEO_VERSION}/client-stack-master-win-x64.7z`
-                : `osx-arm64/${KAMELEO_VERSION}/Kameleo-osx-arm64.zip`);
-        const artifactPath = path.resolve("dist/kameleo-artifact");
+        const artifactPath = path.resolve(`${artifactsDirectory}/kameleo-artifact`);
 
         await rm(artifactPath, { force: true });
         await rm(baseDirectory, { force: true, recursive: true });
@@ -50,6 +66,8 @@ setup("launch Kameleo CLI", async () => {
         assert.ok(existsSync(pwBridgePath), `pw-bridge executable not found at ${pwBridgePath}`);
     }
 
+    const kernelOverrides = Object.fromEntries((KAMELEO_KERNELS ?? []).map((kernel, index) => [`KernelOverrides__${index}`, kernel]));
+
     // Launch Kameleo CLI
     spawn(cliPath, {
         stdio: "inherit",
@@ -60,6 +78,7 @@ setup("launch Kameleo CLI", async () => {
             LISTENINGPORT: KAMELEO_PORT.toString(),
             VERBOSE: KAMELEO_VERBOSE,
             USERDIRECTORYOVERRIDE: baseDirectory,
+            ...kernelOverrides,
         },
     });
 
@@ -71,15 +90,12 @@ setup("launch Kameleo CLI", async () => {
     while (Date.now() < deadline) {
         try {
             await httpRequest(healthcheckUrl);
-            lastError = undefined;
-            break;
+            return;
         } catch (e) {
             lastError = e;
             await setTimeout(1_000);
         }
     }
 
-    if (lastError) {
-        throw new Error(`Kameleo did not start within 30 seconds: ${String(lastError)}`);
-    }
+    throw new Error(`Kameleo did not start within 30 seconds: ${String(lastError)}`);
 });

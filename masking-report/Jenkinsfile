@@ -2,14 +2,6 @@ def runCommand(String cmd) {
     isUnix() ? sh(cmd) : powershell(cmd)
 }
 
-def isBranchPrish() {
-    return env.BRANCH_NAME == 'master' ||
-        env.BRANCH_NAME == 'develop' ||
-        env.BRANCH_NAME.matches('release/.*') ||
-        env.BRANCH_NAME.matches('hotfix/.*') ||
-        env.CHANGE_ID != null
-}
-
 pipeline {
     agent none
     options {
@@ -30,24 +22,23 @@ pipeline {
                         runCommand 'npm ci'
                     }
                 }
-                stage('Lint & Type-Check') {
+                stage('Type-Check & Lint') {
                     options { timeout(time: 10, unit: 'MINUTES') }
                     steps {
-                        runCommand "npm run lint"
                         runCommand "npm run type-check"
+                        runCommand "npm run lint"
                     }
                 }
                 stage('Sync to GitHub') {
-                    /*when {
+                    when {
                         expression {
                             return env.BRANCH_NAME == 'master'
                         }
-                    }*/
+                    }
                     options { timeout(time: 10, unit: 'MINUTES') }
                     steps {
                         withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-                            // TODO: remove flag when agent's Node is updated to 22.18+
-                            runCommand 'node --experimental-strip-types build/publishGitHub.ts'
+                            runCommand 'node build/publishGitHub.ts'
                         }
                     }
                 }
