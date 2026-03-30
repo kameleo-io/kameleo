@@ -35,7 +35,7 @@ We run automated tests frequently. Here are the results with recordings of each 
 | [Cloudflare Turnstile](masking-report/tests/sites/anti-bot/cloudflare-turnstile.spec.ts) | ❌<br>[Watch](masking-report/videos/cloudflare-turnstile-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/cloudflare-turnstile-macos-chrome.webm) |
 | [Google Search](masking-report/tests/sites/anti-bot/google.spec.ts) | ❌<br>[Watch](masking-report/videos/google-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/google-macos-chrome.webm) |
 
-**[View masking report →](https://kameleo.io/masking-audit)**
+**[View masking report →](https://kameleo.io/masking-status-report)**
 
 ## 💡 Why Kameleo?
 
