@@ -28,7 +28,7 @@ We run automated tests frequently. Here are the results with recordings of each 
 | Website | Playwright + Chromium | Playwright + Kameleo |
 | --- | :---: | :---: |
 | [Pixelscan](masking-report/tests/sites/synthetic/pixelscan.spec.ts) | ❌<br>[Watch](masking-report/videos/pixelscan-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/pixelscan-macos-chrome.webm) |
-| [BrowserScan](masking-report/tests/sites/synthetic/browserscan.spec.ts) | ❌<br>[Watch](masking-report/videos/browserscan-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/browserscan-macos-chrome-260223053751.webm) |
+| [BrowserScan](masking-report/tests/sites/synthetic/browserscan.spec.ts) | ❌<br>[Watch](masking-report/videos/browserscan-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/browserscan-macos-chrome.webm) |
 | [Brotector](masking-report/tests/sites/synthetic/brotector.spec.ts) | ❌<br>[Watch](masking-report/videos/brotector-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/brotector-macos-chrome.webm) |
 | [CreepJS](masking-report/tests/sites/synthetic/creepjs.spec.ts) | ❌<br>[Watch](masking-report/videos/creepjs-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/creepjs-macos-chrome.webm) |
 | [Bot Sannysoft](masking-report/tests/sites/synthetic/bot-sannysoft.spec.ts) | ❌<br>[Watch](masking-report/videos/sannysoft-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/sannysoft-macos-chrome.webm) |
