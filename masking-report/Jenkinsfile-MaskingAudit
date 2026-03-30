@@ -66,7 +66,7 @@ pipeline {
                         steps {
                             withCredentials([
                                 string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
-                                string(credentialsId: 'nma-adscore-api', variable: 'ADSCORE_API_KEY'),
+                                string(credentialsId: 'ma-adscore-api', variable: 'ADSCORE_API_KEY'),
                                 usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
                                 usernamePassword(credentialsId: 'ma-app-login', usernameVariable: 'KAM_EMAIL', passwordVariable: 'KAM_PASSWORD'),
                                 usernamePassword(credentialsId: 'ma-proxy', usernameVariable: 'PROXY_USERNAME', passwordVariable: 'PROXY_PASSWORD'),
