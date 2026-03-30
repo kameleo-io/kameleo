@@ -12,7 +12,6 @@ pipeline {
     }
     environment {
         ARTIFACTORY_REPOSITORY = 'masking-audit'
-        GIT_BRANCH = 'master'
     }
 
     stages {
@@ -22,8 +21,8 @@ pipeline {
                     try {
                         timeout(time: 10, unit: 'MINUTES') {
                             def repo = env.ARTIFACTORY_REPOSITORY
-                            def example1 = 'Windows/123/Google-Windows-chrome-passed-2025-11-19T07_35_07.620Z.webm'
-                            def example2 = 'macOS/124/Brotector-macOS-firefox-passed-2025-11-19T08_15_30.456Z.webm'
+                            def example1 = 'windows/123/google-windows-chrome-260316053516.webm'
+                            def example2 = 'macos/124/brotector-macos-firefox-260316080530.webm'
                             def desc = "Comma-separated paths relative to repository root (DO NOT include the ${repo}/ prefix). Example: ${example1},${example2}"
 
                             videoPathsInput = input(
@@ -61,9 +60,6 @@ pipeline {
             steps {
                 runCommand 'git clean -fd'
                 runCommand 'git reset --hard HEAD'
-
-                runCommand "git checkout ${env.GIT_BRANCH}"
-                runCommand "git pull origin ${env.GIT_BRANCH}"
 
                 runCommand 'npm ci'
             }
