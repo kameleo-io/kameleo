@@ -4,6 +4,7 @@ from kameleo.local_api_client.models import (
     UpdateProfileRequest,
     WebglMetaChoice,
     WebglMetaSpoofingOptions,
+    ProfileLifetimeState,
 )
 import time
 import os
@@ -18,12 +19,12 @@ client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 # Possible deviceType value: desktop, mobile
 # Possible browserProduct value: chrome, firefox, edge, ...
 # Possible osFamily values: windows, macos, linux, android, ios
-# Examples of browserVersion values that limit the major version of the fingeprint: 135, >134, ...
+# Examples of browserVersion values that limit the major version of the fingerprint: 145, >145, ...
 # You can use empty parameters as well, Kameleo provides recent and varied fingerprints by default
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
     browser_product='chrome',
-    browser_version='>134',
+    browser_version='>145',
 )
 
 # Create a new profile with recommended settings for browser fingerprinting protection
@@ -31,7 +32,7 @@ fingerprints = client.fingerprint.search_fingerprints(
 # You can setup here all of the profile options like WebGL
 create_profile_request = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    language='es-ES',
+    language='es-ES,es,en',
     name='create profile example',
     webgl='noise',
     webgl_meta=WebglMetaChoice(
@@ -48,6 +49,10 @@ profile = client.profile.create_profile(create_profile_request)
 
 # Start the browser profile
 client.profile.start_profile(profile.id)
+
+# List the running profiles
+running_profiles = client.profile.list_profiles(ProfileLifetimeState.RUNNING)
+print(f'Running profiles: {len(running_profiles)}')
 
 # Wait for 10 seconds
 time.sleep(10)

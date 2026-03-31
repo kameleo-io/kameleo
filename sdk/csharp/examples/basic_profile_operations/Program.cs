@@ -15,9 +15,9 @@ var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"
 // Possible deviceType value: desktop, mobile
 // Possible browserProduct value: chrome, firefox, edge, ...
 // Possible osFamily values: windows, macos, linux, android, ios
-// Examples of browserVersion values that limit the major version of the fingeprint: 135, >134, ...
+// Examples of browserVersion values that limit the major version of the fingerprint: 145, >145, ...
 // You can use empty parameters as well, Kameleo provides recent and varied fingerprints by default
-var fingerprints = await client.Fingerprint.SearchFingerprintsAsync("desktop", "windows", "chrome", ">134");
+var fingerprints = await client.Fingerprint.SearchFingerprintsAsync("desktop", "windows", "chrome", ">145");
 
 Console.WriteLine("Available fingerprints:");
 foreach (var fingerprint in fingerprints)
@@ -38,7 +38,7 @@ Console.WriteLine(
 var createProfileRequest = new CreateProfileRequest(selectedFingerprint.Id)
 {
     Name = "create profile example",
-    Language = "es-ES",
+    Language = "es-ES,es,en",
     Webgl = WebglSpoofingType.Noise,
     WebglMeta = new(WebglMetaSpoofingType.Manual,
         new WebglMetaSpoofingOptions("Google Inc.", "ANGLE (Intel(R) HD Graphics 630 Direct3D11 vs_5_0 ps_5_0)")),
@@ -52,6 +52,10 @@ Console.WriteLine($"Id of the created profile: {profile.Id}");
 
 // Start the profile
 await client.Profile.StartProfileAsync(profile.Id);
+
+// List the running profiles
+var profilesRunning = await client.Profile.ListProfilesAsync(ProfileLifetimeState.Running);
+Console.WriteLine($"Running profiles: {profilesRunning.Count}");
 
 // Wait for 10 seconds
 await Task.Delay(10_000);

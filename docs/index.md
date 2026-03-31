@@ -13,66 +13,68 @@ icon: home
 
 <!-- markdownlint-enable MD045 -->
 
-Kameleo helps you bypass modern anti-bot systems by using custom browsers with a built‑in stealth layer, so your web scraping flows and multi-account operations look like ordinary human traffic, not bots.
+Tired of configurations that work for 2 hours before getting blocked? Automate browsers at scale and stay undetected. Scrape anti-bot protected websites through your favorite automation framework.
+
+## Sound familiar?
+
+- "My success rate dropped to 10% overnight."
+- "I patched CDP, fixed canvas, handled WebGL... still blocked."
+- "I've tried multiple anti-detect browsers – none work consistently."
+
+You're not the problem. Your tools are. Kameleo adapts regularly to anti-bot changes, delivering always-current fingerprints so your browser operations look like ordinary human traffic – and you can focus on your product, not the arms race.
+
+## What you get
 
 <!-- markdownlint-disable MD001 -->
 
-## Features
-
 :::feature-list
 
-#### :icon-rocket: Real Browsers with Unlimited Fingerprints
+#### :icon-rocket: Fingerprints that stay fresh
 
-Launch our tailor-made Chroma (Chromium-based) and Junglefox (Firefox-based) kernels with continuously updated, authentic desktop and mobile fingerprints.
+When Chrome and Firefox update, we update. Automatically. Our browser kernels ship with continuously updated, authentic fingerprints.
 
-#### :icon-shield-check: Built-in Stealth
+#### :icon-shield-check: No more stealth plugin Frankenstein
 
-Bypass major detection vectors out-of-the-box: canvas, WebGL, timezone, geolocation, fonts, and more - no extra “stealth plugins” needed.
+Canvas, WebGL, CDP, timezone, geolocation, fonts – all handled out-of-the-box. No extra plugins to maintain.
 
-#### :icon-stack: Multi-Kernel Architecture
+#### :icon-stack: One tool for all targets
 
-Run different browser engines side-by-side for maximum diversity and higher success rates in scraping and automation workflows.
+Run Chroma and Junglefox side-by-side for maximum diversity. Stop switching tools per domain.
 
-#### :icon-code: Fast Integration with Popular Frameworks
+#### :icon-code: Working code in 5 minutes
 
-Use Kameleo’s Local API and SDKs (Python, JavaScript, C#) to control browsers directly with Selenium, Puppeteer, or Playwright.
+Use Kameleo SDKs (Python, JavaScript, C#) to control browsers directly with Selenium, Puppeteer, or Playwright. Copy, paste, run.
 
-#### :icon-cache: Persistent, Reusable Profiles
+#### :icon-cache: Long-lived profiles, no relogins
 
-Keep cookies, local storage, and extensions across sessions to mimic real user behavior and manage multiple accounts seamlessly.
+Keep cookies, local storage, and extensions across sessions easily. Profiles persist so your accounts don't get flagged for behavioral anomalies.
 
-<!-- markdownlint-enable MD001 -->
+#### :icon-zap: Performance & uptime
+
+99.99% uptime with lightning-fast profile startup for smooth scaling.
 
 :::
 
-## Benefits
+<!-- markdownlint-enable MD001 -->
 
-||| Outcomes
+## Built to grow with you
 
-- **Higher Success Rate**: Human-like browsers reduce bans and blocks significantly
-- **Lower Maintenance**: No need to manually tweak stealth settings or chase fingerprint changes
-- **Cost-Effective**: On-premise infrastructure + pay-as-you-scale pricing keeps scraping affordable
-- **Performance & Uptime**: 99.99% uptime with lightning-fast profile startup for smooth scaling
+Works at 5 profiles. Works at 500. Predictable concurrency-based pricing means you know exactly what you'll pay – no "what counts as an API call?" confusion. Create unlimited profiles, invite unlimited team members, and deploy to Docker when you're ready for cloud-native infrastructure.
 
-||| Capabilities
+## Up and running in minutes
 
-- **Fast Kernel Updates**: New Chroma & Junglefox versions integrated quickly, so scrapers stay aligned with the latest browser builds
-- **Developer-First**: Multi-language SDKs, code samples, and docs optimized for fast prototyping and integration
-- **Scalable**: Unlimited profiles, unlimited team members, no device limits, and high RPM limits let you expand operations without blockers.
-- **Intuitive GUI**: Preview and test workflows without code. Manage profiles in a simple interface before scaling with the API.
+1. **Install** – Simple to install using a package manager.
+2. **Run the quickstart** – Copy our Python/JS/C# example.
+3. **Watch it work** – Launch a profile, connect Selenium/Puppeteer/Playwright, see the difference.
 
-|||
+Head to the [Installation](01-getting-started/01-installation.md) guide, then finish the [Quickstart](01-getting-started/02-quickstart.md) to launch and automate your first profile.
 
 ## Community & support
 
 - Discord: [Join Kameleo Insider](https://discord.com/invite/vNqxWuDkS4)
 - Telegram: [Subscribe to our channel](https://t.me/kameleoapp)
 - Help Center: [https://help.kameleo.io/](https://help.kameleo.io/)
-- SDK repos & example codes: [https://github.com/kameleo-io](https://github.com/kameleo-io)
-
-## Next step
-
-Head to the [Installation](01-getting-started/01-installation.md) guide, then finish the [Quickstart](01-getting-started/02-quickstart.md) to launch and automate your first profile.
+- SDK repos & example codes: [https://github.com/kameleo-io/kameleo](https://github.com/kameleo-io/kameleo)
 
 <style>
     .feature-list .docs-icon {

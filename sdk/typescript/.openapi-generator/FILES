@@ -13,6 +13,7 @@ src/models/Browser.ts
 src/models/BrowserCookie.ts
 src/models/BrowserSettings.ts
 src/models/CanvasSpoofingType.ts
+src/models/CloudTrafficQuota.ts
 src/models/CookieRequest.ts
 src/models/CreateFolderRequest.ts
 src/models/CreateProfileRequest.ts

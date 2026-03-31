@@ -5,7 +5,7 @@
   "endOfLine": "auto",
   "overrides": [
     {
-      "files": ["*.ts", "*.js", "*.mjs"],
+      "files": ["*.ts", "*.js", "*.mjs", "*.mts"],
       "options": { "tabWidth": 4 }
     }
   ]

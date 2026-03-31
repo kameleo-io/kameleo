@@ -305,8 +305,8 @@ await client.Profile.DeleteProfileAsync(profile.Id);
 
 ## Full examples on GitHub
 
-| Language   | Chroma kernel                                                                                                                     | Junglefox kernel |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| Python     | [Python code on GitHub](https://github.com/kameleo-io/local-api-examples/blob/master/python/connect_with_puppeteer/app.py)        | Not supported    |
-| JavaScript | [JavaScript code on GitHub](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_with_puppeteer/index.js)  | Not supported    |
-| C#         | [C# code on GitHub](https://github.com/kameleo-io/local-api-examples/blob/master/dotnet-csharp/connect_with_puppeteer/Program.cs) | Not supported    |
+| Language   | Chroma kernel                                                                                                                          | Junglefox kernel |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| Python     | [Python code on GitHub](https://github.com/kameleo-io/kameleo/blob/master/sdk/python/examples/connect_with_puppeteer/app.py)           | Not supported    |
+| JavaScript | [JavaScript code on GitHub](https://github.com/kameleo-io/kameleo/blob/master/sdk/typescript/examples/connect_with_puppeteer/index.js) | Not supported    |
+| C#         | [C# code on GitHub](https://github.com/kameleo-io/kameleo/blob/master/sdk/csharp/examples/connect_with_puppeteer/Program.cs)           | Not supported    |

@@ -6,6 +6,7 @@ export * from "./Browser";
 export * from "./BrowserCookie";
 export * from "./BrowserSettings";
 export * from "./CanvasSpoofingType";
+export * from "./CloudTrafficQuota";
 export * from "./CookieRequest";
 export * from "./CreateFolderRequest";
 export * from "./CreateProfileRequest";

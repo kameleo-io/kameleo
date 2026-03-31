@@ -1,0 +1,27 @@
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/typescript-fetch/tsconfig.mustache }}
+{
+  "compilerOptions": {
+    "declaration": true,
+    "target": "{{#supportsES6}}es6{{/supportsES6}}{{^supportsES6}}es5{{/supportsES6}}",
+{{#sagasAndRecords}}
+    "strict": true,
+{{/sagasAndRecords}}
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    {{^supportsES6}}
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    {{/supportsES6}}
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.mts"
+  ]
+}

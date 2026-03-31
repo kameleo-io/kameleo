@@ -13,12 +13,13 @@ Kameleo CLI returns specific numeric exit codes to signal termination reasons fo
 | ---- | -------------------------- | --------------------------------------------------- | --------------------------------------------------------------- |
 | 100  | AUTH_LOGIN_ERROR           | Login error (temporary service or credential issue) | Retry after short delay; verify credentials and service status. |
 | 101  | SUBSCRIPTION_INACTIVE      | Subscription inactive or expired                    | Renew or reactivate subscription; verify billing status.        |
-| 102  | AUTH_INVALID_CREDENTIALS   | Invalid email or password                           | Correct credentials; rotate secrets in CI if changed.           |
+| 102  | AUTH_INVALID_CREDENTIALS   | Invalid email or password                           | Correct credentials in configuration or environment variables.  |
 | 103  | THROTTLE_LIMIT             | Request throttle limit reached                      | Back off (exponential); reduce parallel requests.               |
 | 104  | TEAM_SUBSCRIPTION_INACTIVE | Team subscription inactive                          | Team owner must reactivate; check team billing.                 |
 | 105  | CONCURRENT_SESSION_LIMIT   | Concurrent session limit reached                    | Close/stop other sessions or upgrade plan.                      |
-| 106  | TEAM_USER_LIMIT            | Team user limit exceeded                            | Remove unused members or upgrade plan tier.                     |
+| 106  | TEAM_USER_LIMIT            | Team user limit exceeded                            | Remove unused members or upgrade plan.                          |
 | 107  | FREE_TIER_ABUSE            | Free tier abuse detected                            | Contact support if false positive; otherwise comply with terms. |
+| 108  | VERSION_NOT_SUPPORTED      | Version can't be used anymore                       | Upgrade to latest version to continue using the application.    |
 | 200  | INTERNAL_UNKNOWN           | Unknown internal error                              | Re-run with `Verbose=2`; file ticket with logs.                 |
 | 201  | NETWORK_FAILURE            | Network connection failed                           | Check connectivity, proxy/firewall rules; retry.                |
 | 202  | INSTANCE_ALREADY_RUNNING   | Another instance already running                    | Stop existing instance or use different port/user directory.    |

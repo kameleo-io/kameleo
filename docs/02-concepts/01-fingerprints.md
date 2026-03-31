@@ -35,8 +35,8 @@ When searching fingerprints you can specify:
 | deviceType     | `desktop`, `mobile`                   | Impacts available screen sizes & input emulation |
 | platform       | `windows`, `macos`, `ios`, `android`  | Maps to kernel and emulation mode                |
 | browserProduct | `chrome`, `edge`, `firefox`, `safari` | Safari/iOS Safari emulate via Chroma mobile mode |
-| browserVersion | `>137`, `=128`                        | Semantic comparator operators supported          |
-| language       | `en-US`, `de`                         | Sets Accept-Language & navigator.language        |
+| browserVersion | `>145`, `=146`                        | Semantic comparator operators supported          |
+| language       | `en-US`, `de`, `de-DE,de,en`          | Sets Accept-Language & navigator.language(s)     |
 
 Example:
 
@@ -44,14 +44,14 @@ Example:
 
 ```python
 fps = await client.fingerprint.search_fingerprints(
-    "desktop", "windows", "chrome", ">137"
+    "desktop", "windows", "chrome", ">145"
 )
 ```
 
 +++ JavaScript
 
 ```js
-const fps = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome", ">137");
+const fps = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome", ">145");
 ```
 
 +++ C#
@@ -61,7 +61,7 @@ var fps = await client.Fingerprint.SearchFingerprintsAsync(
     deviceType: "desktop",
     platform: "windows",
     browserProduct: "chrome",
-    browserVersion: ">137");
+    browserVersion: ">145");
 ```
 
 +++
@@ -86,5 +86,5 @@ Rotate (pick a different fingerprint) when you need a clearly separate identity:
 - Align proxy geo with the fingerprint's locale/time zone for higher trust.
 - Prefer mainstream, broadly deployed browser versions (current stable ± a few) over bleeding-edge or trailing versions.
 - Let Kameleo manage user agent and platform fields; avoid overwriting them via automation scripts or page injections.
-- Use realistic locale + time zone pairs (e.g., en-US + US zone); avoid improbable mixes.
+- Use realistic locale + time zone pairs (e.g., en-US + US zone); avoid improbable mixes.<br>
   Keep window/screen sizes within typical ranges for the device type; avoid exotic resolutions.

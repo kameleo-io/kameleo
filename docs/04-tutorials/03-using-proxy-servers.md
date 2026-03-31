@@ -142,14 +142,14 @@ Console.WriteLine($"Proxy removed: {(removed.Proxy == null ? "yes" : "no")}");
 
 +++
 
-## 4. Proxy bypass handling
+## 4. Configure proxy bypass (optional)
 
-Some destinations should never go through your proxy (internal services, CDN hosts served locally, monitoring endpoints). Configure a bypass list so those hosts connect directly while the rest of the traffic uses the proxy.
+Some destinations do not need to go through your proxy. Bypassing them reduces proxy bandwidth usage and lowers costs. Common candidates include CDN hosts serving static assets (images, fonts, scripts), video streaming domains, and internal services. Configure a bypass list so those hosts connect directly while the rest of the traffic uses the proxy.
 
 Kameleo automatically adds its own loopback endpoints. You only provide the additional hosts or CIDR ranges. The mechanism differs per browser engine:
 
-- Chroma (Chromium based): supply an extra command-line switch: `proxy-bypass-list` with a semicolon-separated list.
-- Junglefox (Firefox based): set the preference `network.proxy.no_proxies_on` with a comma-separated list.
+- Chroma: supply an extra command-line switch `proxy-bypass-list` with a semicolon-separated list.
+- Junglefox: set the preference `network.proxy.no_proxies_on` with a comma-separated list.
 
 ### Chroma example
 
@@ -168,25 +168,18 @@ client.profile.start_profile(profile_id, BrowserSettings(
 +++ JavaScript
 
 ```javascript
-await profileApi.startProfileWithOptions(profile.id, {
-    additionalOptions: {
-        arguments: ["proxy-bypass-list=*.internal.local;192.168.0.0/16"],
-    },
+await client.profile.startProfile(profile.id, {
+    arguments: ["proxy-bypass-list=*.internal.local;192.168.0.0/16"],
 });
 ```
 
 +++ C#
 
 ```csharp
-var chromaStart = new StartProfileWithOptionsRequest(
-    additionalOptions: new AdditionalOptions(
-        arguments: new List<string>
-        {
-            "proxy-bypass-list=*.internal.local;192.168.0.0/16"
-        }
-    )
-);
-await profileApi.StartProfileWithOptionsAsync(profile.Id, chromaStart);
+await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
+{
+    Arguments = ["proxy-bypass-list=*.internal.local;192.168.0.0/16"]
+});
 ```
 
 +++
@@ -208,27 +201,18 @@ client.profile.start_profile(profile_id, BrowserSettings(
 +++ JavaScript
 
 ```javascript
-await profileApi.startProfileWithOptions(profile.id, {
-    additionalOptions: {
-        preferences: {
-            "network.proxy.no_proxies_on": "intranet.local;cdn.example.com:443",
-        },
-    },
+await client.profile.startProfile(profile.id, {
+    preferences: [{ key: "network.proxy.no_proxies_on", value: "intranet.local,cdn.example.com:443" }],
 });
 ```
 
 +++ C#
 
 ```csharp
-var junglefoxStart = new StartProfileWithOptionsRequest(
-    additionalOptions: new AdditionalOptions(
-        preferences: new Dictionary<string, object>
-        {
-            { "network.proxy.no_proxies_on", "intranet.local,cdn.example.com:443" }
-        }
-    )
-);
-await profileApi.StartProfileWithOptionsAsync(profile.Id, junglefoxStart);
+await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
+{
+    Preferences = [new("network.proxy.no_proxies_on", "intranet.local,cdn.example.com:443")]
+});
 ```
 
 +++
@@ -240,7 +224,84 @@ Guidelines:
 - Avoid bypassing domains that perform geo or security checks; you may expose differing IP behavior.
 - Remember that bypass applies to all schemes (HTTP/HTTPS/WebSocket) for those hosts.
 
-## 5. Best practices
+## 5. Limit WebRTC to proxied TCP (optional)
+
+Kameleo automatically masks your WebRTC IP address to match your proxy IP. However, WebRTC can still leak your real IP through non-proxied UDP connections because browsers do not route UDP traffic through HTTP/SOCKS proxies by default, and some proxy providers do not support UDP traffic at all.
+
+To prevent IP leaks, configure the browser to only allow WebRTC connections over TCP that go through your proxy. The mechanism differs per browser engine:
+
+- Chroma: set the preference `webrtc.ip_handling_policy` to `disable_non_proxied_udp`.
+- Junglefox: set the preference `media.peerconnection.ice.proxy_only` to `true`.
+
+### Chroma example
+
++++ Python
+
+```python
+from kameleo.local_api_client.models import BrowserSettings, Preference
+
+client.profile.start_profile(profile.id, BrowserSettings(
+    preferences=[
+        Preference(key="webrtc.ip_handling_policy", value="disable_non_proxied_udp")
+    ]
+))
+```
+
++++ JavaScript
+
+```javascript
+await client.profile.startProfile(profile.id, {
+    preferences: [{ key: "webrtc.ip_handling_policy", value: "disable_non_proxied_udp" }],
+});
+```
+
++++ C#
+
+```csharp
+await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
+{
+    Preferences = [new("webrtc.ip_handling_policy", "disable_non_proxied_udp")]
+});
+```
+
++++
+
+See more details: [Chrome's WebRTC IP handling policy](https://chromeenterprise.google/policies/web-rtc-ip-handling/).
+
+### Junglefox example
+
++++ Python
+
+```python
+from kameleo.local_api_client.models import BrowserSettings, Preference
+
+client.profile.start_profile(profile.id, BrowserSettings(
+    preferences=[
+        Preference(key="media.peerconnection.ice.proxy_only", value=True)
+    ]
+))
+```
+
++++ JavaScript
+
+```javascript
+await client.profile.startProfile(profile.id, {
+    preferences: [{ key: "media.peerconnection.ice.proxy_only", value: true }],
+});
+```
+
++++ C#
+
+```csharp
+await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
+{
+    Preferences = [new("media.peerconnection.ice.proxy_only", true)]
+});
+```
+
++++
+
+## 6. Best practices
 
 - Match proxy country with fingerprint locale and language.
 - Rotate failing residential proxies; monitor connection error rate.

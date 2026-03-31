@@ -29,6 +29,7 @@ src/Kameleo.LocalApiClient/Model/Browser.cs
 src/Kameleo.LocalApiClient/Model/BrowserCookie.cs
 src/Kameleo.LocalApiClient/Model/BrowserSettings.cs
 src/Kameleo.LocalApiClient/Model/CanvasSpoofingType.cs
+src/Kameleo.LocalApiClient/Model/CloudTrafficQuota.cs
 src/Kameleo.LocalApiClient/Model/CookieRequest.cs
 src/Kameleo.LocalApiClient/Model/CreateFolderRequest.cs
 src/Kameleo.LocalApiClient/Model/CreateProfileRequest.cs
