@@ -1,0 +1,23 @@
+name: Publish to WinGet
+
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release (tag) to publish'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - uses: vedantmgoyal9/winget-releaser@19e706d4c9121098010096f9c495a70a7518b30f # 2025.05.29
+        with:
+          identifier: Kameleo.App
+          max-versions-to-keep: 5
+          token: ${{ secrets.HOMEBREW_TOKEN }}
+          version: ${{ inputs.version || github.event.release.tag_name }}
+          release-tag: ${{ inputs.version || github.event.release.tag_name }}
