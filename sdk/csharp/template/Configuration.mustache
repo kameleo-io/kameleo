@@ -1,4 +1,4 @@
-{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.17.0/modules/openapi-generator/src/main/resources/csharp/Configuration.mustache }}
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/csharp/Configuration.mustache }}
 {{>partial_header}}
 
 using System;
@@ -130,7 +130,7 @@ namespace {{packageName}}.Client
         public Configuration()
         {
             Proxy = null;
-            UserAgent = WebUtility.UrlEncode("{{httpUserAgent}}{{^httpUserAgent}}OpenAPI-Generator/{{packageVersion}}/csharp{{/httpUserAgent}}");
+            UserAgent = "{{httpUserAgent}}{{^httpUserAgent}}OpenAPI-Generator/{{packageVersion}}/csharp{{/httpUserAgent}}";
             BasePath = "{{{basePath}}}";
             DefaultHeaders = new {{^net35}}Concurrent{{/net35}}Dictionary<string, string>();
             ApiKey = new {{^net35}}Concurrent{{/net35}}Dictionary<string, string>();
@@ -206,7 +206,7 @@ namespace {{packageName}}.Client
             };
 
             // Setting Timeout has side effects (forces ApiClient creation).
-            Timeout = TimeSpan.FromSeconds(60);
+            Timeout = TimeSpan.FromSeconds(90);
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace {{packageName}}.Client
         public virtual IDictionary<string, string> DefaultHeaders { get; set; }
 
         /// <summary>
-        /// Gets or sets the HTTP timeout of ApiClient. Defaults to 60 seconds.
+        /// Gets or sets the HTTP timeout of ApiClient. Defaults to 90 seconds.
         /// </summary>
         public virtual TimeSpan Timeout { get; set; }
 

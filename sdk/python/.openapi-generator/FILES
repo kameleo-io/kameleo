@@ -18,6 +18,7 @@ kameleo/local_api_client/models/browser.py
 kameleo/local_api_client/models/browser_cookie.py
 kameleo/local_api_client/models/browser_settings.py
 kameleo/local_api_client/models/canvas_spoofing_type.py
+kameleo/local_api_client/models/cloud_traffic_quota.py
 kameleo/local_api_client/models/cookie_request.py
 kameleo/local_api_client/models/create_folder_request.py
 kameleo/local_api_client/models/create_profile_request.py

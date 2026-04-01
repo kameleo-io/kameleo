@@ -1,4 +1,4 @@
-{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.17.0/modules/openapi-generator/src/main/resources/typescript-fetch/package.mustache }}
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/typescript-fetch/package.mustache }}
 {
   "name": "{{npmName}}",
   "version": "{{npmVersion}}",
@@ -31,10 +31,10 @@
   "homepage": "https://kameleo.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kameleo-io/local-api-client-typescript.git"
+    "url": "https://github.com/kameleo-io/kameleo.git"
   },
   "bugs": {
-    "url": "https://github.com/kameleo-io/local-api-client-typescript/issues"
+    "url": "https://github.com/kameleo-io/kameleo/issues"
   },
   "files": [
     "dist",
@@ -65,7 +65,7 @@
     "reselect": "^4.0.0",
 {{/sagasAndRecords}}
     "@types/node": "^16",
-    "typescript": "5.4.5"
+    "typescript": "5.9.3"
   }{{#npmRepository}},{{/npmRepository}}
 {{#npmRepository}}
   "publishConfig": {

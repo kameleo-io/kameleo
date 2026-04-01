@@ -24,7 +24,7 @@ For the always up-to-date list of shipped Chroma and Junglefox kernel versions, 
 
 ## Selection logic
 
-1. Read the profile’s target browser name and version (e.g., Chrome 126.0.x).
+1. Read the profile’s target browser name and version (e.g., Chrome 145.0.x).
 2. Enumerate local cache plus available remote kernel builds for that browser family.
 3. Pick the best match: exact version if present; otherwise closest newer patch; otherwise closest older patch.
 4. If the chosen kernel isn’t cached yet, download it once and store it for reuse.

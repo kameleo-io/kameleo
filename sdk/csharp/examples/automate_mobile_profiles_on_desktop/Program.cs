@@ -31,12 +31,12 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 // Start the profile
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings()
 {
-    AdditionalOptions = new List<Preference>
-    {
+    AdditionalOptions =
+    [
         // This allows you to click on elements using the cursor when emulating a touch screen in the browser.
         // If you leave this out, your script may time out after clicks and fail.
         new Preference("disableTouchEmulation", true),
-    }
+    ]
 });
 
 // Connect to the running browser instance using WebDriver

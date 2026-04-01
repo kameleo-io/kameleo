@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "kameleo.local_api_client"
-version = "4.2.1"
+version = "4.4.0"
 description = "kameleo-local-api"
 authors = ["Kameleo Team <support@kameleo.io>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/kameleo-io/local-api-client-python"
+repository = "https://github.com/kameleo-io/kameleo"
 keywords = ["OpenAPI", "OpenAPI-Generator", "kameleo-local-api"]
 include = ["kameleo.local_api_client/py.typed"]
 

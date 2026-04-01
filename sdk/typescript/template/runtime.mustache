@@ -1,4 +1,4 @@
-{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.17.0/modules/openapi-generator/src/main/resources/typescript-fetch/runtime.mustache }}
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/typescript-fetch/runtime.mustache }}
 /* eslint-disable */
 {{>licenseInfo}}
 
@@ -155,7 +155,7 @@ export class BaseAPI {
             headers,
             body: context.body,
             credentials: this.configuration.credentials,
-            signal: AbortSignal.timeout(60_000),
+            signal: AbortSignal.timeout(90_000),
         };
 
         const overriddenInit: RequestInit = {

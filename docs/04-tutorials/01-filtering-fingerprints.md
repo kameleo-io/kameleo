@@ -22,7 +22,7 @@ The `SearchFingerprints` endpoint accepts these optional parameters (all are fil
 | `deviceType`     | Device category. Accepts `desktop`, `mobile`. Comma-separated list allowed.                                   | `desktop`, `mobile`      |
 | `osFamily`       | Operating system family. Accepts `windows`, `macos`, `linux`, `android`, `ios`. Comma-separated list allowed. | `windows`, `macos,linux` |
 | `browserProduct` | Browser engine/product. Accepts `chrome`, `firefox`, `edge`, `safari`. Comma-separated list allowed.          | `chrome`, `chrome,edge`  |
-| `browserVersion` | Version filter. Optional comparator + major number (`>135`, `<=137`, `=136`). No comparator means equality.   | `>135`, `136`, `<=137`   |
+| `browserVersion` | Version filter. Optional comparator + major number (`>145`, `<=147`, `=146`). No comparator means equality.   | `>145`, `146`, `<=147`   |
 
 Notes:
 
@@ -32,7 +32,7 @@ Notes:
 
 ## Basic search example
 
-The endpoint always returns up to 25 matching items ordered by newest browser versions first. Repeating the same query yields a different random subset - cache or persist the one you pick if you need stability. Below you'll see how to fetch Windows Chrome fingerprints newer than version 135.
+The endpoint always returns up to 25 matching items ordered by newest browser versions first. Repeating the same query yields a different random subset - cache or persist the one you pick if you need stability. Below you'll see how to fetch Windows Chrome fingerprints newer than version 145.
 
 !!!warning API rate limits
 Each fingerprint search request counts toward your API quota. Avoid rapid polling loops; broaden filters or cache previously retrieved candidates instead of re-querying repeatedly. See the [API rate limits](../05-reference/03-api-rate-limits.md) page for details.
@@ -45,7 +45,7 @@ fingerprints = client.fingerprint.search_fingerprints(
     device_type="desktop",
     os_family="windows",
     browser_product="chrome",
-    browser_version=">135",
+    browser_version=">145",
 )
 
 if not fingerprints:
@@ -62,7 +62,7 @@ const fingerprints = await client.fingerprint.searchFingerprints(
     "desktop", // deviceType
     "windows", // osFamily
     "chrome", // browserProduct
-    ">135", // browserVersion (comparator supported)
+    ">145", // browserVersion (comparator supported)
 );
 
 if (!fingerprints.length) {
@@ -80,7 +80,7 @@ var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(
     "desktop", // deviceType
     "windows", // osFamily
     "chrome",  // browserProduct
-    ">135"    // browserVersion
+    ">145"    // browserVersion
 );
 
 if (fingerprints.Count == 0)
@@ -106,7 +106,7 @@ Follow these guidelines:
 - If you need mobile emulation, set `deviceType=mobile` and constrain `osFamily` to `android` or `ios` + a matching browser (Chrome for Android; Safari for iOS).
 
 !!!tip Version filtering
-Start broad: query without `browserVersion`, inspect results, then narrow (e.g. add `>135`). Empty list? Remove comparator or lower the version.
+Start broad: query without `browserVersion`, inspect results, then narrow (e.g. add `>145`). Empty list? Remove comparator or lower the version.
 !!!
 
 ## Handling empty results

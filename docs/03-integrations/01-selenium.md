@@ -318,8 +318,8 @@ await client.Profile.DeleteProfileAsync(profile.Id);
 
 ## Full examples on GitHub
 
-| Language   | Example repository link                                                                                                          |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Python     | [Python code on GitHub](https://github.com/kameleo-io/local-api-examples/blob/master/python/connect_with_selenium/app.py)        |
-| JavaScript | [JavaScript code on GitHub](https://github.com/kameleo-io/local-api-examples/blob/master/nodejs/connect_with_selenium/index.js)  |
-| C#         | [C# code on GitHub](https://github.com/kameleo-io/local-api-examples/blob/master/dotnet-csharp/connect_with_selenium/Program.cs) |
+| Language   | Example repository link                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Python     | [Python code on GitHub](https://github.com/kameleo-io/kameleo/blob/master/sdk/python/examples/connect_with_selenium/app.py)           |
+| JavaScript | [JavaScript code on GitHub](https://github.com/kameleo-io/kameleo/blob/master/sdk/typescript/examples/connect_with_selenium/index.js) |
+| C#         | [C# code on GitHub](https://github.com/kameleo-io/kameleo/blob/master/sdk/csharp/examples/connect_with_selenium/Program.cs)           |

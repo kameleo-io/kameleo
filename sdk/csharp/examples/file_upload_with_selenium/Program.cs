@@ -1,12 +1,9 @@
 ﻿using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Support.UI;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file

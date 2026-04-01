@@ -3,8 +3,10 @@ WORKDIR /build
 
 COPY retype.yml ./
 COPY ./docs ./docs
+COPY package.json ./
 
-RUN dotnet tool install retypeapp --tool-path /bin
+RUN VERSION=$(awk -F'"' '/"retypeapp"/{print $4}' package.json | sed 's/^[^0-9]*//') && \
+    dotnet tool install retypeapp --version "$VERSION" --tool-path /bin
 
 RUN --mount=type=secret,id=retype_key \
     retype build --strict --verbose --output .docker-build/ --key $(cat /run/secrets/retype_key)
@@ -13,6 +15,9 @@ FROM nginx:1.29-alpine-slim AS runtime
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /build/.docker-build/ /usr/share/nginx/html
+
+# Copy sdk-examples separately to preserve original casing (Retype lowercases everything)
+COPY ./docs/static/sdk-examples /usr/share/nginx/html/static/sdk-examples
 
 COPY ./docs/nginx.conf /etc/nginx/conf.d/default.conf
 

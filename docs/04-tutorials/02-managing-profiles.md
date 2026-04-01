@@ -83,7 +83,7 @@ create_req = CreateProfileRequest(
   screen=ScreenChoice(value=ScreenSpoofingType.MANUAL, extra=ScreenSize(width=1920, height=1080)),
   hardware_concurrency=HardwareConcurrencyChoice(value=HardwareConcurrencySpoofingType.MANUAL, extra=8),
   device_memory=DeviceMemoryChoice(value=DeviceMemorySpoofingType.MANUAL, extra=8),
-  language='en-US',
+  language='en-US,en',
   start_page='https://whoer.net/',
   password_manager='enabled',
   extensions=['/absolute/path/extension.crx'],
@@ -116,7 +116,7 @@ const profile = await client.profile.createProfile({
     screen: { value: "manual", extra: { width: 1920, height: 1080 } },
     hardwareConcurrency: { value: "manual", extra: 8 },
     deviceMemory: { value: "manual", extra: 8 },
-    language: "en-US",
+    language: "en-US,en",
     startPage: "https://whoer.net/",
     passwordManager: "enabled",
     extensions: ["/absolute/path/extension.crx"],
@@ -149,7 +149,7 @@ var create = new CreateProfileRequest(
   screen: new ScreenChoice(ScreenSpoofingType.Manual, new ScreenSize(width: 1920, height: 1080)),
   hardwareConcurrency: new HardwareConcurrencyChoice(HardwareConcurrencySpoofingType.Manual, extra: 8),
   deviceMemory: new DeviceMemoryChoice(DeviceMemorySpoofingType.Manual, extra: 8),
-  language: "en-US",
+  language: "en-US,en",
   startPage: "https://whoer.net/",
   passwordManager: PasswordManagerType.Enabled,
   extensions: new List<string> { "/absolute/path/extension.crx" },
@@ -199,7 +199,95 @@ Console.WriteLine("Profile stopped");
 
 +++
 
-## 4. Update settings (add a proxy)
+## 4. List profiles with filtering by lifetime state
+
+After creating and starting profiles, you may want to list them and filter by their current lifetime state. Profiles can be in one of several states: `created`, `starting`, `running`, `terminating`, `terminated`, `locked`, `loading`, or `unknown`. Filtering by state helps monitor which profiles are active and manage resources efficiently.
+
++++ Python
+
+```python
+from kameleo.local_api_client.models import ProfileLifetimeState
+
+# List all profiles
+all_profiles = client.profile.list_profiles()
+print(f'Total profiles: {len(all_profiles)}')
+
+# Filter for running profiles only
+running_profiles = client.profile.list_profiles(ProfileLifetimeState.RUNNING)
+print(f'Running profiles: {len(running_profiles)}')
+for p in running_profiles:
+    print(f'  - {p.name} (ID: {p.id})')
+
+# Filter for terminated profiles (stopped but previously started)
+terminated_profiles = client.profile.list_profiles(ProfileLifetimeState.TERMINATED)
+print(f'Terminated profiles: {len(terminated_profiles)}')
+for p in terminated_profiles:
+    print(f'  - {p.name} (ID: {p.id})')
+
+# Filter for newly created profiles (never started)
+created_profiles = client.profile.list_profiles(ProfileLifetimeState.CREATED)
+print(f'Created profiles: {len(created_profiles)}')
+```
+
++++ JavaScript
+
+```javascript
+// List all profiles
+const allProfiles = await client.profile.listProfiles();
+console.log(`Total profiles: ${allProfiles.length}`);
+
+// Filter for running profiles only
+const runningProfiles = await client.profile.listProfiles("running");
+console.log(`Running profiles: ${runningProfiles.length}`);
+runningProfiles.forEach((p) => console.log(`  - ${p.name} (ID: ${p.id})`));
+
+// Filter for terminated profiles (stopped but previously started)
+const terminatedProfiles = await client.profile.listProfiles("terminated");
+console.log(`Terminated profiles: ${terminatedProfiles.length}`);
+terminatedProfiles.forEach((p) => console.log(`  - ${p.name} (ID: ${p.id})`));
+
+// Filter for newly created profiles (never started)
+const createdProfiles = await client.profile.listProfiles("created");
+console.log(`Created profiles: ${createdProfiles.length}`);
+```
+
++++ C#
+
+```csharp
+using Kameleo.LocalApiClient.Model;
+
+// List all profiles
+var allProfiles = await client.Profile.ListProfilesAsync();
+Console.WriteLine($"Total profiles: {allProfiles.Count}");
+
+// Filter for running profiles only
+var runningProfiles = await client.Profile.ListProfilesAsync(ProfileLifetimeState.Running);
+Console.WriteLine($"Running profiles: {runningProfiles.Count}");
+foreach (var p in runningProfiles)
+{
+    Console.WriteLine($"  - {p.Name} (ID: {p.Id})");
+}
+
+// Filter for terminated profiles (stopped but previously started)
+var terminatedProfiles = await client.Profile.ListProfilesAsync(ProfileLifetimeState.Terminated);
+Console.WriteLine($"Terminated profiles: {terminatedProfiles.Count}");
+foreach (var p in terminatedProfiles)
+{
+    Console.WriteLine($"  - {p.Name} (ID: {p.Id})");
+}
+
+// Filter for newly created profiles (never started)
+var createdProfiles = await client.Profile.ListProfilesAsync(ProfileLifetimeState.Created);
+Console.WriteLine($"Created profiles: {createdProfiles.Count}");
+```
+
++++
+
+!!!tip Available lifetime states
+The complete list of profile lifetime states includes: `created` (profile created but never started), `starting` (browser engine starting), `running` (browser active), `terminating` (browser shutting down), `terminated` (browser stopped but was running before), `locked` (in use by another user), `loading` (syncing with cloud storage), and `unknown` (undefined state). Filter by only one state per API call.
+!!!
+
+## 5. Update settings (add a proxy)
 
 Updates require the profile to be in a stopped (terminated) state. Attempting to change network settings while running can fail or cause instability.
 
@@ -232,7 +320,7 @@ Console.WriteLine($"Proxy set to {updated.Proxy?.Value}");
 
 +++
 
-## 5. Export and import (backup / restore)
+## 6. Export and import (backup / restore)
 
 Export creates a portable archive (.kameleo) of the existing profile (including settings, storage, cookies, history, bookmarks, extensions). Importing restores that exact profile (same profile ID). Import will fail if a profile with the same ID is already loaded.
 
@@ -283,7 +371,7 @@ Console.WriteLine($"Restored profile with SAME ID {restored.Id}");
 
 +++
 
-## 6. Upgrade the profile (browser/kernel)
+## 7. Upgrade the profile (browser/kernel)
 
 Keep profiles current to benefit from the latest browser security patches, modern TLS/cipher suites, and widely distributed real‑world fingerprints. Upgrading refreshes the profile's fingerprint to the newest matching browser version and (if applicable) switches to a better fitting kernel. The profile ID, local storage (cookies, history, etc.), and your settings remain; only the browser fingerprinting surface changes.
 
@@ -327,7 +415,7 @@ Console.WriteLine($"Browser after upgrade: {profile.Fingerprint.Browser.Product}
 
 +++
 
-## 7. Delete when finished
+## 8. Delete when finished
 
 Remove profiles you no longer need to keep the workspace clean and reclaim disk space (profiles store cached browsing data, extensions, cookies, history, and other artifacts).
 
