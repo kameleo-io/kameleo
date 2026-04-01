@@ -1,6 +1,6 @@
 {
   "name": "@kameleo/local-api-client",
-  "version": "4.2.1",
+  "version": "4.4.0",
   "author": "Kameleo Team",
   "description": "This JavaScript/TypeScript package provides convenient access to the Local API REST interface of the Kameleo Client.",
   "engines": {
@@ -27,10 +27,10 @@
   "homepage": "https://kameleo.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kameleo-io/local-api-client-typescript.git"
+    "url": "https://github.com/kameleo-io/kameleo.git"
   },
   "bugs": {
-    "url": "https://github.com/kameleo-io/local-api-client-typescript/issues"
+    "url": "https://github.com/kameleo-io/kameleo/issues"
   },
   "files": [
     "dist",
@@ -47,6 +47,6 @@
   },
   "devDependencies": {
     "@types/node": "^16",
-    "typescript": "5.4.5"
+    "typescript": "5.9.3"
   }
 }

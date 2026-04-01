@@ -1,4 +1,4 @@
-import { KameleoLocalApiClient } from "@kameleo/local-api-client";
+import { KameleoLocalApiClient, ProfileLifetimeState } from "@kameleo/local-api-client";
 import { setTimeout } from "timers/promises";
 
 // This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
@@ -14,9 +14,9 @@ const client = new KameleoLocalApiClient({
 // Possible deviceType value: desktop, mobile
 // Possible browserProduct value: chrome, firefox, edge, ...
 // Possible osFamily values: windows, macos, linux, android, ios
-// Examples of browserVersion values that limit the major version of the fingeprint: 135, >134, ...
+// Examples of browserVersion values that limit the major version of the fingerprint: 145, >145, ...
 // You can use empty parameters as well, Kameleo provides recent and varied fingerprints by default
-const fingerprints = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome", ">134");
+const fingerprints = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome", ">145");
 
 // Create a new profile with recommended settings
 // Choose one of the Chrome fingerprints
@@ -25,7 +25,7 @@ const fingerprints = await client.fingerprint.searchFingerprints("desktop", "win
 const createProfileRequest = {
     fingerprintId: fingerprints[0].id,
     name: "create profile example",
-    language: "es-ES",
+    language: "es-ES,es,en",
     webgl: "noise",
     webglMeta: {
         value: "manual",
@@ -41,6 +41,10 @@ const profile = await client.profile.createProfile(createProfileRequest);
 
 // Start the profile
 await client.profile.startProfile(profile.id);
+
+// List the running profiles
+const runningProfiles = await client.profile.listProfiles(ProfileLifetimeState.Running);
+console.log(`Running profiles: ${runningProfiles.length}`);
 
 // Wait for 10 seconds
 await setTimeout(10_000);

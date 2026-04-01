@@ -85,19 +85,19 @@ Search for a fingerprint matching the desired device type, operating system, bro
 +++ Python
 
 ```python
-fps = client.fingerprint.search_fingerprints(device_type='desktop', platform='windows', browser_product='chrome', browser_version='>137')
+fps = client.fingerprint.search_fingerprints(device_type='desktop', platform='windows', browser_product='chrome', browser_version='>145')
 ```
 
 +++ JavaScript
 
 ```js
-const fps = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome", ">137");
+const fps = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome", ">145");
 ```
 
 +++ C#
 
 ```csharp
-var fps = await client.Fingerprint.SearchFingerprintsAsync("desktop", "windows", "chrome", ">137");
+var fps = await client.Fingerprint.SearchFingerprintsAsync("desktop", "windows", "chrome", ">145");
 ```
 
 +++

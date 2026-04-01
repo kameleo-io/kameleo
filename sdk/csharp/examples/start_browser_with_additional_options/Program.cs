@@ -32,7 +32,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 // start the browser with the --mute-audio command line argument
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    Arguments = new List<string> { "mute-audio" }
+    Arguments = ["mute-audio"]
 });
 
 // Wait for 10 seconds
@@ -44,7 +44,7 @@ await client.Profile.StopProfileAsync(profile.Id);
 // start the browser with an additional Selenum option
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    AdditionalOptions = new List<Preference> { new("pageLoadStrategy", "eager") }
+    AdditionalOptions = [new("pageLoadStrategy", "eager")]
 });
 
 // Wait for 10 seconds
@@ -56,7 +56,7 @@ await client.Profile.StopProfileAsync(profile.Id);
 // start the browser and also set a Chrome preference
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    Preferences = new List<Preference> { new("profile.managed_default_content_settings.images", 2), }
+    Preferences = [new("profile.managed_default_content_settings.images", 2)]
 });
 
 // Wait for 10 seconds

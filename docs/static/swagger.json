@@ -8,7 +8,7 @@
       "name": "Kameleo Team",
       "url": "https://developer.kameleo.io"
     },
-    "version": "4.2.1"
+    "version": "4.4.0"
   },
   "servers": [
     {
@@ -245,12 +245,12 @@
           {
             "name": "browserVersion",
             "in": "query",
-            "description": "Filter option for the browser version.\r\nIncludes an optional sign (<, >=, etc.) and a major version number (e.g. 135)",
+            "description": "Filter option for the browser version.\r\nIncludes an optional sign (<, >=, etc.) and a major version number (e.g. 145)",
             "schema": {
               "type": "string",
-              "example": "135"
+              "example": "145"
             },
-            "example": "135"
+            "example": "145"
           }
         ],
         "responses": {
@@ -1111,6 +1111,20 @@
         "tags": ["Profile"],
         "summary": "Retrieve a list of all profiles loaded in your workspace. Use this endpoint to view a preview of each profile so you can quickly assess\r\navailable profiles.",
         "operationId": "ListProfiles",
+        "parameters": [
+          {
+            "name": "lifetimeState",
+            "in": "query",
+            "description": "The lifetime state of the profiles to return (optional)",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ProfileLifetimeState"
+                }
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK.",
@@ -1522,6 +1536,16 @@
           },
           "409": {
             "description": "Profile already running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
             "content": {
               "application/json": {
                 "schema": {
@@ -2004,6 +2028,28 @@
         "type": "string",
         "description": "Specifies how the canvas will be spoofed. Possible values:\r\n'intelligent': Use intelligent canvas spoofing. This will result non-unique canvas fingerprints.\r\n'noise': Add some noise to canvas generation.\r\n'block': Completely block the 2D API.\r\n'off': Turn off the spoofing, use the original settings."
       },
+      "CloudTrafficQuota": {
+        "type": "object",
+        "properties": {
+          "currentUsage": {
+            "type": "integer",
+            "description": "Transferred data in bytes within the current period.",
+            "format": "int64"
+          },
+          "maximumLimit": {
+            "type": "integer",
+            "description": "Allowed data limit in bytes for the current period. A null value indicates an unlimited quota.",
+            "format": "int64",
+            "nullable": true
+          },
+          "nextResetAt": {
+            "type": "string",
+            "description": "Timestamp indicating when the current usage will reset to zero.",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "CookieRequest": {
         "required": ["domain", "name", "path", "value"],
         "type": "object",
@@ -2215,14 +2261,14 @@
                 "$ref": "#/components/schemas/DeviceMemoryChoice"
               }
             ],
-            "description": "Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a numeric value (0.25,\r\n0.5, 1, 2, 4, 8) must be provided.",
+            "description": "Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a numeric value (0.25,\r\n0.5, 1, 2, 4, 8, 16, 32) must be provided.",
             "nullable": true
           },
           "language": {
             "type": "string",
-            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
+            "description": "A language or a comma-separated list of languages for the profile.\r\nISO 639-1 language and optionally ISO 3166-1 region code.",
             "nullable": true,
-            "example": "en-US"
+            "example": "en-US,en"
           },
           "startPage": {
             "type": "string",
@@ -2325,7 +2371,7 @@
                 "$ref": "#/components/schemas/DeviceMemorySpoofingType"
               }
             ],
-            "description": "Specifies how the deviceMemory will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.\r\n'off': Turn off the spoofing, use the original settings."
+            "description": "Specifies how the deviceMemory will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8, 16, 32.\r\n'off': Turn off the spoofing, use the original settings."
           },
           "extra": {
             "type": "number",
@@ -2338,7 +2384,7 @@
       "DeviceMemorySpoofingType": {
         "enum": ["automatic", "manual", "off"],
         "type": "string",
-        "description": "Specifies how the deviceMemory will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8.\r\n'off': Turn off the spoofing, use the original settings."
+        "description": "Specifies how the deviceMemory will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8, 16, 32.\r\n'off': Turn off the spoofing, use the original settings."
       },
       "ExportProfileRequest": {
         "required": ["path"],
@@ -2910,8 +2956,8 @@
           },
           "language": {
             "type": "string",
-            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
-            "example": "en-US"
+            "description": "A language or a comma-separated list of languages for the profile.\r\nISO 639-1 language and optionally ISO 3166-1 region code.",
+            "example": "en-US,en"
           },
           "status": {
             "required": ["lifetimeState"],
@@ -3106,15 +3152,15 @@
                 "$ref": "#/components/schemas/DeviceMemoryChoice"
               }
             ],
-            "description": "Sets the level of device memory spoofing. Values can be 'automatic', 'manual', 'off'.\r\nWhen value is set to manual, a specific amount of device memory must be provided (valid values: 0.25, 0.5, 1, 2, 4, 8)",
+            "description": "Sets the level of device memory spoofing. Values can be 'automatic', 'manual', 'off'.\r\nWhen value is set to manual, a specific amount of device memory must be provided (valid values: 0.25, 0.5, 1, 2, 4, 8, 16, 32)",
             "example": {
               "value": "automatic"
             }
           },
           "language": {
             "type": "string",
-            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
-            "example": "en-US"
+            "description": "A language or a comma-separated list of languages for the profile.\r\nISO 639-1 language and optionally ISO 3166-1 region code.",
+            "example": "en-US,en"
           },
           "startPage": {
             "type": "string",
@@ -3591,14 +3637,14 @@
                 "$ref": "#/components/schemas/DeviceMemoryChoice"
               }
             ],
-            "description": "Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a DeviceMemoryType\r\nmust be provided (valid values: 0.25, 0.5, 1, 2, 4, 8)",
+            "description": "Sets how the Device Memory will be spoofed. Values can be 'automatic', 'manual', 'off'. When value is set to manual, a DeviceMemoryType\r\nmust be provided (valid values: 0.25, 0.5, 1, 2, 4, 8, 16, 32)",
             "nullable": true
           },
           "language": {
             "type": "string",
-            "description": "Language of the profile as ISO 639-1 language and optionally ISO 3166-1 region code.",
+            "description": "A language or a comma-separated list of languages for the profile.\r\nISO 639-1 language and optionally ISO 3166-1 region code.",
             "nullable": true,
-            "example": "en-US"
+            "example": "en-US,en"
           },
           "startPage": {
             "type": "string",
@@ -3809,6 +3855,15 @@
               }
             ],
             "description": "Current usage and maximum limit of profile minutes across the tenant.",
+            "nullable": true
+          },
+          "cloudTraffic": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CloudTrafficQuota"
+              }
+            ],
+            "description": "Current usage and maximum limit of cloud traffic quota across the tenant.",
             "nullable": true
           }
         },
