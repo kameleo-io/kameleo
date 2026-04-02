@@ -21,7 +21,7 @@ pipeline {
                         timeout(time: 1, unit: 'MINUTES') {
                             def inputValue = input(
                                 id: 'userInput',
-                                message: 'Audit email recipient',
+                                message: 'Report email recipient',
                                 parameters: [string(name: 'emailOverride', defaultValue: emailOverride),
                                              string(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides),
                                              string(name: 'kernelsOverride', defaultValue: kernelsOverride)]
@@ -37,7 +37,7 @@ pipeline {
                         }
                     } catch(err) {}
 
-                    echo "Audit email recipient override: ${emailOverride}"
+                    echo "Report email recipient override: ${emailOverride}"
                     echo "Artifact url override: ${artifactUrlOverrides}"
                     echo "Kernels override: ${kernelsOverride}"
                 }
@@ -61,7 +61,7 @@ pipeline {
                             runCommand 'npm ci'
                         }
                     }
-                    stage('Run Masking Audit') {
+                    stage('Run Masking Report') {
                         options { timeout(time: 25, unit: 'MINUTES') }
                         steps {
                             withCredentials([
@@ -91,11 +91,11 @@ pipeline {
                                     string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
                                     string(credentialsId: 'brevo-api-key', variable: 'BREVO_API_KEY'),
-                                    string(credentialsId: 'ma-email-sender', variable: 'AUDIT_EMAIL_SENDER'),
-                                    string(credentialsId: 'ma-email-recipient', variable: 'AUDIT_EMAIL_RECIPIENT'),
+                                    string(credentialsId: 'ma-email-sender', variable: 'REPORT_EMAIL_SENDER'),
+                                    string(credentialsId: 'ma-email-recipient', variable: 'REPORT_EMAIL_RECIPIENT'),
                                 ]) {
                                     script {
-                                        if (emailOverride != null) env.AUDIT_EMAIL_RECIPIENT = emailOverride
+                                        if (emailOverride != null) env.REPORT_EMAIL_RECIPIENT = emailOverride
                                         if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
                                         if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride
 
