@@ -43,7 +43,7 @@ setup(
     include_package_data=True,
     license="MIT",
     long_description_content_type='text/markdown',
-    long_description=open("README.md").read(),
+    long_description=open("README.md", encoding="utf-8").read(),
     package_data={"kameleo.local_api_client": ["py.typed"]},
     classifiers=[
         "Programming Language :: Python :: 3",
