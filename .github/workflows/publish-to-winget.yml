@@ -18,6 +18,7 @@ jobs:
         with:
           identifier: Kameleo.App
           max-versions-to-keep: 5
-          token: ${{ secrets.HOMEBREW_TOKEN }}
+          fork-user: kameleo-team
+          token: ${{ secrets.WINGET_TOKEN }}
           version: ${{ inputs.version || github.event.release.tag_name }}
           release-tag: ${{ inputs.version || github.event.release.tag_name }}
