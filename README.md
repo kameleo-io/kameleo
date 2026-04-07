@@ -1,11 +1,11 @@
 <!-- markdownlint-disable MD028 MD033 MD041 -->
 <div align="center">
-<img alt="Kameleo Anti-Detect Browser" src="./assets/logo.png" width="300">
+<img alt="Kameleo Anti-Detect Browser" src="./.github/logo.png" width="300">
 
 <h3>Automate browsers at scale. Stop getting blocked.</h3>
 <p>Self-hosted, always current, no per-request pricing</p>
 
-[![Discord](https://img.shields.io/discord/1248220613055877173?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.com/invite/vNqxWuDkS4)
+[![Discord](https://img.shields.io/discord/1248220613055877173?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.gg/XvhsH46vEN)
 [![npm](https://img.shields.io/npm/v/%40kameleo%2Flocal-api-client?logo=npm)](https://www.npmjs.com/package/@kameleo/local-api-client)
 [![PyPI](https://img.shields.io/pypi/v/kameleo.local-api-client?logo=python&logoColor=white)](https://pypi.org/project/kameleo.local-api-client/)
 [![NuGet](https://img.shields.io/nuget/v/Kameleo.LocalApiClient?logo=nuget)](https://www.nuget.org/packages/Kameleo.LocalApiClient)
@@ -18,7 +18,7 @@
 Manually maintaining fingerprint configurations that get detected within hours? Kameleo keeps pace with anti-bot systems automatically, so you stop firefighting and build your actual product.
 
 <div align="center">
-  <img src="./assets/demo.gif" alt="Blocked Without Kameleo. Undetected With Kameleo." width="650">
+  <img src="./.github/demo.gif" alt="Blocked Without Kameleo. Undetected With Kameleo." width="650">
 </div>
 
 ## ✅ Validated against real services
@@ -309,6 +309,6 @@ We welcome contributions! Here's how you can help:
 
 Made with ❤️ by the [Kameleo Team](https://kameleo.io/about-us)
 
-**[Website](https://kameleo.io)** · **[Documentation](https://developer.kameleo.io)** · **[Discord](https://discord.com/invite/vNqxWuDkS4)**
+**[Website](https://kameleo.io)** · **[Documentation](https://developer.kameleo.io)** · **[Discord](https://discord.gg/XvhsH46vEN)**
 
 </div>
