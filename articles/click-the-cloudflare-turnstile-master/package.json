@@ -1,0 +1,14 @@
+{
+  "name": "cloud",
+  "version": "1.0.0",
+  "main": "script.js",
+  "dependencies": {
+    "@kameleo/local-api-client": "^x.x.x",
+    "@u4/opencv4nodejs": "^6.5.3",
+    "ghost-cursor-playwright": "^2.1.0",
+    "playwright": "^1.37.0"
+  },
+  "scripts": {
+    "postinstall": "build-opencv --version 4.6.0 rebuild"
+  }
+}
