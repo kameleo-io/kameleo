@@ -92,12 +92,12 @@ pipeline {
                                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
                                     string(credentialsId: 'brevo-api-key', variable: 'BREVO_API_KEY'),
                                     string(credentialsId: 'ma-email-sender', variable: 'REPORT_EMAIL_SENDER'),
-                                    string(credentialsId: 'ma-email-recipient', variable: 'REPORT_EMAIL_RECIPIENT'),
+                                    string(credentialsId: 'ma-email-recipient', variable: 'REPORT_EMAIL_RECIPIENT_DEFAULT'),
                                 ]) {
                                     script {
-                                        if (emailOverride != null) env.REPORT_EMAIL_RECIPIENT = emailOverride
                                         if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
                                         if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride
+                                        env.REPORT_EMAIL_RECIPIENT = emailOverride ?: env.REPORT_EMAIL_RECIPIENT_DEFAULT
 
                                         runCommand 'node build/sendEmail.ts'
                                     }
