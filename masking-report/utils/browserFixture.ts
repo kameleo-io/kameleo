@@ -1,5 +1,6 @@
 import { type BrowserSettings, KameleoLocalApiClient, type ProfileResponse, type ProxyChoice } from "@kameleo/local-api-client";
 import { type BrowserContext, type BrowserContextOptions, test as base } from "@playwright/test";
+import assert from "assert";
 import { randomInt } from "crypto";
 import path from "path";
 
@@ -37,7 +38,7 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
     osFamily: [isWindows() ? "windows" : "macos", { option: true }],
     browserSettings: [undefined, { option: true }],
     useKameleo: [true, { option: true }],
-    context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo }, use) => {
+    context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo }, use, testInfo) => {
         // setup
         const kameleoClient = new KameleoLocalApiClient({ basePath: `http://localhost:${KAMELEO_PORT}` });
         let profile: ProfileResponse | undefined;
@@ -53,8 +54,12 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
 
         if (useKameleo) {
             const fingerprints = await kameleoClient.fingerprint.searchFingerprints(deviceType, osFamily, browserProduct);
+            assert.ok(fingerprints.length > 0, `no fingerprint was found for ${JSON.stringify({ deviceType, osFamily, browserProduct })}`);
+            const fingerprintId = fingerprints[0].id;
+            console.log(`using fingerprint ${fingerprintId} for test ${testInfo.title} - ${browserProduct} #${testInfo.retry + 1}`);
+
             profile = await kameleoClient.profile.createProfile({
-                fingerprintId: fingerprints[0].id,
+                fingerprintId: fingerprintId,
                 proxy: getProxy(),
             });
 
