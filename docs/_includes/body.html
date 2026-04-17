@@ -2,7 +2,15 @@
     // Sync selected tab across the whole page
     (function () {
         const SYNC_FLAG = "syncingTabs";
-        const TAB_HASHES = new Set(["#javascript", "#python", "#c", "#windows", "#macos"]);
+        const TAB_HASHES = new Set([
+            "#javascript",
+            "#python",
+            "#c",
+            "#windows",
+            "#macos",
+            "#linux-based-container",
+            "#windows-based-container",
+        ]);
         const TAB_SELECTOR = Array.from(TAB_HASHES)
             .map((h) => `a[href="${h}"]`)
             .join(", ");
