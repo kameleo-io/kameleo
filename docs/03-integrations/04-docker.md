@@ -11,16 +11,6 @@ The [`kameleo/kameleo-app:latest`](https://hub.docker.com/r/kameleo/kameleo-app)
 
 ## Prerequisites
 
-+++ Windows-based container
-
-- Docker compatible [Windows host OS](https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)
-- Basic Docker experience (running containers, mounting volumes, using compose files)
-- Valid Kameleo account credentials (email & password)
-
-!!!warning Host OS compatibility
-The Windows variant is built from the _Windows Server Core LTSC 2022_ base image. You must run it on a host that supports Windows containers: Windows 11, Windows Server 2022, or Windows Server 2025.
-!!!
-
 +++ Linux-based container
 
 - Any Docker-capable Linux host (amd64 architecture)
@@ -31,16 +21,26 @@ The Windows variant is built from the _Windows Server Core LTSC 2022_ base image
 Always start the Linux container with `--shm-size=2g`. The default `/dev/shm` size of 64 MB is too small and will cause browser crashes.
 !!!
 
++++ Windows-based container
+
+- Docker compatible [Windows host OS](https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)
+- Basic Docker experience (running containers, mounting volumes, using compose files)
+- Valid Kameleo account credentials (email & password)
+
+!!!warning Host OS compatibility
+The Windows variant is built from the _Windows Server Core LTSC 2022_ base image. You must run it on a host that supports Windows containers: Windows 11, Windows Server 2022, or Windows Server 2025.
+!!!
+
 +++
 
 ## Container layout & persistence
 
 Kameleo runs under a non-administrative user inside the image. This improves isolation and reduces the surface for privilege escalation.
 
-| Property           | Windows                               | Linux                          |
-| ------------------ | ------------------------------------- | ------------------------------ |
-| **Runtime user**   | `ContainerUser` (built-in, non-admin) | `appuser` (UID 1001, non-root) |
-| **Data directory** | `C:\data`                             | `/data`                        |
+| Property           | Linux                          | Windows                               |
+| ------------------ | ------------------------------ | ------------------------------------- |
+| **Runtime user**   | `appuser` (UID 1001, non-root) | `ContainerUser` (built-in, non-admin) |
+| **Data directory** | `/data`                        | `C:\data`                             |
 
 Mount the data directory to a host path to persist state (profiles, kernels) across container recreations.
 
@@ -60,16 +60,16 @@ Mandatory credentials must always be provided; without them the app will not aut
 
 ### 1. Create a host directory for data
 
-+++ Windows-based container
-
-```powershell
-New-Item -ItemType Directory -Path "C:\kameleo-data" -Force | Out-Null
-```
-
 +++ Linux-based container
 
 ```bash
 mkdir -p ~/kameleo-data
+```
+
++++ Windows-based container
+
+```powershell
+New-Item -ItemType Directory -Path "C:\kameleo-data" -Force | Out-Null
 ```
 
 +++
@@ -78,18 +78,18 @@ mkdir -p ~/kameleo-data
 
 Expose port 5050, pass credentials, and mount persistent data:
 
-+++ Windows-based container
-
-```powershell
-docker pull kameleo/kameleo-app:latest
-docker run -p 5050:5050 -e EMAIL="email" -e PASSWORD="pw" -v "C:\kameleo-data:C:\data" kameleo/kameleo-app:latest
-```
-
 +++ Linux-based container
 
 ```bash
 docker pull kameleo/kameleo-app:latest
 docker run -p 5050:5050 --shm-size=2g -e EMAIL="email" -e PASSWORD="pw" -v ~/kameleo-data:/data kameleo/kameleo-app:latest
+```
+
++++ Windows-based container
+
+```powershell
+docker pull kameleo/kameleo-app:latest
+docker run -p 5050:5050 -e EMAIL="email" -e PASSWORD="pw" -v "C:\kameleo-data:C:\data" kameleo/kameleo-app:latest
 ```
 
 +++
@@ -106,22 +106,6 @@ http://localhost:5050/swagger
 
 Use `docker-compose.yml` for repeatable infrastructure or CI pipelines:
 
-+++ Windows-based container
-
-```yaml
-services:
-    kameleo-app:
-        image: kameleo/kameleo-app:latest
-        ports:
-            - "5050:5050"
-        environment:
-            EMAIL: your-email@example.com
-            PASSWORD: your-password
-        volumes:
-            - C:\kameleo-data:C:\data
-        restart: unless-stopped
-```
-
 +++ Linux-based container
 
 ```yaml
@@ -136,6 +120,22 @@ services:
         volumes:
             - ~/kameleo-data:/data
         shm_size: "2g"
+        restart: unless-stopped
+```
+
++++ Windows-based container
+
+```yaml
+services:
+    kameleo-app:
+        image: kameleo/kameleo-app:latest
+        ports:
+            - "5050:5050"
+        environment:
+            EMAIL: your-email@example.com
+            PASSWORD: your-password
+        volumes:
+            - C:\kameleo-data:C:\data
         restart: unless-stopped
 ```
 
