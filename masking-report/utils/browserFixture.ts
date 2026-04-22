@@ -35,7 +35,7 @@ export interface ConfiguredContextOptions {
 export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
     deviceType: ["desktop", { option: true }],
     browserProduct: ["chrome", { option: true }],
-    osFamily: [isWindows() ? "windows" : "macos", { option: true }],
+    osFamily: [process.platform == "win32" ? "windows" : process.platform == "darwin" ? "macos" : "linux", { option: true }],
     browserSettings: [undefined, { option: true }],
     useKameleo: [true, { option: true }],
     context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo }, use, testInfo) => {

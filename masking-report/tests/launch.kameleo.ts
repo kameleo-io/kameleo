@@ -1,8 +1,9 @@
+import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import { test as setup } from "@playwright/test";
 import assert from "assert";
 import { spawn } from "child_process";
 import { existsSync } from "fs";
-import { rm } from "fs/promises";
+import { chmod, mkdir, rm } from "fs/promises";
 import path from "path";
 import { setTimeout } from "timers/promises";
 
@@ -18,9 +19,18 @@ import {
     KAMELEO_VERBOSE,
     KAMELEO_VERSION,
 } from "../config.ts";
-import { downloadFile, extractSevenZip, httpRequest, isWindows } from "../utils/common.ts";
+import { downloadFile, extractSevenZip, isWindows, runCommand } from "../utils/common.ts";
 
 setup("launch Kameleo CLI", async () => {
+    if (process.platform == "linux") {
+        await launchKameleoDocker();
+    } else {
+        await launchKameleoLocal();
+    }
+    await kameleoHealthcheck();
+});
+
+async function launchKameleoLocal(): Promise<void> {
     let artifactUrl =
         `https://${ARTIFACTORY_HOSTNAME}/repository/kamono-releases/` +
         (isWindows() ? `win-x64/${KAMELEO_VERSION}/client-stack-master-win-x64.7z` : `osx-arm64/${KAMELEO_VERSION}/Kameleo-osx-arm64.zip`);
@@ -81,15 +91,51 @@ setup("launch Kameleo CLI", async () => {
             ...kernelOverrides,
         },
     });
+}
 
+async function launchKameleoDocker(): Promise<void> {
+    const kameleoDockerImage = `kameleo/kameleo-app:${KAMELEO_VERSION}`;
+    const dockerDataMount = path.resolve("dist/docker-data");
+
+    runCommand("docker", ["image", "pull", kameleoDockerImage]);
+    const kernelOverrides = Object.fromEntries((KAMELEO_KERNELS ?? []).map((kernel, index) => [`KernelOverrides__${index}`, kernel]));
+    await mkdir(dockerDataMount, { recursive: true });
+    await chmod(dockerDataMount, "777");
+
+    spawn(
+        "docker",
+        [
+            "run",
+            "--rm",
+            "-p",
+            `${KAMELEO_PORT}:5050`,
+            "--shm-size=2g",
+            "-v",
+            `${dockerDataMount}:/data`,
+            "-e",
+            `EMAIL=${KAMELEO_EMAIL}`,
+            "-e",
+            `PASSWORD=${KAMELEO_PASSWORD}`,
+            "-e",
+            `VERBOSE=${KAMELEO_VERBOSE}`,
+            ...Object.entries(kernelOverrides)
+                .map(([key, value]) => ["-e", `${key}=${value}`])
+                .flat(),
+            kameleoDockerImage,
+        ],
+        { stdio: "inherit" },
+    );
+}
+
+async function kameleoHealthcheck(): Promise<void> {
     // Wait for Kameleo to start and verify it's running (HTTP 200)
-    const healthcheckUrl = `http://localhost:${KAMELEO_PORT}/general/healthcheck`;
+    const kameleoClient = new KameleoLocalApiClient({ basePath: `http://localhost:${KAMELEO_PORT}` });
     const deadline = Date.now() + 30_000;
     let lastError: unknown;
 
     while (Date.now() < deadline) {
         try {
-            await httpRequest(healthcheckUrl);
+            await kameleoClient.general.healthcheck();
             return;
         } catch (e) {
             lastError = e;
@@ -98,4 +144,4 @@ setup("launch Kameleo CLI", async () => {
     }
 
     throw new Error(`Kameleo did not start within 30 seconds: ${String(lastError)}`);
-});
+}

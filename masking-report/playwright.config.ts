@@ -44,11 +44,15 @@ export default defineConfig<ConfiguredContextOptions>({
             dependencies: ["launch Kameleo CLI"],
             use: { browserProduct: "chrome" },
         },
-        {
-            name: "Junglefox",
-            dependencies: ["launch Kameleo CLI"],
-            use: { browserProduct: "firefox" },
-        },
+        ...(process.platform != "linux"
+            ? [
+                  {
+                      name: "Junglefox",
+                      dependencies: ["launch Kameleo CLI"],
+                      use: { browserProduct: "firefox" },
+                  },
+              ]
+            : []),
         {
             name: "Chromium",
             testIgnore: ["launch.kameleo.ts", "terminate.kameleo.ts"],

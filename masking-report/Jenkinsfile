@@ -3,44 +3,38 @@ def runCommand(String cmd) {
 }
 
 pipeline {
-    agent none
+    agent {
+        label "ubuntu"
+    }
     options {
         disableConcurrentBuilds()
     }
-
     stages {
-        stage('Ubuntu') {
-            agent {
-                label "ubuntu"
+        stage('Init Repository') {
+            options { timeout(time: 5, unit: 'MINUTES') }
+            steps {
+                runCommand 'git clean -fd'
+                runCommand 'git reset --hard HEAD'
+                runCommand 'npm ci'
             }
-            stages {
-                stage('Init Repository') {
-                    options { timeout(time: 5, unit: 'MINUTES') }
-                    steps {
-                        runCommand 'git clean -fd'
-                        runCommand 'git reset --hard HEAD'
-                        runCommand 'npm ci'
-                    }
+        }
+        stage('Type-Check & Lint') {
+            options { timeout(time: 10, unit: 'MINUTES') }
+            steps {
+                runCommand "npm run type-check"
+                runCommand "npm run lint"
+            }
+        }
+        stage('Sync to GitHub') {
+            when {
+                expression {
+                    return env.BRANCH_NAME == 'master'
                 }
-                stage('Type-Check & Lint') {
-                    options { timeout(time: 10, unit: 'MINUTES') }
-                    steps {
-                        runCommand "npm run type-check"
-                        runCommand "npm run lint"
-                    }
-                }
-                stage('Sync to GitHub') {
-                    when {
-                        expression {
-                            return env.BRANCH_NAME == 'master'
-                        }
-                    }
-                    options { timeout(time: 10, unit: 'MINUTES') }
-                    steps {
-                        withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-                            runCommand 'node build/publishGitHub.ts'
-                        }
-                    }
+            }
+            options { timeout(time: 10, unit: 'MINUTES') }
+            steps {
+                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                    runCommand 'node build/publishGitHub.ts'
                 }
             }
         }

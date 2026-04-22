@@ -12,30 +12,19 @@ pipeline {
     environment {
         ARTIFACTORY_REPOSITORY = 'masking-audit'
     }
+    parameters {
+        string(name: 'emailOverride', defaultValue: emailOverride)
+        string(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides)
+        string(name: 'kernelsOverride', defaultValue: kernelsOverride)
+    }
 
     stages {
-        stage('Enter Inputs') {
+        stage('Parse parameters') {
             steps {
                 script {
-                    try {
-                        timeout(time: 1, unit: 'MINUTES') {
-                            def inputValue = input(
-                                id: 'userInput',
-                                message: 'Report email recipient',
-                                parameters: [string(name: 'emailOverride', defaultValue: emailOverride),
-                                             string(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides),
-                                             string(name: 'kernelsOverride', defaultValue: kernelsOverride)]
-                            )
-
-                            if (inputValue == null) {
-                                error('No input provided')
-                            }
-
-                            emailOverride = inputValue['emailOverride']?.trim() ?: emailOverride
-                            artifactUrlOverrides = inputValue['artifactUrlOverrides']?.trim() ?: artifactUrlOverrides
-                            kernelsOverride = inputValue['kernelsOverride']?.trim() ?: kernelsOverride
-                        }
-                    } catch(err) {}
+                    emailOverride = params.emailOverride?.trim() ?: emailOverride
+                    artifactUrlOverrides = params.artifactUrlOverrides?.trim() ?: artifactUrlOverrides
+                    kernelsOverride = params.kernelsOverride?.trim() ?: kernelsOverride
 
                     echo "Report email recipient override: ${emailOverride}"
                     echo "Artifact url override: ${artifactUrlOverrides}"
@@ -45,13 +34,14 @@ pipeline {
         }
         stage('Matrix') {
             matrix {
+                // restrict to a single agent per OS for consistency
                 axes {
                     axis {
                         name 'AGENT'
-                        values 'windows11', 'macos'
+                        values 'windows11', 'macos', 'ubuntu'
                     }
                 }
-                agent { label AGENT }
+                agent { label "${AGENT} && gui" }
                 stages {
                     stage('Init Repository') {
                         options { timeout(time: 5, unit: 'MINUTES') }
