@@ -167,6 +167,40 @@ When deploying to AWS ECS:
 - Configure appropriate instance types with sufficient resources for your Kameleo workload.
 - Mount persistent storage using bind mounts to preserve profile data across container restarts.
 
+## GPU support
+
+By default Kameleo uses software rendering inside the Linux container. If you mount the host GPU into the container, Kameleo automatically detects it and enables hardware-accelerated rendering in the browser. This can improve performance on GPU-intensive pages such as WebGL or canvas-heavy sites.
+
+### Intel / AMD
+
+Pass the DRI device directory and add the host device group IDs so the container user can access them:
+
+```bash
+docker run -p 5050:5050 --shm-size=2g \
+    --device /dev/dri \
+    --group-add $(stat -c '%g' /dev/dri/card0) \
+    --group-add $(stat -c '%g' /dev/dri/renderD128) \
+    -e EMAIL="email" -e PASSWORD="pw" \
+    -v ~/kameleo-data:/data \
+    kameleo/kameleo-app:latest
+```
+
+### NVIDIA
+
+Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) on the host, then pass `--gpus all`:
+
+```bash
+docker run -p 5050:5050 --shm-size=2g \
+    --gpus all \
+    -e EMAIL="email" -e PASSWORD="pw" \
+    -v ~/kameleo-data:/data \
+    kameleo/kameleo-app:latest
+```
+
+!!!info No GPU? No problem
+When no GPU device is mounted, the container falls back to software rendering automatically. No configuration change is needed.
+!!!
+
 ## Troubleshooting
 
 ### Container exits immediately
