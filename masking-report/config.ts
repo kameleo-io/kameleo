@@ -6,9 +6,9 @@ import { env, envNumberOptional, envOptional } from "./utils/common.ts";
 dotenv.config({ path: path.resolve(import.meta.dirname, ".env"), quiet: true });
 
 // Core settings
-export const KAMELEO_VERSION = envOptional("KAM_VERSION") ?? "4.4.0";
+export const KAMELEO_VERSION = envOptional("KAM_VERSION") ?? "4.4.1";
 export const KAMELEO_PORT = envNumberOptional("KAM_PORT") ?? 5051;
-export const KAMELEO_VERBOSE = envOptional("KAM_VERBOSE");
+export const KAMELEO_VERBOSE = envOptional("KAM_VERBOSE") ?? "1";
 export const KAMELEO_KERNELS = envOptional("KAM_KERNELS_OVERRIDE")
     ?.split(/[,;\s]+/)
     .map((kernel) => kernel.trim());
