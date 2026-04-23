@@ -2,10 +2,9 @@ import { type BrowserSettings, KameleoLocalApiClient, type ProfileResponse, type
 import { type BrowserContext, type BrowserContextOptions, test as base } from "@playwright/test";
 import assert from "assert";
 import { randomInt } from "crypto";
-import path from "path";
 
 import { KAMELEO_PORT, KAMELEO_VERSION, PROXY_PASSWORD, PROXY_USERNAME } from "../config.ts";
-import { generateVideoName, isWindows } from "./common.ts";
+import { generateVideoName } from "./common.ts";
 
 function getProxy(): ProxyChoice {
     if (!PROXY_USERNAME || !PROXY_PASSWORD) {
@@ -68,15 +67,17 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
             const browserWSEndpoint = `ws://localhost:${KAMELEO_PORT}/playwright/${profile.id}`;
 
             if (browserProduct == "firefox") {
-                const pwBridgePath = path.join(
-                    `dist/cli/${KAMELEO_VERSION}`,
-                    ...(isWindows() ? ["pw-bridge.exe"] : ["Kameleo.app", "Contents", "Resources", "CLI", "pw-bridge"]),
-                );
+                const pwBridgePath =
+                    process.platform == "win32"
+                        ? `dist/cli/${KAMELEO_VERSION}/pw-bridge.exe` // Windows
+                        : process.platform == "darwin"
+                          ? `dist/cli/${KAMELEO_VERSION}/Kameleo.app/Contents/Resources/CLI/pw-bridge` // macOS
+                          : "dist/linux-pw-bridge"; // Linux docker
 
                 context = await playwright.firefox.launchPersistentContext("", {
                     ...commonContextOptions,
                     executablePath: pwBridgePath,
-                    args: [`-target ${browserWSEndpoint}`],
+                    args: ["-target", browserWSEndpoint],
                 });
             } else {
                 const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
