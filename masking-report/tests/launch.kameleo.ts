@@ -3,7 +3,7 @@ import { test as setup } from "@playwright/test";
 import assert from "assert";
 import { spawn } from "child_process";
 import { existsSync } from "fs";
-import { chmod, mkdir, rm } from "fs/promises";
+import { mkdir, rm } from "fs/promises";
 import path from "path";
 import { setTimeout } from "timers/promises";
 
@@ -95,12 +95,21 @@ async function launchKameleoLocal(): Promise<void> {
 
 async function launchKameleoDocker(): Promise<void> {
     const kameleoDockerImage = `kameleo/kameleo-app:${KAMELEO_VERSION}`;
-    const dockerDataMount = path.resolve("dist/docker-data");
-
     runCommand("docker", ["image", "pull", kameleoDockerImage]);
+
+    // copy pw-bridge from docker image to host
+    const pwBridgeDest = path.resolve("dist/linux-pw-bridge");
+    if (!existsSync(pwBridgeDest)) {
+        await mkdir(path.dirname(pwBridgeDest), { recursive: true });
+        const containerId = runCommand("docker", ["create", kameleoDockerImage]).trim();
+        try {
+            runCommand("docker", ["cp", `${containerId}:/app/pw-bridge`, pwBridgeDest]);
+        } finally {
+            runCommand("docker", ["rm", containerId]);
+        }
+    }
+
     const kernelOverrides = Object.fromEntries((KAMELEO_KERNELS ?? []).map((kernel, index) => [`KernelOverrides__${index}`, kernel]));
-    await mkdir(dockerDataMount, { recursive: true });
-    await chmod(dockerDataMount, "777");
 
     spawn(
         "docker",
@@ -110,8 +119,6 @@ async function launchKameleoDocker(): Promise<void> {
             "-p",
             `${KAMELEO_PORT}:5050`,
             "--shm-size=2g",
-            "-v",
-            `${dockerDataMount}:/data`,
             "-e",
             `EMAIL=${KAMELEO_EMAIL}`,
             "-e",
