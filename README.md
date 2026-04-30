@@ -140,7 +140,7 @@ driver = webdriver.Remote(command_executor=ws_endpoint)
 driver.get('https://example.com')
 ```
 
-[Full Selenium guide →](https://developer.kameleo.io/03-integrations/01-selenium/)
+[Full Selenium guide →](https://developer.kameleo.io/integrations/selenium/)
 
 </details>
 
@@ -158,7 +158,7 @@ const page = await browser.newPage();
 await page.goto('https://example.com');
 ```
 
-[Full Puppeteer guide →](https://developer.kameleo.io/03-integrations/03-puppeteer/)
+[Full Puppeteer guide →](https://developer.kameleo.io/integrations/puppeteer/)
 
 </details>
 
@@ -174,7 +174,7 @@ with sync_playwright() as p:
     page.goto('https://example.com')
 ```
 
-[Full Playwright guide →](https://developer.kameleo.io/03-integrations/02-playwright/)
+[Full Playwright guide →](https://developer.kameleo.io/integrations/playwright/)
 
 </details>
 
