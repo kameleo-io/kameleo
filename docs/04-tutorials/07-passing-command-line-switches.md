@@ -49,11 +49,7 @@ console.log("Started profile with custom arguments");
 ```csharp
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    Arguments = new List<string>
-    {
-        "disable-notifications",
-        "mute-audio"
-    }
+    Arguments = ["disable-notifications", "mute-audio"]
 });
 Console.WriteLine("Started profile with custom arguments");
 ```

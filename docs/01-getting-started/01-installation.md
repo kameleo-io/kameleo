@@ -9,12 +9,12 @@ This page walks you through installing Kameleo, starting the Local API, adding a
 
 ## 1. System requirements
 
-| Component | Minimum                                                        | Recommended                                   |
-| --------- | -------------------------------------------------------------- | --------------------------------------------- |
-| OS        | Windows 10+, Windows Server 2016+<br>macOS 11+ (Apple Silicon) | Latest stable OS version                      |
-| RAM       | 4 GB                                                           | 8+ GB for multi-profile automation            |
-| Disk      | 5 GB free                                                      | 20+ GB (to cache multiple kernels & profiles) |
-| Network   | Stable broadband                                               | Low‑latency connection for high concurrency   |
+| Component | Minimum                                                                                               | Recommended                                   |
+| --------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| OS        | Windows 10+, Windows Server 2016+<br>macOS 11+ (Apple Silicon)<br>Docker (Linux or Windows container) | Latest stable OS version                      |
+| RAM       | 4 GB                                                                                                  | 8+ GB for multi-profile automation            |
+| Disk      | 5 GB free                                                                                             | 20+ GB (to cache multiple kernels & profiles) |
+| Network   | Stable broadband                                                                                      | Low‑latency connection for high concurrency   |
 
 ## 2. Download & install
 
@@ -42,6 +42,16 @@ winget install Kameleo.App
 brew install --cask kameleo
 ```
 
++++ Docker
+
+Pull the official image. Docker selects the image variant that matches the active container platform/runtime. If you need a specific variant, pass `--platform` explicitly:
+
+```bash
+docker pull kameleo/kameleo-app:latest
+```
+
+See the [Docker guide](../03-integrations/04-docker.md) for full setup instructions including data persistence, GPU support, and Playwright integration.
+
 +++
 
 ## 3. Start the CLI (headless or with GUI)
@@ -58,6 +68,12 @@ Launching the Desktop app also starts the CLI in the background. For headless au
 
 ```bash
 /Applications/Kameleo.app/Contents/Resources/CLI/Kameleo.CLI email=<EMAIL> password=<PASSWORD>
+```
+
++++ Docker
+
+```bash
+docker run -p 5050:5050 --shm-size=2g -e EMAIL="<EMAIL>" -e PASSWORD="<PASSWORD>" -v kameleo-data:/data kameleo/kameleo-app:latest
 ```
 
 +++

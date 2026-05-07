@@ -146,7 +146,7 @@ driver = webdriver.Remote(
 ```js
 import { Builder } from "selenium-webdriver";
 
-const webdriver = await new Builder()
+const driver = await new Builder()
     .usingServer("http://localhost:5050/webdriver")
     .withCapabilities({ "kameleo:profileId": profile.id, browserName: "Kameleo" })
     .build();
@@ -161,8 +161,8 @@ using OpenQA.Selenium.Remote;
 var remoteUri = new Uri("http://localhost:5050/webdriver");
 var chromeOptions = new ChromeOptions();
 chromeOptions.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var webdriver = new RemoteWebDriver(remoteUri, chromeOptions);
-webdriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+var driver = new RemoteWebDriver(remoteUri, chromeOptions);
+driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 ```
 
 +++
@@ -178,13 +178,13 @@ driver.get('https://google.com')
 +++ JavaScript
 
 ```js
-await webdriver.get("https://google.com");
+await driver.get("https://google.com");
 ```
 
 +++ C#
 
 ```csharp
-webdriver.Navigate().GoToUrl("https://google.com");
+driver.Navigate().GoToUrl("https://google.com");
 ```
 
 +++
@@ -253,11 +253,11 @@ driver.get('https://wikipedia.org')
 +++ JavaScript
 
 ```js
-const webdriver = await new Builder()
+const driver = await new Builder()
     .usingServer("http://localhost:5050/webdriver")
     .withCapabilities({ "kameleo:profileId": profile.id, browserName: "Kameleo" })
     .build();
-await webdriver.get("https://wikipedia.org");
+await driver.get("https://wikipedia.org");
 ```
 
 +++ C#
@@ -266,8 +266,8 @@ await webdriver.get("https://wikipedia.org");
 var remoteUri = new Uri("http://localhost:5050/webdriver");
 var chromeOptions = new ChromeOptions();
 chromeOptions.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var webdriver = new RemoteWebDriver(remoteUri, chromeOptions);
-webdriver.Navigate().GoToUrl("https://wikipedia.org");
+var driver = new RemoteWebDriver(remoteUri, chromeOptions);
+driver.Navigate().GoToUrl("https://wikipedia.org");
 ```
 
 +++

@@ -20,7 +20,6 @@ All keys are optional unless stated. Defaults apply when omitted. Precedence (hi
 | `Verbose`               | `VERBOSE`               | `verbose`               | `1`                | Log verbosity: `0` = minimal, `1` = normal, `2` = detailed diagnostics.                            |
 | `UserDirectoryOverride` | `USERDIRECTORYOVERRIDE` | `userDirectoryOverride` | (platform default) | Overrides default user directory (`%APPDATA%\Kameleo` or `~/Library/Application Support/Kameleo`). |
 | `WorkspaceFolder`       | `WORKSPACEFOLDER`       | `workspaceFolder`       | `Workspace`        | Workspace root folder. Relative paths resolve under the user directory.                            |
-| `DisableMetrics`        | `DISABLEMETRICS`        | `disableMetrics`        | `false`            | When `true`, disables anonymous metrics collection.                                                |
 
 ## Notes
 

@@ -137,10 +137,10 @@ Use the WebSocket URL `ws://localhost:{port}/puppeteer/{profileId}` to connect.
 +++ Python
 
 ```python
-import pyppeteer
+from pyppeteer import connect
 
 browser_ws_endpoint = f'ws://localhost:5050/puppeteer/{profile.id}'
-browser = await pyppeteer.launcher.connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=False)
+browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
 ```
 
 +++ JavaScript
@@ -206,7 +206,8 @@ Skip the explicit start call. Kameleo starts the profile automatically on the fi
 ```python
 from kameleo.local_api_client import KameleoLocalApiClient
 from kameleo.local_api_client.models import CreateProfileRequest
-import pyppeteer, asyncio
+from pyppeteer import connect
+import asyncio
 
 async def main():
     client = KameleoLocalApiClient(endpoint='http://localhost:5050')
@@ -217,7 +218,7 @@ async def main():
     ))
 
     browser_ws_endpoint = f'ws://localhost:5050/puppeteer/{profile.id}'
-    browser = await pyppeteer.launcher.connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=False)
+    browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
     page = await browser.newPage()
     await page.goto('https://wikipedia.org')
 

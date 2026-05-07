@@ -49,14 +49,14 @@ import { Builder } from "selenium-webdriver";
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "firefox");
 const profile = await client.profile.createProfile({ fingerprintId: fingerprints[0].id, name: "cookie tutorial" });
 
-const webdriver = await new Builder()
+const driver = await new Builder()
     .usingServer(`http://localhost:5050/webdriver`)
     .withCapabilities({ "kameleo:profileId": profile.id, browserName: "Kameleo" })
     .build();
 
 for (const url of ["https://www.nytimes.com", "https://whoer.net", "https://www.youtube.com"]) {
-    await webdriver.get(url);
-    await webdriver.sleep(5000);
+    await driver.get(url);
+    await driver.sleep(5000);
 }
 
 await client.profile.stopProfile(profile.id);

@@ -54,7 +54,7 @@ using Kameleo.LocalApiClient.Model;
 
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    AdditionalOptions = new List<Preference> { new Preference("kameleo:forceOpenShadowRoot", true) }
+    AdditionalOptions = [new Preference("kameleo:forceOpenShadowRoot", true)]
 });
 
 Console.WriteLine("Profile started with forced open shadow roots");

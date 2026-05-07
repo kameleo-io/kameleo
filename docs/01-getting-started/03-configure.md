@@ -31,10 +31,12 @@ You can keep stable defaults in the file and override sensitive credentials via 
 
 Location:
 
-| Platform | Path                                  |
-| -------- | ------------------------------------- |
-| Windows  | %APPDATA%\Kameleo                     |
-| macOS    | ~/Library/Application Support/Kameleo |
+| Platform         | Path                                  |
+| ---------------- | ------------------------------------- |
+| Windows          | %APPDATA%\Kameleo                     |
+| macOS            | ~/Library/Application Support/Kameleo |
+| Docker (Linux)   | `/data`                               |
+| Docker (Windows) | `C:\data`                             |
 
 Minimal example:
 
