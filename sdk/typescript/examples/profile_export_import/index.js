@@ -8,9 +8,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search one of the fingerprints
 const fingerprints = await client.fingerprint.searchFingerprints("desktop");

@@ -43,16 +43,16 @@ await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings()
 var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
 var opts = new ChromeOptions();
 opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var webdriver = new RemoteWebDriver(uri, opts);
-webdriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+var driver = new RemoteWebDriver(uri, opts);
+driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
 // Use any WebDriver command to drive the browser
 // and enjoy full protection from bot detection products
-await webdriver.Navigate().GoToUrlAsync("https://wikipedia.org");
-webdriver.FindElement(By.Name("search")).SendKeys("Chameleon");
-webdriver.FindElement(By.Name("search")).SendKeys(Keys.Enter);
-webdriver.FindElement(By.Id("content"));
-var title = webdriver.Title;
+await driver.Navigate().GoToUrlAsync("https://wikipedia.org");
+driver.FindElement(By.Name("search")).SendKeys("Chameleon");
+driver.FindElement(By.Name("search")).SendKeys(Keys.Enter);
+driver.FindElement(By.Id("content"));
+var title = driver.Title;
 Console.WriteLine($"The title is {title}");
 
 await Task.Delay(TimeSpan.FromSeconds(5));

@@ -7,9 +7,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search Firefox fingerprints
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "firefox");
@@ -41,8 +39,9 @@ if (!pwBridgePath && process.platform === "win32") {
 
 const context = await playwright.firefox.launchPersistentContext("", {
     executablePath: pwBridgePath,
-    args: [`-target ${browserWSEndpoint}`],
+    args: ["-target", browserWSEndpoint],
     viewport: null,
+    timeout: 90_000,
 });
 
 // Kameleo will open the a new page in the default browser context.

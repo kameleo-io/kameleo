@@ -6,9 +6,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search for a Desktop fingerprint with Windows OS and Chrome browser
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome");

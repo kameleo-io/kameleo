@@ -27,7 +27,7 @@ profile = client.profile.create_profile(create_profile_request)
 # Start the Kameleo profile and connect with Playwright through CDP
 browser_ws_endpoint = f'ws://localhost:{kameleo_port}/playwright/{profile.id}'
 with sync_playwright() as playwright:
-    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint)
+    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint, timeout=90_000)
     context = browser.contexts[0]
     page = context.new_page()
     with open(os.path.join(os.path.dirname(__file__), 'kameleo.svg'), 'rb') as f:

@@ -1,7 +1,7 @@
 from kameleo.local_api_client import KameleoLocalApiClient
 from kameleo.local_api_client.models import CreateProfileRequest
 import asyncio
-import pyppeteer
+from pyppeteer import connect
 import random
 import string
 import os
@@ -30,16 +30,18 @@ async def main():
 
     # Start the Kameleo profile and connect through CDP
     browser_ws_endpoint = f'ws://localhost:{kameleo_port}/puppeteer/{profile.id}'
-    browser = await pyppeteer.launcher.connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=False)
+    browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
     page = await browser.newPage()
 
     # Open a random page from wikipedia
     await page.goto('https://en.wikipedia.org/wiki/Special:Random')
 
     res = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+    path = f'screenshot-{res}.png'
 
     # Take screenshot
-    await page.screenshot({'path': f'{res}.png', 'fullPage': True})
+    await page.screenshot({'path': path, 'fullPage': True})
+    print(f'Screenshot saved to: {path}')
 
     # Stop the browser by stopping the Kameleo profile
     client.profile.stop_profile(profile.id)

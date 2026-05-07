@@ -31,10 +31,10 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
 var opts = new ChromeOptions();
 opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var webdriver = new RemoteWebDriver(uri, opts);
+var driver = new RemoteWebDriver(uri, opts);
 
 // Set up network interceptor
-var interceptor = webdriver.Manage().Network;
+var interceptor = driver.Manage().Network;
 interceptor.NetworkRequestSent += Interceptor_NetworkRequestSent;
 interceptor.NetworkResponseReceived += Interceptor_NetworkResponseReceived;
 
@@ -74,7 +74,7 @@ interceptor.AddRequestHandler(new NetworkRequestHandler
 await interceptor.StartMonitoring();
 
 // Navigate to the main Wikipedia home page and observe that the French one is loaded
-await webdriver.Navigate().GoToUrlAsync("https://www.wikipedia.org/");
+await driver.Navigate().GoToUrlAsync("https://www.wikipedia.org/");
 
 await Task.Delay(10_000);
 
