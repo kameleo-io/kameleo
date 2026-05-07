@@ -29,7 +29,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 // Start the Kameleo profile and connect with Playwright through CDP
 var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
 var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint);
+var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new BrowserTypeConnectOverCDPOptions { Timeout = 90_000 });
 var context = browser.Contexts[0];
 var page = await context.NewPageAsync();
 var svgBytes = File.ReadAllBytes("kameleo.svg");

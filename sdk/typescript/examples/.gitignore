@@ -1,4 +1,5 @@
-*screenshot*/*.png
+screenshot*.png
+videos/
 
 # Logs
 logs

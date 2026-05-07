@@ -41,8 +41,9 @@ with sync_playwright() as playwright:
     context = playwright.firefox.launch_persistent_context(
         '',
         executable_path=pw_bridge_path,
-        args=[f'-target {browser_ws_endpoint}'],
-        viewport=None,
+        args=['-target', browser_ws_endpoint],
+        no_viewport=True,
+        timeout=90_000,
     )
 
     # Kameleo will open the a new page in the default browser context.

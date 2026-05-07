@@ -29,7 +29,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
 var opts = new FirefoxOptions();
 opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var webdriver = new RemoteWebDriver(uri, opts);
+var driver = new RemoteWebDriver(uri, opts);
 
 var allSites = new List<string>
 {
@@ -63,7 +63,7 @@ while (sitesToVisit.Count < 5)
 foreach (var site in sitesToVisit)
 {
     // Navigate to the site
-    await webdriver.Navigate().GoToUrlAsync($"https://{site}");
+    await driver.Navigate().GoToUrlAsync($"https://{site}");
 
     // Wait for some random time
     await Task.Delay(Random.Shared.Next(5_000, 15_000));

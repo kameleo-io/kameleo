@@ -36,12 +36,12 @@ var page = await browser.NewPageAsync();
 // Open a random page from wikipedia
 await page.GoToAsync("https://en.wikipedia.org/wiki/Special:Random", WaitUntilNavigation.DOMContentLoaded);
 
-var targetFile = Path.Combine(Environment.CurrentDirectory, Path.ChangeExtension(Path.GetRandomFileName(), ".png"));
+var targetFile = Path.Combine(Environment.CurrentDirectory, $"screenshot-{Path.ChangeExtension(Path.GetRandomFileName(), ".png")}");
 
 // Take screenshot
 await page.ScreenshotAsync(targetFile, new ScreenshotOptions { Type = ScreenshotType.Png });
 
-Console.WriteLine(targetFile);
+Console.WriteLine($"Screenshot saved to: {targetFile}");
 
 // Stop the browser by stopping the Kameleo profile
 await client.Profile.StopProfileAsync(profile.Id);

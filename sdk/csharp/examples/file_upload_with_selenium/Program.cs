@@ -30,20 +30,20 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
 var opts = new ChromeOptions();
 opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var webdriver = new RemoteWebDriver(uri, opts);
+var driver = new RemoteWebDriver(uri, opts);
 
 // Open uplad site
-webdriver.Url = "https://the-internet.herokuapp.com/upload";
+driver.Url = "https://the-internet.herokuapp.com/upload";
 await Task.Delay(3_000);
 
 // Upload file
 var filePath = Path.Combine(Environment.CurrentDirectory, "kameleo.png");
-var fileInput = webdriver.FindElementByCssSelector("input[type=file]");
+var fileInput = driver.FindElementByCssSelector("input[type=file]");
 fileInput.SendKeys(filePath);
-webdriver.FindElementById("file-submit").Click();
+driver.FindElementById("file-submit").Click();
 
 // Check file upload success
-var fileNameElement = webdriver.FindElementById("uploaded-files");
+var fileNameElement = driver.FindElementById("uploaded-files");
 Console.WriteLine("uploaded file name: " + fileNameElement.Text);
 
 await Task.Delay(5_000);

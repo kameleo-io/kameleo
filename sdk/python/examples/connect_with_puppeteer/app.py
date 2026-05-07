@@ -1,6 +1,6 @@
 from kameleo.local_api_client import KameleoLocalApiClient
 from kameleo.local_api_client.models import CreateProfileRequest
-import pyppeteer
+from pyppeteer import connect
 import time
 import asyncio
 import os
@@ -28,7 +28,7 @@ async def main():
 
     # Start the Kameleo profile and connect through CDP
     browser_ws_endpoint = f'ws://localhost:{kameleo_port}/puppeteer/{profile.id}'
-    browser = await pyppeteer.launcher.connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=False)
+    browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
     page = await browser.newPage()
 
     # Use any Puppeteer command to drive the browser

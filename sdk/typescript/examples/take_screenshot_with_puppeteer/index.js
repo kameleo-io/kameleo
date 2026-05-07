@@ -7,9 +7,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search Chrome fingerprints
 // (Puppeteer won't work with Firefox you can use any Chromium based browser)
@@ -37,12 +35,14 @@ const page = await browser.newPage();
 // and enjoy full protection from bot detection products
 await page.goto("https://en.wikipedia.org/wiki/Special:Random");
 
-const fileName = randomstring.generate({ length: 12, charset: "alphabetic" });
+const randomString = randomstring.generate({ length: 12, charset: "alphabetic" });
+/**@type {`${string}.png`}*/
+const fileName = `screenshot-${randomString}.png`;
 
 // Take screenshot
-await page.screenshot({
-    path: `${fileName}.png`,
-});
+await page.screenshot({ path: fileName });
+
+console.log(`Screenshot saved to: ${fileName}`);
 
 // Stop the browser by stopping the Kameleo profile
 await client.profile.stopProfile(profile.id);

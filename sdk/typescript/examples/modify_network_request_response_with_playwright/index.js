@@ -9,9 +9,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search Chrome fingerprints
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
@@ -28,7 +26,7 @@ const profile = await client.profile.createProfile(createProfileRequest);
 
 // Start the Kameleo profile and connect with Playwright through CDP
 const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
-const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
+const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, { timeout: 90_000 });
 const context = browser.contexts()[0];
 const page = await context.newPage();
 const svgBytes = await fs.promises.readFile(path.join(import.meta.dirname, "kameleo.svg"));
