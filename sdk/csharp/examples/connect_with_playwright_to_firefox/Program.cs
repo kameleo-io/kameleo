@@ -49,8 +49,9 @@ var playwright = await Playwright.CreateAsync();
 var context = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
 {
     ExecutablePath = pwBridgePath,
-    Args = new List<string> { $"-target {browserWsEndpoint}" },
-    ViewportSize = null,
+    Args = ["-target", browserWsEndpoint],
+    ViewportSize = ViewportSize.NoViewport,
+    Timeout = 90_000,
 });
 
 // Kameleo will open the a new page in the default browser context.

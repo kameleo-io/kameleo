@@ -27,7 +27,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 // Start the Kameleo profile and connect with Playwright through CDP
 var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
 var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint);
+var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new BrowserTypeConnectOverCDPOptions { Timeout = 90_000 });
 
 // It is recommended to work on the default context.
 // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere

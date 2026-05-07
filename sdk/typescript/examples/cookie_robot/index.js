@@ -7,9 +7,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search one of the fingerprints
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "firefox");
@@ -28,7 +26,7 @@ const builder = new Builder().usingServer(`http://localhost:${kameleoPort}/webdr
     "kameleo:profileId": profile.id,
     browserName: "Kameleo",
 });
-const webdriver = await builder.build();
+const driver = await builder.build();
 
 const allSites = [
     "instagram.com",
@@ -56,8 +54,8 @@ while (sitesToVisit.length < 5) {
 
 // Warm up profile by visiting the randomly selected sites
 for (const site of sitesToVisit) {
-    await webdriver.get(`https://${site}`);
-    await webdriver.sleep(randomInteger(5000, 15000));
+    await driver.get(`https://${site}`);
+    await driver.sleep(randomInteger(5000, 15000));
 }
 
 // Stop the profile

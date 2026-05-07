@@ -27,7 +27,11 @@ profile = client.profile.create_profile(create_profile_request)
 # Start the Kameleo profile and connect with Playwright through CDP
 browser_ws_endpoint = f'ws://localhost:{kameleo_port}/playwright/{profile.id}'
 with sync_playwright() as playwright:
-    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint)
+    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint, timeout=90_000)
+
+    # It is recommended to work on the default context.
+    # NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
+    #       with Kameleo's browser fingerprint modification features.
     context = browser.contexts[0]
     page = context.new_page()
 

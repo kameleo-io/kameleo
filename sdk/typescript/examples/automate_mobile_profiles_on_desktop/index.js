@@ -6,9 +6,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search for mobile fingerprints that match specific criteria
 // In this example, we are looking for iOS mobile profiles with Safari browser
@@ -41,17 +39,17 @@ const builder = new Builder().usingServer(`${kameleoCliUri}/webdriver`).withCapa
     "kameleo:profileId": profile.id,
     browserName: "Kameleo",
 });
-const webdriver = await builder.build();
+const driver = await builder.build();
 
 // Automate the browser to perform a Wikipedia search and print the page title
-await webdriver.get("https://wikipedia.org");
-await webdriver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
-await webdriver.wait(until.elementLocated(By.id("content")));
-const title = await webdriver.getTitle();
+await driver.get("https://wikipedia.org");
+await driver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
+await driver.wait(until.elementLocated(By.id("content")));
+const title = await driver.getTitle();
 console.log(`The title is ${title}`);
 
 // Wait for 5 seconds
-await webdriver.sleep(5000);
+await driver.sleep(5000);
 
 // Stop the browser by stopping the Kameleo profile
 await client.profile.stopProfile(profile.id);

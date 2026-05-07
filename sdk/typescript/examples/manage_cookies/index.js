@@ -6,9 +6,7 @@ const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
 const kameleoCliUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({
-    basePath: kameleoCliUri,
-});
+const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
 
 // Search one of the fingerprints
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "firefox");
@@ -27,17 +25,17 @@ const builder = new Builder().usingServer(`http://localhost:${kameleoPort}/webdr
     "kameleo:profileId": profile.id,
     browserName: "Kameleo",
 });
-const webdriver = await builder.build();
+const driver = await builder.build();
 
 // Navigate to a site which give you cookies
-await webdriver.get("https://www.nytimes.com");
-await webdriver.sleep(5000);
+await driver.get("https://www.nytimes.com");
+await driver.sleep(5000);
 
-await webdriver.get("https://whoer.net");
-await webdriver.sleep(5000);
+await driver.get("https://whoer.net");
+await driver.sleep(5000);
 
-await webdriver.get("https://www.youtube.com");
-await webdriver.sleep(5000);
+await driver.get("https://www.youtube.com");
+await driver.sleep(5000);
 
 // Stop the profile
 await client.profile.stopProfile(profile.id);
