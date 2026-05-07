@@ -148,7 +148,7 @@ from playwright.sync_api import sync_playwright
 
 browser_ws_endpoint = f'ws://localhost:5050/playwright/{profile.id}'
 with sync_playwright() as playwright:
-    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint)
+    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint, timeout=90_000)
 ```
 
 +++ JavaScript
@@ -157,7 +157,7 @@ with sync_playwright() as playwright:
 import playwright from "playwright";
 
 const browserWSEndpoint = `ws://localhost:5050/playwright/${profile.id}`;
-const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
+const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, { timeout: 90_000 });
 ```
 
 +++ C#
@@ -167,7 +167,7 @@ using Microsoft.Playwright;
 
 var browserWsEndpoint = $"ws://localhost:5050/playwright/{profile.Id}";
 var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint);
+var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new BrowserTypeConnectOverCDPOptions { Timeout = 90_000 });
 ```
 
 +++
@@ -184,13 +184,16 @@ from os import path
 
 browser_ws_endpoint = f'ws://localhost:5050/playwright/{profile.id}'
 with sync_playwright() as playwright:
-    # On macOS use '/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge'
+    # Windows: path.expandvars(r'%LOCALAPPDATA%\Programs\Kameleo\pw-bridge.exe')
+    # macOS:   '/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge'
     pw_bridge_path = path.expandvars(r'%LOCALAPPDATA%\Programs\Kameleo\pw-bridge.exe')
     context = playwright.firefox.launch_persistent_context(
         '',
         executable_path=pw_bridge_path,
-        args=[f'-target {browser_ws_endpoint}'],
-        viewport=None)
+        args=['-target', browser_ws_endpoint],
+        no_viewport=True,
+        timeout=90_000,
+    )
 ```
 
 +++ JavaScript
@@ -199,12 +202,14 @@ with sync_playwright() as playwright:
 import playwright from "playwright";
 
 const browserWSEndpoint = `ws://localhost:5050/playwright/${profile.id}`;
-// On macOS use "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
+// Windows: `${process.env["LOCALAPPDATA"]}\\Programs\\Kameleo\\pw-bridge.exe`
+// macOS:   "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
 const pwBridgePath = `${process.env["LOCALAPPDATA"]}\\Programs\\Kameleo\\pw-bridge.exe`;
 const context = await playwright.firefox.launchPersistentContext("", {
     executablePath: pwBridgePath,
-    args: [`-target ${browserWSEndpoint}`],
+    args: ["-target", browserWSEndpoint],
     viewport: null,
+    timeout: 90_000,
 });
 ```
 
@@ -214,7 +219,8 @@ const context = await playwright.firefox.launchPersistentContext("", {
 using Microsoft.Playwright;
 
 var browserWsEndpoint = $"ws://localhost:5050/playwright/{profile.Id}";
-// On macOS use "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
+// Windows: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Kameleo", "pw-bridge.exe")
+// macOS:   "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
 var pwBridgePath = Path.Combine(
     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
     "Programs", "Kameleo", "pw-bridge.exe");
@@ -222,12 +228,17 @@ var playwright = await Playwright.CreateAsync();
 var context = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
 {
     ExecutablePath = pwBridgePath,
-    Args = new List<string> { $"-target {browserWsEndpoint}" },
-    ViewportSize = null,
+    Args = ["-target", browserWsEndpoint],
+    ViewportSize = ViewportSize.NoViewport,
+    Timeout = 90_000,
 });
 ```
 
 +++
+
+!!!info Running Kameleo in Docker?
+`pw-bridge` must be present on the machine where Playwright runs (the host). Copy it out of the container first — see [Docker — Using Junglefox](../03-integrations/04-docker.md#using-junglefox-playwright-pw-bridge).
+!!!
 
 ### 4. Run Playwright commands
 
@@ -347,7 +358,7 @@ Implementation differs by kernel. When you connect, the profile starts automatic
 ```python
 browser_ws_endpoint = f'ws://localhost:5050/playwright/{profile.id}'
 with sync_playwright() as playwright:
-    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint)
+    browser = playwright.chromium.connect_over_cdp(endpoint_url=browser_ws_endpoint, timeout=90_000)
     context = browser.contexts[0]
     page = context.new_page()
     page.goto('https://wikipedia.org')
@@ -357,7 +368,7 @@ with sync_playwright() as playwright:
 
 ```js
 const browserWSEndpoint = `ws://localhost:5050/playwright/${profile.id}`;
-const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
+const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, { timeout: 90_000 });
 const context = browser.contexts()[0];
 const page = await context.newPage();
 await page.goto("https://wikipedia.org");
@@ -368,7 +379,7 @@ await page.goto("https://wikipedia.org");
 ```csharp
 var browserWsEndpoint = $"ws://localhost:5050/playwright/{profile.Id}";
 var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint);
+var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new BrowserTypeConnectOverCDPOptions { Timeout = 90_000 });
 var context = browser.Contexts[0];
 var page = await context.NewPageAsync();
 await page.GotoAsync("https://wikipedia.org");
@@ -387,13 +398,16 @@ from os import path
 
 browser_ws_endpoint = f'ws://localhost:5050/playwright/{profile.id}'
 with sync_playwright() as playwright:
-    # On macOS use '/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge'
+    # Windows: path.expandvars(r'%LOCALAPPDATA%\Programs\Kameleo\pw-bridge.exe')
+    # macOS:   '/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge'
     pw_bridge_path = path.expandvars(r'%LOCALAPPDATA%\Programs\Kameleo\pw-bridge.exe')
     context = playwright.firefox.launch_persistent_context(
         '',
         executable_path=pw_bridge_path,
-        args=[f'-target {browser_ws_endpoint}'],
-        viewport=None)
+        args=['-target', browser_ws_endpoint],
+        no_viewport=True,
+        timeout=90_000,
+    )
     page = context.new_page()
     page.goto('https://wikipedia.org')
 ```
@@ -401,13 +415,15 @@ with sync_playwright() as playwright:
 +++ JavaScript
 
 ```js
-// On macOS use "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
+// Windows: `${process.env["LOCALAPPDATA"]}\\Programs\\Kameleo\\pw-bridge.exe`
+// macOS:   "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
 const pwBridgePath = `${process.env["LOCALAPPDATA"]}\\Programs\\Kameleo\\pw-bridge.exe`;
 const browserWSEndpoint = `ws://localhost:5050/playwright/${profile.id}`;
 const context = await playwright.firefox.launchPersistentContext("", {
     executablePath: pwBridgePath,
-    args: [`-target ${browserWSEndpoint}`],
+    args: ["-target", browserWSEndpoint],
     viewport: null,
+    timeout: 90_000,
 });
 const page = await context.newPage();
 await page.goto("https://wikipedia.org");
@@ -416,7 +432,8 @@ await page.goto("https://wikipedia.org");
 +++ C#
 
 ```csharp
-// On macOS use "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
+// Windows: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", "Kameleo", "pw-bridge.exe")
+// macOS:   "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge"
 var pwBridgePath = Path.Combine(
     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
     "Programs", "Kameleo", "pw-bridge.exe");
@@ -425,14 +442,19 @@ var playwright = await Playwright.CreateAsync();
 var context = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
 {
     ExecutablePath = pwBridgePath,
-    Args = new List<string> { $"-target {browserWsEndpoint}" },
-    ViewportSize = null,
+    Args = ["-target", browserWsEndpoint],
+    ViewportSize = ViewportSize.NoViewport,
+    Timeout = 90_000,
 });
 var page = await context.NewPageAsync();
 await page.GotoAsync("https://wikipedia.org");
 ```
 
 +++
+
+!!!info Running Kameleo in Docker?
+`pw-bridge` must be present on the machine where Playwright runs (the host). Copy it out of the container first — see [Docker — Using Junglefox](../03-integrations/04-docker.md#using-junglefox-playwright-pw-bridge).
+!!!
 
 ## Cleanup (stop, export, delete)
 

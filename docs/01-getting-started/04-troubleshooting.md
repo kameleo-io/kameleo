@@ -11,21 +11,65 @@ Use this guide to quickly locate user data and logs, interpret CLI exit codes, a
 
 Kameleo stores user-generated data (profiles, kernels, logs, settings) in a workspace directory.
 
-Default locations:
++++ Windows
 
-- Windows: `C:\Users\YOUR_USERNAME\AppData\Roaming\Kameleo`
-- macOS: `~/Library/Application Support/Kameleo`
+Default location: `C:\Users\YOUR_USERNAME\AppData\Roaming\Kameleo`
 
 Deleting this folder resets Kameleo (factory default) but permanently removes all profiles & settings.
+
++++ macOS
+
+Default location: `~/Library/Application Support/Kameleo`
+
+Deleting this folder resets Kameleo (factory default) but permanently removes all profiles & settings.
+
++++ Linux-based container
+
+Default location: `/data` (the mounted named volume)
+
+Removing the named volume has the same effect as deleting the data folder — all profiles & settings are lost.
+
++++ Windows-based container
+
+Default location: `C:\data` (the mounted named volume)
+
+Removing the named volume has the same effect as deleting the data folder — all profiles & settings are lost.
+
++++
 
 ## Review log files
 
 Daily log files live under the `Logs` subfolder. File pattern: `COMPONENT-YYYYMMDD.txt`. Increase verbosity by setting `Verbose` to `2` (see Configuration in Installation guide) only while debugging; revert to reduce noise.
 
-The default location for the log files:
++++ Windows
 
-- Windows: `C:\Users\YOUR_USERNAME\AppData\Roaming\Kameleo\Logs`
-- macOS: `~/Library/Application Support/Kameleo/Logs`
+Log files location: `C:\Users\YOUR_USERNAME\AppData\Roaming\Kameleo\Logs`
+
++++ macOS
+
+Log files location: `~/Library/Application Support/Kameleo/Logs`
+
++++ Linux-based container
+
+Log files location: `/data/Logs`
+
+If the named volume is mounted, logs are accessible on the host at the volume's mount path. To read the latest log file directly from a running container:
+
+```bash
+docker exec kameleo-app sh -c 'cat /data/Logs/$(ls /data/Logs | tail -1)'
+```
+
++++ Windows-based container
+
+Log files location: `C:\data\Logs`
+
+If the named volume is mounted, logs are accessible on the host at the volume's mount path. To read the latest log file directly from a running container:
+
+```powershell
+docker exec kameleo-app powershell -NoProfile -Command "Get-Content (Get-ChildItem C:\data\Logs | Sort-Object Name | Select-Object -Last 1).FullName"
+```
+
++++
 
 ## CLI exit codes
 
