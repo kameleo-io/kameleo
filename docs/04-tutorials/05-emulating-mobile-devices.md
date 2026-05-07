@@ -137,11 +137,11 @@ using System.Collections.Generic;
 
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    AdditionalOptions = new List<Preference>
-    {
+    AdditionalOptions =
+    [
         new Preference("disableTouchEmulation", true),
         // new Preference("deviceScaleFactor", 3), // Uncomment to override the value coming from the fingerprint
-    }
+    ]
 });
 Console.WriteLine("Profile started (touch emulation disabled)");
 ```
@@ -182,16 +182,16 @@ client.profile.stop_profile(profile.id)
 ```javascript
 import { Builder, By, Key, until } from "selenium-webdriver";
 
-const webdriver = await new Builder()
+const driver = await new Builder()
     .usingServer("http://localhost:5050/webdriver")
     .withCapabilities({ "kameleo:profileId": profile.id, browserName: "Kameleo" })
     .build();
 
-await webdriver.get("https://wikipedia.org");
-await webdriver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
-await webdriver.wait(until.elementLocated(By.id("content")));
-console.log("Title:", await webdriver.getTitle());
-await webdriver.sleep(5000);
+await driver.get("https://wikipedia.org");
+await driver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
+await driver.wait(until.elementLocated(By.id("content")));
+console.log("Title:", await driver.getTitle());
+await driver.sleep(5000);
 await client.profile.stopProfile(profile.id);
 ```
 
