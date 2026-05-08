@@ -44,10 +44,10 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
         let context: BrowserContext;
 
         const videoSize = { width: 1280, height: 720 };
-        const viewportSize = videoSize;
         const commonContextOptions: BrowserContextOptions = {
             recordVideo: { dir: "videos", size: videoSize },
-            viewport: viewportSize,
+            // set for video recording here, set to null for the best anti-detect performance
+            viewport: videoSize,
             locale: undefined,
         };
 
