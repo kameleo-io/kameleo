@@ -22,5 +22,15 @@ test("BrowserScan", async ({ page }) => {
     const percent = parseInt((await percentLocator.textContent())?.slice(0, -1) ?? "");
 
     const percentGoal = 97;
-    expect(percent).toBeGreaterThanOrEqual(percentGoal);
+
+    // list of issues in the format of "Issue: -5% Explanatory paragraph"
+    // we look for -x% with a regex, then only keep the part ending with the %
+    const deductions = (await page.locator("li").filter({ hasText: /-\d+%/ }).allInnerTexts()).map(
+        (deduction) => /^.*?-\d+%/s.exec(deduction)?.[0].trim().replace(/\n/g, ": ") ?? deduction,
+    );
+
+    const message =
+        `Browser fingerprint authenticity was ${percent}%, expected at least ${percentGoal}%` +
+        `\nDeductions:\n\t${deductions.join("\n\t")}`;
+    expect(percent >= percentGoal && deductions.length <= 1, message).toBe(true);
 });
