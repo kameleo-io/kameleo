@@ -12,6 +12,11 @@ test("CreepJS", async ({ page }) => {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(3_000); // makes video smoother
 
-    await expect(page.getByText("✔").first()).toBeVisible();
-    await expect(page.getByText("✖")).toHaveCount(0);
+    const successSelector = "span.pass",
+        failureSelector = "span.fail";
+    await page.locator(`${successSelector}, ${failureSelector}`).first().waitFor();
+    const successCount = await page.locator(successSelector).count();
+    const failedItems = (await page.locator(`div:has(> ${failureSelector})`).allInnerTexts()).map((text) => text.trim());
+
+    expect(failedItems.length === 0 && successCount > 0, `Issues:\n\t${failedItems.join("\n\t")}`).toBe(true);
 });
