@@ -5,7 +5,7 @@
 <h3>Automate browsers at scale. Stop getting blocked.</h3>
 <p>Self-hosted, always current, no per-request pricing</p>
 
-[![Discord](https://img.shields.io/discord/1248220613055877173?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.gg/XvhsH46vEN)
+[![Docker Image Version](https://img.shields.io/docker/v/kameleo/kameleo-app?sort=semver&label=docker)](https://hub.docker.com/r/kameleo/kameleo-app)
 [![npm](https://img.shields.io/npm/v/%40kameleo%2Flocal-api-client?logo=npm)](https://www.npmjs.com/package/@kameleo/local-api-client)
 [![PyPI](https://img.shields.io/pypi/v/kameleo.local-api-client?logo=python&logoColor=white)](https://pypi.org/project/kameleo.local-api-client/)
 [![NuGet](https://img.shields.io/nuget/v/Kameleo.LocalApiClient?logo=nuget)](https://www.nuget.org/packages/Kameleo.LocalApiClient)
@@ -182,9 +182,26 @@ with sync_playwright() as p:
 
 Working examples for every common scenario:
 
-- [Python examples](sdk/python/examples/)
-- [TypeScript examples](sdk/typescript/examples/)
-- [C# examples](sdk/csharp/examples/)
+| Example | Python | TypeScript | C# |
+| --- | :---: | :---: | :---: |
+| Create, duplicate, update, and launch profiles via the API | [View](sdk/python/examples/basic_profile_operations/) | [View](sdk/typescript/examples/basic_profile_operations/) | [View](sdk/csharp/examples/basic_profile_operations/) |
+| Delete all profiles from your Kameleo workspace | [View](sdk/python/examples/clean_workspace/) | [View](sdk/typescript/examples/clean_workspace/) | [View](sdk/csharp/examples/clean_workspace/) |
+| Control a Chrome profile with Selenium over WebDriver | [View](sdk/python/examples/connect_with_selenium/) | [View](sdk/typescript/examples/connect_with_selenium/) | [View](sdk/csharp/examples/connect_with_selenium/) |
+| Control a Chrome profile with Playwright via CDP | [View](sdk/python/examples/connect_with_playwright_to_chrome/) | [View](sdk/typescript/examples/connect_with_playwright_to_chrome/) | [View](sdk/csharp/examples/connect_with_playwright_to_chrome/) |
+| Control a Firefox (Junglefox) profile with Playwright | [View](sdk/python/examples/connect_with_playwright_to_firefox/) | [View](sdk/typescript/examples/connect_with_playwright_to_firefox/) | [View](sdk/csharp/examples/connect_with_playwright_to_firefox/) |
+| Control a Chrome profile with Puppeteer via CDP | [View](sdk/python/examples/connect_with_puppeteer/) | [View](sdk/typescript/examples/connect_with_puppeteer/) | [View](sdk/csharp/examples/connect_with_puppeteer/) |
+| Attach an HTTP, SOCKS5, or SSH proxy to a browser profile | [View](sdk/python/examples/start_with_proxy/) | [View](sdk/typescript/examples/start_with_proxy/) | [View](sdk/csharp/examples/start_with_proxy/) |
+| List, add, and delete cookies from a profile via the API | [View](sdk/python/examples/manage_cookies/) | [View](sdk/typescript/examples/manage_cookies/) | [View](sdk/csharp/examples/manage_cookies/) |
+| Warm up a profile by browsing real sites to collect cookies | [View](sdk/python/examples/cookie_robot/) | [View](sdk/typescript/examples/cookie_robot/) | [View](sdk/csharp/examples/cookie_robot/) |
+| Take a full-page screenshot of a website using Puppeteer | [View](sdk/python/examples/take_screenshot_with_puppeteer/) | [View](sdk/typescript/examples/take_screenshot_with_puppeteer/) | [View](sdk/csharp/examples/take_screenshot_with_puppeteer/) |
+| Export and import profiles to/from .kameleo files on disk | [View](sdk/python/examples/profile_export_import/) | [View](sdk/typescript/examples/profile_export_import/) | [View](sdk/csharp/examples/profile_export_import/) |
+| Launch a profile with CLI args, Selenium options, or prefs | [View](sdk/python/examples/start_browser_with_additional_options/) | [View](sdk/typescript/examples/start_browser_with_additional_options/) | [View](sdk/csharp/examples/start_browser_with_additional_options/) |
+| Upgrade a profile's browser kernel to the latest version | [View](sdk/python/examples/upgrade_profile/) | [View](sdk/typescript/examples/upgrade_profile/) | [View](sdk/csharp/examples/upgrade_profile/) |
+| Upload a file to a website using Selenium | — | — | [View](sdk/csharp/examples/file_upload_with_selenium/) |
+| Automate an iOS/Safari mobile profile with Selenium on desktop | [View](sdk/python/examples/automate_mobile_profiles_on_desktop/) | [View](sdk/typescript/examples/automate_mobile_profiles_on_desktop/) | [View](sdk/csharp/examples/automate_mobile_profiles_on_desktop/) |
+| Intercept and redirect network traffic using Selenium | — | — | [View](sdk/csharp/examples/modify_request_response_with_selenium/) |
+| Intercept, redirect, and replace responses with Playwright | [View](sdk/python/examples/modify_network_request_response_with_playwright/) | [View](sdk/typescript/examples/modify_network_request_response_with_playwright/) | [View](sdk/csharp/examples/modify_network_request_response_with_playwright/) |
+| Use init scripts, evaluate, screenshots, and video recording | [View](sdk/python/examples/playwright_advanced_features/) | [View](sdk/typescript/examples/playwright_advanced_features/) | [View](sdk/csharp/examples/playwright_advanced_features/) |
 
 ## 🏆 Trusted by builders
 
@@ -302,6 +319,7 @@ We welcome contributions! Here's how you can help:
 - **Improve documentation** — Found something unclear? Submit a PR to `/docs`
 - **Add detection tests** — Know a bot detector we should test against? Check our [masking report tests](masking-report/)
 - **Report issues** — [Open an issue](https://github.com/kameleo-io/kameleo/issues) for bugs or feature requests
+- **Join the community** — Ask questions, share feedback, or get help on [Discord](https://discord.gg/XvhsH46vEN)
 
 ---
 
