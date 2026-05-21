@@ -7,10 +7,6 @@ import { KAMELEO_PORT, KAMELEO_VERSION, PROXY_PASSWORD, PROXY_USERNAME } from ".
 import { generateVideoName } from "./common.ts";
 
 function getProxy(): ProxyChoice {
-    if (!PROXY_USERNAME || !PROXY_PASSWORD) {
-        throw new Error("PROXY_USERNAME and PROXY_PASSWORD environment variables must be set");
-    }
-
     const sessionId = Array.from({ length: 6 }, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[randomInt(0, 36)]).join("");
     return {
         value: "http",
@@ -28,16 +24,18 @@ export interface ConfiguredContextOptions {
     browserProduct: string;
     osFamily: string;
     deviceType: string;
+    kameleoProxy?: ProxyChoice;
     browserSettings?: BrowserSettings;
 }
 
 export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
-    deviceType: ["desktop", { option: true }],
+    useKameleo: [true, { option: true }],
     browserProduct: ["chrome", { option: true }],
     osFamily: [process.platform == "win32" ? "windows" : process.platform == "darwin" ? "macos" : "linux", { option: true }],
+    deviceType: ["desktop", { option: true }],
+    kameleoProxy: [undefined, { option: true }],
     browserSettings: [undefined, { option: true }],
-    useKameleo: [true, { option: true }],
-    context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo }, use, testInfo) => {
+    context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo, kameleoProxy }, use, testInfo) => {
         // setup
         const kameleoClient = new KameleoLocalApiClient({ basePath: `http://localhost:${KAMELEO_PORT}` });
         let profile: ProfileResponse | undefined;
@@ -59,7 +57,7 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
 
             profile = await kameleoClient.profile.createProfile({
                 fingerprintId: fingerprintId,
-                proxy: getProxy(),
+                proxy: kameleoProxy ?? getProxy(),
             });
 
             // Kameleo must be started before Playwright attaches to the browser context
@@ -78,9 +76,13 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
                     ...commonContextOptions,
                     executablePath: pwBridgePath,
                     args: ["-target", browserWSEndpoint],
+                    timeout: 90_000,
                 });
             } else {
-                const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
+                const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, {
+                    timeout: 90_000,
+                    noDefaults: true,
+                });
                 context = await browser.newContext(commonContextOptions);
             }
         } else {

@@ -1,4 +1,4 @@
-import { expect, test } from "../../../utils/browserFixture.js";
+import { expect, test } from "../../../utils/browserFixture.ts";
 import { env } from "../../../utils/common.ts";
 
 test("Adscore", async ({ page }) => {

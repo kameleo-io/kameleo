@@ -1,11 +1,11 @@
-import { expect, test } from "../../../utils/browserFixture.js";
-import { autoScroll } from "../../../utils/pageUtils.js";
+import { expect, test } from "../../../utils/browserFixture.ts";
+import { scrollDown } from "../../../utils/pageUtils.ts";
 
 test("Sannysoft", async ({ page, browserProduct }) => {
-    await page.goto("https://bot.sannysoft.com/", { waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(5_000); // makes video smoother
+    await page.goto("https://bot.sannysoft.com/");
+    await page.waitForTimeout(5_000); // for video presentation purposes
 
-    await autoScroll(page);
+    await scrollDown(page);
 
     await expect(page.locator(".passed")).not.toHaveCount(0);
 

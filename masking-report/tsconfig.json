@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts", "**/*.js", "**/*.mjs"],
+  "include": ["**/*.ts", "**/*.mts", "**/*.js", "**/*.mjs"],
   "exclude": ["dist", "playwright-report"],
   "compilerOptions": {
     "module": "Node16",
@@ -15,7 +15,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "target": "es2024",
-    "lib": ["dom", "ES2024", "ESNext.Array"],
+    "lib": ["dom", "ESNext"],
     // strict includes multiple rules, see: https://www.typescriptlang.org/tsconfig/#strict
     "strict": true,
     // other rules

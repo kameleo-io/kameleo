@@ -14,8 +14,8 @@ pipeline {
     }
     parameters {
         string(name: 'emailOverride', defaultValue: emailOverride)
-        string(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides)
-        string(name: 'kernelsOverride', defaultValue: kernelsOverride)
+        text(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides)
+        text(name: 'kernelsOverride', defaultValue: kernelsOverride)
     }
 
     stages {

@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 import { PLAYWRIGHT_RETRIES, PLAYWRIGHT_WORKERS } from "./config.ts";
-import type { ConfiguredContextOptions } from "./utils/browserFixture.js";
+import type { ConfiguredContextOptions } from "./utils/browserFixture.ts";
 
 /** @see https://playwright.dev/docs/test-configuration */
 export default defineConfig<ConfiguredContextOptions>({
