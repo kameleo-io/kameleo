@@ -1,16 +1,27 @@
 import type { Page } from "@playwright/test";
 
-export async function autoScroll(page: Page, pixelsPerSec = 200): Promise<void> {
-    await page.evaluate(async (pixelsPerSec: number) => {
+/** scroll down to the bottom of the page, with a 1 minute time limit */
+export async function scrollDown(page: Page): Promise<void> {
+    await page.evaluate(async () => {
+        const pixelsPerSec = 300;
         const scrollsPerSec = 60;
         const delaySec = 1 / scrollsPerSec;
         const distance = pixelsPerSec * delaySec;
 
-        let scrollTop: number;
+        // stop when 1 second has passed since the last successful scroll
+        const startTime = Temporal.Now.instant();
+        let lastSuccessfulScrollTime = startTime;
         do {
-            scrollTop = document.documentElement.scrollTop;
+            const previousScrollTop = document.documentElement.scrollTop;
             window.scrollBy({ top: distance });
             await new Promise((resolve) => setTimeout(resolve, delaySec * 1_000));
-        } while (scrollTop != document.documentElement.scrollTop);
-    }, pixelsPerSec);
+
+            if (previousScrollTop != document.documentElement.scrollTop) {
+                lastSuccessfulScrollTime = Temporal.Now.instant();
+            }
+        } while (
+            Temporal.Now.instant().since(lastSuccessfulScrollTime).total("milliseconds") < 1_000 &&
+            Temporal.Now.instant().since(startTime).total("seconds") < 60
+        );
+    });
 }

@@ -93,6 +93,7 @@ async function launchKameleoLocal(): Promise<void> {
     });
 }
 
+// see: https://developer.kameleo.io/integrations/docker/
 async function launchKameleoDocker(): Promise<void> {
     const kameleoDockerImage = `kameleo/kameleo-app:${KAMELEO_VERSION}`;
     runCommand("docker", ["image", "pull", kameleoDockerImage]);
@@ -116,6 +117,8 @@ async function launchKameleoDocker(): Promise<void> {
         [
             "run",
             "--rm",
+            "-v",
+            "kameleo-data:/data",
             "-p",
             `${KAMELEO_PORT}:5050`,
             "--shm-size=2g",
