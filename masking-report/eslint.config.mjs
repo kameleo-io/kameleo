@@ -9,7 +9,7 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
     { ignores: ["dist", "playwright-report"] },
     {
-        files: ["**/*.{ts,js,mjs}"],
+        files: ["**/*.{ts,mts,js,mjs}"],
         extends: [
             eslint.configs.recommended,
             tseslint.configs.strictTypeChecked,

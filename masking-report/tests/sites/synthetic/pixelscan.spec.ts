@@ -1,5 +1,5 @@
-import { expect, type Page, test } from "../../../utils/browserFixture.js";
-import { autoScroll } from "../../../utils/pageUtils.js";
+import { expect, type Page, test } from "../../../utils/browserFixture.ts";
+import { scrollDown } from "../../../utils/pageUtils.ts";
 
 test("Pixelscan", async ({ page }) => {
     await page.goto("https://pixelscan.net/");
@@ -19,8 +19,8 @@ test("Pixelscan", async ({ page }) => {
         ),
     );
 
-    await page.waitForTimeout(5_000); // makes video smoother
-    await autoScroll(page);
+    await page.waitForTimeout(5_000); // for video presentation purposes
+    await scrollDown(page);
 
     // get results
     const result = {

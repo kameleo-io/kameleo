@@ -1,8 +1,8 @@
-import { expect, test } from "../../../utils/browserFixture.js";
-import { autoScroll } from "../../../utils/pageUtils.js";
+import { expect, test } from "../../../utils/browserFixture.ts";
+import { scrollDown } from "../../../utils/pageUtils.ts";
 
 test("BrowserScan", async ({ page }) => {
-    await page.goto("https://www.browserscan.net/", { waitUntil: "networkidle" });
+    await page.goto("https://www.browserscan.net/");
 
     // Dismiss consent popup if present
     await page.click("button.fc-close").catch(() => undefined);
@@ -15,7 +15,7 @@ test("BrowserScan", async ({ page }) => {
         .waitFor({ state: "visible", timeout: 15_000 })
         .catch(() => undefined);
 
-    await autoScroll(page);
+    await scrollDown(page);
 
     const authenticityLocator = page.getByText("Browser fingerprint authenticity: ");
     const percentLocator = authenticityLocator.locator("//following-sibling::*[1]");
