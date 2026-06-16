@@ -1,12 +1,13 @@
-import { KameleoLocalApiClient, ProfileLifetimeState } from "@kameleo/local-api-client";
+import { ErrorCode, KameleoLocalApiClient, ProfileLifetimeState, ResponseError } from "@kameleo/local-api-client";
 import { setTimeout } from "timers/promises";
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
-const kameleoCliUri = `http://localhost:${kameleoPort}`;
+const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
+const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
+await client.verifyEngineReady();
 
 // Search Chrome fingerprints
 // Possible deviceType value: desktop, mobile
@@ -71,3 +72,16 @@ await client.profile.stopProfile(duplicatedProfile.id);
 // Delete original profile
 // Profiles need to be deleted explicitly becase they are persisted so they are available after restarting Kameleo
 await client.profile.deleteProfile(profile.id);
+
+// Try to delete the original profile again and handle the error
+try {
+    await client.profile.deleteProfile(profile.id);
+} catch (error) {
+    if (error instanceof ResponseError && error.errorCode === ErrorCode.ProfileNotFound) {
+        // Ignore: already deleted
+        console.error("Already deleted:", error);
+    } else {
+        console.error("Unexpected error:", error);
+        throw error;
+    }
+}

@@ -1,7 +1,7 @@
-kameleo.local_api_client==4.4.0
+kameleo.local_api_client==5.0.0
 
 ## higher versions of Selenium and Playwright conflict with pyppeteer here, but work fine with kameleo.local_api_client
 selenium==4.32.0
-## we recommend playwright<1.47.0 or playwright>=1.53.0 to avoid detection
+## see recommended versions to avoid Playwright detection: https://developer.kameleo.io/integrations/playwright/
 playwright==1.46.0
 pyppeteer==2.0.0

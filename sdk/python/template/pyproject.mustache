@@ -8,7 +8,12 @@ license = "{{{licenseInfo}}}{{^licenseInfo}}NoLicense{{/licenseInfo}}"
 readme = "README.md"
 repository = "{{{packageUrl}}}"
 keywords = ["OpenAPI", "OpenAPI-Generator", "{{{appName}}}"]
-include = ["{{packageName}}/py.typed"]
+include = [
+    "kameleo.local_api_client/py.typed",
+    "kameleo/local_api_client/bin/win-x64/pw-bridge.exe",
+    "kameleo/local_api_client/bin/linux-x64/pw-bridge",
+    "kameleo/local_api_client/bin/osx-arm64/pw-bridge",
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"

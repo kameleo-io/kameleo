@@ -2,15 +2,16 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import puppeteer from "puppeteer";
 import { setTimeout } from "timers/promises";
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
-const kameleoCliUri = `http://localhost:${kameleoPort}`;
+const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
+const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
+await client.verifyEngineReady();
 
 // Search Chrome fingerprints
-// (Puppeteer won't work with Firefox you can use any Chromium based browser)
+// (Puppeteer won't work with Firefox, but you can use any other fingerprint, using the Chroma kernel)
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 
 // Create a new profile with recommended settings

@@ -10,6 +10,9 @@ __version__ = "{{packageVersion}}"
 # import KameleoLocalApiClient into sdk package
 from kameleo.local_api_client.kameleo_local_api_client import KameleoLocalApiClient
 
+# import JunglefoxHelper into sdk package
+from kameleo.local_api_client.junglefox_helper import JunglefoxHelper
+
 # import apis into sdk package
 {{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classFilename}} import {{classname}}
 {{/apis}}{{/apiInfo}}

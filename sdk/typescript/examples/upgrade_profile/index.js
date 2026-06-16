@@ -1,12 +1,13 @@
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import { setTimeout } from "timers/promises";
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
-const kameleoCliUri = `http://localhost:${kameleoPort}`;
+const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
+const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
+await client.verifyEngineReady();
 
 // Search for a Desktop fingerprint with Windows OS and Chrome browser
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", "windows", "chrome");

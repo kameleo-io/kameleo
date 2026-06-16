@@ -30,6 +30,7 @@ build/Release
 node_modules
 typings
 dist
+bin
 wwwroot/*.js
 .npmrc
 *.log

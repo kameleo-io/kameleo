@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
 using Microsoft.Playwright;
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 if (!int.TryParse(Environment.GetEnvironmentVariable("KAMELEO_PORT"), out var KameleoPort))
 {
     KameleoPort = 5050;
 }
 
 var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"));
+await client.VerifyEngineReadyAsync();
 
 // Search Firefox fingerprints
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "firefox");
@@ -27,29 +26,15 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 
 // Start the Kameleo profile and connect with Playwright
-var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
 
-// The Playwright framework is not designed to connect to already running
-// browsers. To overcome this limitation, a tool bundled with Kameleo, named
-// pw-bridge will bridge the communication gap between the running Firefox
-// instance and this playwright script.
-// The exact path to the bridge executable is subject to change.
-var pwBridgePath = Environment.GetEnvironmentVariable("PW_BRIDGE_PATH");
-if (pwBridgePath is null && OperatingSystem.IsWindows())
-{
-    var localAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-    pwBridgePath = Path.Combine(localAppDataFolder, "Programs", "Kameleo", "pw-bridge.exe");
-}
-else if (pwBridgePath is null && OperatingSystem.IsMacOS())
-{
-    pwBridgePath = "/Applications/Kameleo.app/Contents/Resources/CLI/pw-bridge";
-}
-
+// The Playwright framework can't connect to an already running Firefox instance directly.
+// The Kameleo SDK provides an executable (pw-bridge) that bridges this gap,
+// allowing Playwright to control the browser launched by Kameleo.
 var playwright = await Playwright.CreateAsync();
 var context = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
 {
-    ExecutablePath = pwBridgePath,
-    Args = ["-target", browserWsEndpoint],
+    ExecutablePath = JunglefoxHelper.GetBridgePath(),
+    Args = JunglefoxHelper.GetBridgeArgs(client, profile),
     ViewportSize = ViewportSize.NoViewport,
     Timeout = 90_000,
 });

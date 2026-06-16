@@ -37,6 +37,7 @@ src/Kameleo.LocalApiClient/Model/DeleteFolderResponse.cs
 src/Kameleo.LocalApiClient/Model/Device.cs
 src/Kameleo.LocalApiClient/Model/DeviceMemoryChoice.cs
 src/Kameleo.LocalApiClient/Model/DeviceMemorySpoofingType.cs
+src/Kameleo.LocalApiClient/Model/ErrorCode.cs
 src/Kameleo.LocalApiClient/Model/ExportProfileRequest.cs
 src/Kameleo.LocalApiClient/Model/Fingerprint.cs
 src/Kameleo.LocalApiClient/Model/FingerprintPreview.cs
@@ -64,6 +65,7 @@ src/Kameleo.LocalApiClient/Model/ProfileStorageLocation.cs
 src/Kameleo.LocalApiClient/Model/ProxyChoice.cs
 src/Kameleo.LocalApiClient/Model/ProxyConnectionType.cs
 src/Kameleo.LocalApiClient/Model/QuotaStatistics.cs
+src/Kameleo.LocalApiClient/Model/RunningProfiles.cs
 src/Kameleo.LocalApiClient/Model/RunningProfilesStatistics.cs
 src/Kameleo.LocalApiClient/Model/ScreenChoice.cs
 src/Kameleo.LocalApiClient/Model/ScreenSpoofingType.cs

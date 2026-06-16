@@ -13,7 +13,7 @@
     <Description>This .NET Standard package provides convenient access to the Local API REST interface of the Kameleo Client.</Description>
     <Copyright>MIT</Copyright>
     <RootNamespace>Kameleo.LocalApiClient</RootNamespace>
-    <Version>4.4.0</Version>
+    <Version>5.0.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/kameleo-io/kameleo.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -35,8 +35,38 @@
   <ItemGroup>
     <None Remove="bin/**" />
     <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="build/Kameleo.LocalApiClient.targets" Pack="true" PackagePath="build/" />
     <None Remove="examples/**" />
     <Compile Remove="examples/**" />
     <EmbeddedResource Remove="examples/**" />
+  </ItemGroup>
+
+  <!-- Ensure bins are created before MSBuild collects copy items (also fires when consuming project collects via ProjectReference) -->
+  <Target Name="EnsurePwBridgeBinsExist" DependsOnTargets="CopyPwBridgeBins" BeforeTargets="GetCopyToOutputDirectoryItems" />
+
+  <Target Name="CopyPwBridgeBins" BeforeTargets="BeforeBuild">
+    <Exec Command="node $(MSBuildThisFileDirectory)../../build/copyBins.mts" />
+  </Target>
+
+  <ItemGroup>
+    <!-- pw-bridge binaries are copied here by the CopyPwBridgeBins target before building -->
+    <Content Include="bin/win-x64/pw-bridge.exe">
+      <Pack>true</Pack>
+      <PackagePath>runtimes/win-x64/native/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>bin/win-x64/pw-bridge.exe</Link>
+    </Content>
+    <Content Include="bin/linux-x64/pw-bridge">
+      <Pack>true</Pack>
+      <PackagePath>runtimes/linux-x64/native/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>bin/linux-x64/pw-bridge</Link>
+    </Content>
+    <Content Include="bin/osx-arm64/pw-bridge">
+      <Pack>true</Pack>
+      <PackagePath>runtimes/osx-arm64/native/</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>bin/osx-arm64/pw-bridge</Link>
+    </Content>
   </ItemGroup>
 </Project>

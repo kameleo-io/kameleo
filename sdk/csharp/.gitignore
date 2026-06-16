@@ -37,4 +37,5 @@ node_modules/
 
 # Build related
 tools/**
+bin
 !tools/packages.config
