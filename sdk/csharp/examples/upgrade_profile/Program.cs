@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 if (!int.TryParse(Environment.GetEnvironmentVariable("KAMELEO_PORT"), out var KameleoPort))
 {
     KameleoPort = 5050;
 }
 
 var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"));
+await client.VerifyEngineReadyAsync();
 
 // Search for a Desktop fingerprint with Windows OS and Chrome browser
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync("desktop", "windows", "chrome");

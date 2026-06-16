@@ -1,6 +1,6 @@
 {
   "name": "@kameleo/local-api-client",
-  "version": "4.4.1",
+  "version": "5.0.0",
   "author": "Kameleo Team",
   "description": "This JavaScript/TypeScript package provides convenient access to the Local API REST interface of the Kameleo Client.",
   "engines": {
@@ -33,17 +33,27 @@
     "url": "https://github.com/kameleo-io/kameleo/issues"
   },
   "files": [
+    "bin",
     "dist",
+    "postinstall.js",
     "README.md",
     "LICENSE"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "browser": "./dist/esm/index.browser.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "sideEffects": false,
   "scripts": {
-    "build": "npm install && tsc && tsc -p tsconfig.esm.json",
-    "prepack": "npm run build"
+    "build": "tsc && tsc -p tsconfig.esm.json",
+    "prepack": "npm run build",
+    "postinstall": "node postinstall.js"
   },
   "devDependencies": {
     "@types/node": "^16",

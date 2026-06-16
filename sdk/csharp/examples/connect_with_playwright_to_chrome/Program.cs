@@ -4,13 +4,14 @@ using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
 using Microsoft.Playwright;
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 if (!int.TryParse(Environment.GetEnvironmentVariable("KAMELEO_PORT"), out var KameleoPort))
 {
     KameleoPort = 5050;
 }
 
 var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"));
+await client.VerifyEngineReadyAsync();
 
 // Search Chrome fingerprints
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
@@ -27,7 +28,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 // Start the Kameleo profile and connect with Playwright through CDP
 var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
 var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new BrowserTypeConnectOverCDPOptions { Timeout = 90_000 });
+var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new() { NoDefaults = true, Timeout = 90_000 });
 
 // It is recommended to work on the default context.
 // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere

@@ -21,6 +21,7 @@ src/models/DeleteFolderResponse.ts
 src/models/Device.ts
 src/models/DeviceMemoryChoice.ts
 src/models/DeviceMemorySpoofingType.ts
+src/models/ErrorCode.ts
 src/models/ExportProfileRequest.ts
 src/models/Fingerprint.ts
 src/models/FingerprintPreview.ts
@@ -48,6 +49,7 @@ src/models/ProfileStorageLocation.ts
 src/models/ProxyChoice.ts
 src/models/ProxyConnectionType.ts
 src/models/QuotaStatistics.ts
+src/models/RunningProfiles.ts
 src/models/RunningProfilesStatistics.ts
 src/models/ScreenChoice.ts
 src/models/ScreenSpoofingType.ts

@@ -1,13 +1,18 @@
 [tool.poetry]
 name = "kameleo.local_api_client"
-version = "4.4.0"
+version = "5.0.0"
 description = "kameleo-local-api"
 authors = ["Kameleo Team <support@kameleo.io>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/kameleo-io/kameleo"
 keywords = ["OpenAPI", "OpenAPI-Generator", "kameleo-local-api"]
-include = ["kameleo.local_api_client/py.typed"]
+include = [
+    "kameleo.local_api_client/py.typed",
+    "kameleo/local_api_client/bin/win-x64/pw-bridge.exe",
+    "kameleo/local_api_client/bin/linux-x64/pw-bridge",
+    "kameleo/local_api_client/bin/osx-arm64/pw-bridge",
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"

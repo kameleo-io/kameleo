@@ -4,7 +4,7 @@ import time
 import os
 
 
-# This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+# This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
 PROXY_HOST = os.getenv('PROXY_HOST', '<your_proxy_host>')
@@ -13,12 +13,10 @@ PROXY_USERNAME = os.getenv('PROXY_USERNAME', '<your_proxy_username>')
 PROXY_PASSWORD = os.getenv('PROXY_PASSWORD', '<your_proxy_password>')
 
 client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
+client.verify_engine_ready()
 
 # Search Chrome fingerprints
-fingerprints = client.fingerprint.search_fingerprints(
-    device_type='desktop',
-    browser_product='chrome',
-)
+fingerprints = client.fingerprint.search_fingerprints(browser_product='chrome')
 
 # Create a new profile with recommended settings for browser fingerprinting protection
 # Choose one of the Chrome fingerprints

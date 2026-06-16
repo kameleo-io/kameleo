@@ -37,7 +37,9 @@
     "url": "https://github.com/kameleo-io/kameleo/issues"
   },
   "files": [
+    "bin",
     "dist",
+    "postinstall.js",
     "README.md",
     "LICENSE"
   ],
@@ -49,11 +51,19 @@
   "types": "./dist/index.d.ts",
 {{#supportsES6}}
   "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "browser": "./dist/esm/index.browser.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "sideEffects": false,
 {{/supportsES6}}
   "scripts": {
-    "build": "npm install && tsc{{#supportsES6}} && tsc -p tsconfig.esm.json{{/supportsES6}}"{{^sagasAndRecords}},
-    "prepack": "npm run build"{{/sagasAndRecords}}
+    "build": "tsc && tsc -p tsconfig.esm.json",
+    "prepack": "npm run build",
+    "postinstall": "node postinstall.js"
   },
 {{/packageAsSourceOnlyLibrary}}
   "devDependencies": {

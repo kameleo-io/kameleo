@@ -1,19 +1,22 @@
 from kameleo.local_api_client import KameleoLocalApiClient
+from kameleo.local_api_client.exceptions import ApiException
 from kameleo.local_api_client.models import (
     CreateProfileRequest,
     UpdateProfileRequest,
     WebglMetaChoice,
     WebglMetaSpoofingOptions,
     ProfileLifetimeState,
+    ErrorCode,
 )
 import time
 import os
 
 
-# This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+# This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
 client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
+client.verify_engine_ready()
 
 # Search Chrome fingerprints
 # Possible deviceType value: desktop, mobile
@@ -86,3 +89,14 @@ client.profile.stop_profile(duplicated_profile.id)
 # Delete original profile
 # Profiles need to be deleted explicitly becase they are persisted so they are available after restarting Kameleo
 client.profile.delete_profile(profile.id)
+
+# Try to delete the original profile again and handle the error
+try:
+    client.profile.delete_profile(profile.id)
+except ApiException as ex:
+    if ex.error_code == ErrorCode.PROFILE_NOT_FOUND:
+        # Ignore: already deleted
+        print(f"Already deleted: {ex}")
+    else:
+        print(f"Unexpected error: {ex}")
+        raise

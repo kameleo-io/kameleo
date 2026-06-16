@@ -4,6 +4,13 @@
 {{>partial_header}}
 
 from setuptools import setup, find_packages  # noqa: H301
+from setuptools.command.install import install
+
+
+class PostInstallCommand(install):
+    def run(self):
+        super().run()
+        print("\nTIP: Don't have Kameleo installed yet? Get it at https://kameleo.io/downloads.\n")
 
 # To install the library, run the following
 #
@@ -35,21 +42,28 @@ REQUIRES = [
 setup(
     name=NAME,
     version=VERSION,
+    cmdclass={"install": PostInstallCommand},
     description="This Python package provides convenient access to the Local API REST interface of the Kameleo Client.",
     author="{{infoName}}{{^infoName}}OpenAPI Generator community{{/infoName}}",
     author_email="{{infoEmail}}{{^infoEmail}}support@kameleo.io{{/infoEmail}}",
     url="{{packageUrl}}",
     keywords=["{{projectName}}", "kameleo", "stealth browsing platform", "anti-detect browser", "selenium", "webdriver", "browser automation", "web scraping", "puppeteer", "playwright", "headless", "chrome", "firefox", "chromium", "edge"],
     install_requires=REQUIRES,
-    packages=find_packages(exclude=["test", "tests"]),
+    packages=find_packages(exclude=["test", "tests"]) + ["kameleo.local_api_client.bin"],
     include_package_data=True,
     {{#licenseInfo}}license="{{.}}",
     {{/licenseInfo}}long_description_content_type='text/markdown',
     long_description=open("README.md", encoding="utf-8").read(),
-    package_data={"{{{packageName}}}": ["py.typed"]},
+    package_data={
+        "kameleo.local_api_client": [
+            "py.typed",
+            "bin/win-x64/pw-bridge.exe",
+            "bin/linux-x64/pw-bridge",
+            "bin/osx-arm64/pw-bridge",
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ]
 )

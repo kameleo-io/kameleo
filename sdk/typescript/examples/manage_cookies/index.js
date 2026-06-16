@@ -1,15 +1,16 @@
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import { Builder } from "selenium-webdriver";
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
-const kameleoCliUri = `http://localhost:${kameleoPort}`;
+const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
+const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
+await client.verifyEngineReady();
 
 // Search one of the fingerprints
-const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "firefox");
+const fingerprints = await client.fingerprint.searchFingerprints(undefined, undefined, "firefox");
 
 // Create a new profile with recommended settings
 // Choose one of the fingerprints
@@ -29,13 +30,13 @@ const driver = await builder.build();
 
 // Navigate to a site which give you cookies
 await driver.get("https://www.nytimes.com");
-await driver.sleep(5000);
+await driver.sleep(5_000);
 
 await driver.get("https://whoer.net");
-await driver.sleep(5000);
+await driver.sleep(5_000);
 
 await driver.get("https://www.youtube.com");
-await driver.sleep(5000);
+await driver.sleep(5_000);
 
 // Stop the profile
 await client.profile.stopProfile(profile.id);

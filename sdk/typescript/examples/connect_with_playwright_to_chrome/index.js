@@ -2,12 +2,13 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import playwright from "playwright";
 import { setTimeout } from "timers/promises";
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
-const kameleoCliUri = `http://localhost:${kameleoPort}`;
+const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
+const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
+await client.verifyEngineReady();
 
 // Search Chrome fingerprints
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
@@ -24,7 +25,7 @@ const profile = await client.profile.createProfile(createProfileRequest);
 
 // Start the Kameleo profile and connect with Playwright through CDP
 const browserWSEndpoint = `ws://localhost:${kameleoPort}/playwright/${profile.id}`;
-const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, { timeout: 90_000 });
+const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, { noDefaults: true, timeout: 90_000 });
 
 // It is recommended to work on the default context.
 // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere

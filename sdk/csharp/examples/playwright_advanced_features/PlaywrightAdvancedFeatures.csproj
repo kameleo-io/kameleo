@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kameleo.LocalApiClient" Version="4.4.0" />
-    <PackageReference Include="Microsoft.Playwright" Version="1.59.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.60.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Kameleo.LocalApiClient\Kameleo.LocalApiClient.csproj" />
   </ItemGroup>
 
 </Project>

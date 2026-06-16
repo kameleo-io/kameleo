@@ -14,6 +14,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Net.Http;
 using System.Net.Security;
+using Kameleo.LocalApiClient.Model;
+using Newtonsoft.Json;
 {{#useRestSharp}}
 {{#hasOAuthMethods}}using {{packageName}}.Client.Auth;
 {{/hasOAuthMethods}}
@@ -50,23 +52,22 @@ namespace {{packageName}}.Client
         /// </summary>
         public static readonly ExceptionFactory DefaultExceptionFactory = (methodName, response) =>
         {
-            var status = (int)response.StatusCode;
-            if (status >= 400 || status < 200)
+            var statusCode = (int)response.StatusCode;
+            if (statusCode >= 400 || statusCode < 200)
             {
-                return new HttpRequestException(response.StatusCode.ToString(),
-                    new ApiException(
-                        status,
-                        string.Format("Error calling {0}: {1}", methodName, status == 0 ? response.ErrorText : response.RawContent),
-                        status == 0 ? response.ErrorText : response.RawContent,
-                        response.Headers));
+                ProblemResponse problemResponse = null;
+                try
+                {
+                    problemResponse = JsonConvert.DeserializeObject<ProblemResponse>(response.RawContent);
+                }
+                catch { }
+
+                return new ApiException(
+                        statusCode,
+                        string.Format("Error calling {0}: {1}", methodName, statusCode != 0 ? response.RawContent : response.ErrorText),
+                        problemResponse,
+                        response.Headers);
             }
-            {{^netStandard}}
-            if (status == 0)
-            {
-                return new ApiException(status,
-                    string.Format("Error calling {0}: {1}", methodName, response.ErrorText), response.ErrorText);
-            }
-            {{/netStandard}}
             return null;
         };
 
