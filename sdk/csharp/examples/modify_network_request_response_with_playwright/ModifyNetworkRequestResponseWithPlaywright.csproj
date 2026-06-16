@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Kameleo.LocalApiClient" Version="5.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.60.0" />
   </ItemGroup>
 
@@ -13,10 +14,6 @@
     <None Update="kameleo.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Kameleo.LocalApiClient\Kameleo.LocalApiClient.csproj" />
   </ItemGroup>
 
 </Project>
