@@ -29,24 +29,24 @@ export default defineConfig<ConfiguredContextOptions>({
     projects: [
         // global setup & teardown
         {
-            name: "launch Kameleo CLI",
+            name: "launch Kameleo Engine",
             retries: 0,
             testMatch: "launch.kameleo.ts",
-            teardown: "terminate Kameleo CLI",
+            teardown: "terminate Kameleo Engine",
         },
         {
-            name: "terminate Kameleo CLI",
+            name: "terminate Kameleo Engine",
             testMatch: "terminate.kameleo.ts",
         },
         // actual browser tests
         {
             name: "Chroma",
-            dependencies: ["launch Kameleo CLI"],
+            dependencies: ["launch Kameleo Engine"],
             use: { browserProduct: "chrome" },
         },
         {
             name: "Junglefox",
-            dependencies: ["launch Kameleo CLI"],
+            dependencies: ["launch Kameleo Engine"],
             use: { browserProduct: "firefox" },
         },
         {
