@@ -13,7 +13,7 @@ Kameleo adapts automatically to anti-bot changes, so your browser operations kee
 
 ## Quickstart
 
-You'll need a Kameleo account to run the CLI — the free tier includes 2 concurrent browsers and no credit card is required. [Create a free account →](https://billing.kameleo.io/my-account/get-app/?method_hint=register)
+You'll need a Kameleo account to run the Engine — the free tier includes 2 concurrent browsers and no credit card is required. [Create a free account →](https://billing.kameleo.io/my-account/get-app/?method_hint=register)
 
 ### 1. Install Kameleo
 
@@ -33,7 +33,7 @@ pip install kameleo.local-api-client
 
 ### 3. Follow the quickstart guide
 
-Everything from starting the CLI to connecting your first profile is covered in the [Kameleo Developer Center](https://developer.kameleo.io/getting-started/quickstart/).
+Everything from starting the Engine to connecting your first profile is covered in the [Kameleo Developer Center](https://developer.kameleo.io/getting-started/quickstart/).
 
 ## Integrations
 

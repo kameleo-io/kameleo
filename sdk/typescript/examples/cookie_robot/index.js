@@ -2,15 +2,16 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import randomInteger from "random-int";
 import { Builder } from "selenium-webdriver";
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
-const kameleoCliUri = `http://localhost:${kameleoPort}`;
+const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
+const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
+await client.verifyEngineReady();
 
 // Search one of the fingerprints
-const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "firefox");
+const fingerprints = await client.fingerprint.searchFingerprints(undefined, undefined, "firefox");
 
 // Create a new profile with recommended settings
 // Choose one of the fingerprints
@@ -55,7 +56,7 @@ while (sitesToVisit.length < 5) {
 // Warm up profile by visiting the randomly selected sites
 for (const site of sitesToVisit) {
     await driver.get(`https://${site}`);
-    await driver.sleep(randomInteger(5000, 15000));
+    await driver.sleep(randomInteger(5_000, 15_000));
 }
 
 // Stop the profile

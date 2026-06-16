@@ -1,0 +1,31 @@
+<Project>
+  <!-- Copy pw-bridge binaries from the NuGet package's runtimes/ to the consuming project's
+       output directory so JunglefoxHelper.GetBridgePath() can find them at runtime.
+       (runtimes/{rid}/native/ is only auto-copied during dotnet publish, not dotnet build/run.) -->
+  <Target Name="CopyKameleoPwBridge" AfterTargets="Build">
+    <PropertyGroup>
+      <_KameleoPkgRoot>$(MSBuildThisFileDirectory)../</_KameleoPkgRoot>
+    </PropertyGroup>
+    <Copy SourceFiles="$(_KameleoPkgRoot)runtimes/win-x64/native/pw-bridge.exe"
+      DestinationFolder="$(OutputPath)bin/win-x64/"
+      SkipUnchangedFiles="true"
+      Condition="$([MSBuild]::IsOsPlatform('Windows')) And Exists('$(_KameleoPkgRoot)runtimes/win-x64/native/pw-bridge.exe')" />
+    <Copy SourceFiles="$(_KameleoPkgRoot)runtimes/linux-x64/native/pw-bridge"
+      DestinationFolder="$(OutputPath)bin/linux-x64/"
+      SkipUnchangedFiles="true"
+      Condition="$([MSBuild]::IsOsPlatform('Linux')) And Exists('$(_KameleoPkgRoot)runtimes/linux-x64/native/pw-bridge')" />
+    <Copy SourceFiles="$(_KameleoPkgRoot)runtimes/osx-arm64/native/pw-bridge"
+      DestinationFolder="$(OutputPath)bin/osx-arm64/"
+      SkipUnchangedFiles="true"
+      Condition="$([MSBuild]::IsOsPlatform('OSX')) And Exists('$(_KameleoPkgRoot)runtimes/osx-arm64/native/pw-bridge')" />
+  </Target>
+
+  <Target Name="ChmodKameleoPwBridge" AfterTargets="CopyKameleoPwBridge"
+          Condition="!$([MSBuild]::IsOsPlatform('Windows'))">
+    <Exec Command="chmod +x &quot;$(OutputPath)bin/linux-x64/pw-bridge&quot;"
+          Condition="$([MSBuild]::IsOsPlatform('Linux')) And Exists('$(OutputPath)bin/linux-x64/pw-bridge')" />
+    <Exec Command="chmod +x &quot;$(OutputPath)bin/osx-arm64/pw-bridge&quot;"
+          Condition="$([MSBuild]::IsOsPlatform('OSX')) And Exists('$(OutputPath)bin/osx-arm64/pw-bridge')" />
+  </Target>
+
+</Project>

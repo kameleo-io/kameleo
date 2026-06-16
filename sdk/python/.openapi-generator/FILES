@@ -26,6 +26,7 @@ kameleo/local_api_client/models/delete_folder_response.py
 kameleo/local_api_client/models/device.py
 kameleo/local_api_client/models/device_memory_choice.py
 kameleo/local_api_client/models/device_memory_spoofing_type.py
+kameleo/local_api_client/models/error_code.py
 kameleo/local_api_client/models/export_profile_request.py
 kameleo/local_api_client/models/fingerprint.py
 kameleo/local_api_client/models/fingerprint_preview.py
@@ -53,6 +54,7 @@ kameleo/local_api_client/models/profile_storage_location.py
 kameleo/local_api_client/models/proxy_choice.py
 kameleo/local_api_client/models/proxy_connection_type.py
 kameleo/local_api_client/models/quota_statistics.py
+kameleo/local_api_client/models/running_profiles.py
 kameleo/local_api_client/models/running_profiles_statistics.py
 kameleo/local_api_client/models/screen_choice.py
 kameleo/local_api_client/models/screen_spoofing_type.py

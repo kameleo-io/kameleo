@@ -4,7 +4,7 @@ using Kameleo.LocalApiClient.Client;
 namespace Kameleo.LocalApiClient
 {
     /// <summary>
-    /// Encapsualte access to all the provided APIs by Kameleo.CLI.
+    /// Encapsualte access to all the provided APIs by the Kameleo Engine.
     /// </summary>
     public interface IKameleoLocalApiClient
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 if (!int.TryParse(Environment.GetEnvironmentVariable("KAMELEO_PORT"), out var KameleoPort))
 {
     KameleoPort = 5050;
@@ -19,9 +19,10 @@ if (!int.TryParse(Environment.GetEnvironmentVariable("PROXY_PORT"), out var prox
 }
 
 var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"));
+await client.VerifyEngineReadyAsync();
 
 // Search Firefox fingerprints
-var fingerprints = await client.Fingerprint.SearchFingerprintsAsync("desktop", null, "firefox");
+var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(browserProduct: "firefox");
 
 // Create a new profile with recommended settings
 // Choose one of the Firefox fingerprints

@@ -2,6 +2,8 @@
 /* eslint-disable */
 {{>licenseInfo}}
 
+import type { ErrorCode } from './models/ErrorCode';
+import type { ProblemResponse } from './models/ProblemResponse';
 
 export const BASE_PATH = "{{{basePath}}}".replace(/\/+$/, "");
 
@@ -127,7 +129,22 @@ export class BaseAPI {
         if (response && (response.status >= 200 && response.status < 300)) {
             return response;
         }
-        throw new ResponseError(response, 'Response returned an error code: ' + await response.text());
+
+        let problem: ProblemResponse | undefined;
+
+        try {
+            if (response && this.isJsonMime(response.headers.get('content-type'))) {
+                problem = await response.clone().json() as ProblemResponse;
+            }
+        } catch {}
+
+        throw new ResponseError(
+            response,
+            problem?.errorCode != null
+                ? String(problem.errorCode)
+                : 'Response returned an error code',
+            problem,
+        );
     }
 
     private async createFetchParams(context: RequestOpts, initOverrides?: RequestInit | InitOverrideFunction) {
@@ -253,8 +270,15 @@ function isFormData(value: any): value is FormData {
 
 export class ResponseError extends Error {
     override name: "ResponseError" = "ResponseError";
-    constructor(public response: Response, msg?: string) {
+
+    public readonly problem?: ProblemResponse;
+    public readonly errorCode?: ErrorCode;
+
+    constructor(public response: Response, msg?: string, problem?: ProblemResponse) {
         super(msg);
+        this.problem = problem;
+        this.errorCode = problem?.errorCode as ErrorCode | undefined;
+        Object.setPrototypeOf?.(this, new.target.prototype);
     }
 }
 

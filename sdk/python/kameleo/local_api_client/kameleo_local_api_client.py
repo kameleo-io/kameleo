@@ -1,12 +1,19 @@
-# import apis into sdk package
+import time
+from datetime import datetime, timedelta, timezone
+
 from kameleo.local_api_client.api_client import ApiClient
+from kameleo.local_api_client.exceptions import ApiException
+from kameleo.local_api_client.models import ErrorCode
 from kameleo.local_api_client.configuration import Configuration
+
+# APIs
 from kameleo.local_api_client.api.fingerprint_api import FingerprintApi
 from kameleo.local_api_client.api.cookie_api import CookieApi
 from kameleo.local_api_client.api.folder_api import FolderApi
 from kameleo.local_api_client.api.general_api import GeneralApi
 from kameleo.local_api_client.api.profile_api import ProfileApi
 from kameleo.local_api_client.api.kernel_api import KernelApi
+
 
 class KameleoLocalApiClient:
     """You can use the following API endpoints to communicate with the local running Kameleo
@@ -17,13 +24,17 @@ class KameleoLocalApiClient:
     """
 
     def __init__(  # pylint: disable=missing-client-constructor-parameter-credential
-        self, *, endpoint: str = "http://localhost:5050", configuration: Configuration = None
+        self,
+        *,
+        endpoint: str = "http://localhost:5050",
+        configuration: Configuration = None,
     ) -> None:
-        
+
         if configuration is None:
             configuration = Configuration.get_default()
 
         configuration.host = endpoint
+        self.configuration = configuration
         api_client = ApiClient(configuration)
 
         self._fingerprint = FingerprintApi(api_client)
@@ -62,3 +73,27 @@ class KameleoLocalApiClient:
     def kernel(self):
         """Get the KernelApi API."""
         return self._kernel
+
+    def verify_engine_ready(self, timeout_seconds: float = 30) -> None:
+        """Verifies that the Kameleo Engine is ready to accept connections.
+
+        :param timeout_seconds: How long to wait for the engine to become ready. Defaults to 30 seconds.
+        :raises Exception: If the engine is not available, or the engine was started, but does not become ready within the timeout.
+        """
+        deadline = datetime.now(timezone.utc) + timedelta(seconds=timeout_seconds)
+        while True:
+            try:
+                self._general.healthcheck()
+                return
+            except Exception as e:
+                if (
+                    isinstance(e, ApiException)
+                    and e.error_code == ErrorCode.SERVICE_NOT_READY
+                    and datetime.now(timezone.utc) < deadline
+                ):
+                    time.sleep(1)
+                    continue
+                raise RuntimeError(
+                    "ERROR: Could not connect to Kameleo. Make sure it is running, "
+                    "or download it at https://kameleo.io/downloads"
+                ) from e

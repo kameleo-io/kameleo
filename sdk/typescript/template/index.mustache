@@ -1,7 +1,6 @@
 {{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/typescript-fetch/index.mustache }}
 /* eslint-disable */
 
-// folders
 export * from './runtime{{importFileExtension}}';
 {{#useSagaAndRecords}}
 export * from './runtimeSagasAndRecords{{importFileExtension}}';
@@ -11,6 +10,7 @@ export * from './ApiEntitiesSelectors{{importFileExtension}}';
 {{/useSagaAndRecords}}
 {{#apiInfo}}
 {{#apis.0}}
+// folders
 export * from './apis/index{{importFileExtension}}';
 {{/apis.0}}
 {{/apiInfo}}
@@ -18,5 +18,6 @@ export * from './apis/index{{importFileExtension}}';
 export * from './models/index{{importFileExtension}}';
 {{/models.0}}
 
-// files
-export * from './kameleoLocalApiClient';
+// custom files
+export * from './kameleoLocalApiClient{{importFileExtension}}';
+export * from './junglefoxHelper{{importFileExtension}}';

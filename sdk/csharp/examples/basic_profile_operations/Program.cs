@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kameleo.LocalApiClient;
+using Kameleo.LocalApiClient.Client;
 using Kameleo.LocalApiClient.Model;
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 if (!int.TryParse(Environment.GetEnvironmentVariable("KAMELEO_PORT"), out var KameleoPort))
 {
     KameleoPort = 5050;
 }
 
 var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"));
+await client.VerifyEngineReadyAsync();
 
 // Search Chrome fingerprints
 // Possible deviceType value: desktop, mobile
@@ -91,3 +93,19 @@ await client.Profile.StopProfileAsync(duplicatedProfile.Id);
 // Delete original profile
 // Profiles need to be deleted explicitly becase they are persisted so they are available after restarting Kameleo
 await client.Profile.DeleteProfileAsync(profile.Id);
+
+// Try to delete the original profile again and handle the error
+try
+{
+    await client.Profile.DeleteProfileAsync(profile.Id);
+}
+catch (ApiException ex) when (ex.ErrorCode == ErrorCode.ProfileNotFound)
+{
+    // Ignore: already deleted
+    Console.WriteLine($"Already deleted: {ex}");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Unexpected error: {ex}");
+    throw;
+}

@@ -1,12 +1,13 @@
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import { Builder, By, Key, until } from "selenium-webdriver";
 
-// This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+// This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 const kameleoPort = process.env["KAMELEO_PORT"] ?? 5050;
-const kameleoCliUri = `http://localhost:${kameleoPort}`;
+const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 
 // Initialize the Kameleo client
-const client = new KameleoLocalApiClient({ basePath: kameleoCliUri });
+const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
+await client.verifyEngineReady();
 
 // Search one of the fingerprints
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
@@ -22,7 +23,7 @@ const createProfileRequest = {
 const profile = await client.profile.createProfile(createProfileRequest);
 
 // Start the Kameleo profile and connect using WebDriver protocol
-const builder = new Builder().usingServer(`${kameleoCliUri}/webdriver`).withCapabilities({
+const builder = new Builder().usingServer(`${kameleoEngineUri}/webdriver`).withCapabilities({
     "kameleo:profileId": profile.id,
     browserName: "Kameleo",
 });
@@ -37,7 +38,7 @@ const title = await driver.getTitle();
 console.log(`The title is ${title}`);
 
 // Wait for 5 seconds
-await driver.sleep(5000);
+await driver.sleep(5_000);
 
 // Stop the browser by stopping the Kameleo profile
 await client.profile.stopProfile(profile.id);

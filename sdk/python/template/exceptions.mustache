@@ -1,0 +1,329 @@
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/python/exceptions.mustache }}
+# coding: utf-8
+
+{{>partial_header}}
+
+from typing import Any, NoReturn, Optional, TYPE_CHECKING, Union
+import json
+
+if TYPE_CHECKING:
+    from {{packageName}}.models.problem_response import ProblemResponse
+    from {{packageName}}.models.error_code import ErrorCode
+
+
+class OpenApiException(Exception):
+    """The base exception class for all OpenAPIExceptions"""
+
+
+class ApiTypeError(OpenApiException, TypeError):
+    def __init__(self, msg, path_to_item=None, valid_classes=None,
+                 key_type=None) -> None:
+        """ Raises an exception for TypeErrors
+
+        Args:
+            msg (str): the exception message
+
+        Keyword Args:
+            path_to_item (list): a list of keys and indices to get to the
+                                 current_item
+                                 None if unset
+            valid_classes (tuple): the primitive classes that current item
+                                   should be an instance of
+                                   None if unset
+            key_type (bool): False if our value is a value in a dict
+                             True if it is a key in a dict
+                             False if our item is an item in a list
+                             None if unset
+        """
+        self.path_to_item = path_to_item
+        self.valid_classes = valid_classes
+        self.key_type = key_type
+        full_msg = msg
+        if path_to_item:
+            full_msg = "{0} at {1}".format(msg, render_path(path_to_item))
+        super(ApiTypeError, self).__init__(full_msg)
+
+
+class ApiValueError(OpenApiException, ValueError):
+    def __init__(self, msg, path_to_item=None) -> None:
+        """
+        Args:
+            msg (str): the exception message
+
+        Keyword Args:
+            path_to_item (list): the path to the exception in the
+                received_data dict. None if unset.
+        """
+
+        self.path_to_item = path_to_item
+        full_msg = msg
+        if path_to_item:
+            full_msg = "{0} at {1}".format(msg, render_path(path_to_item))
+        super(ApiValueError, self).__init__(full_msg)
+
+
+class ApiAttributeError(OpenApiException, AttributeError):
+    def __init__(self, msg, path_to_item=None) -> None:
+        """
+        Raised when an attribute reference or assignment fails.
+
+        Args:
+            msg (str): the exception message
+
+        Keyword Args:
+            path_to_item (None/list): the path to the exception in the
+                received_data dict.
+        """
+        self.path_to_item = path_to_item
+        full_msg = msg
+        if path_to_item:
+            full_msg = "{0} at {1}".format(msg, render_path(path_to_item))
+        super(ApiAttributeError, self).__init__(full_msg)
+
+
+class ApiKeyError(OpenApiException, KeyError):
+    def __init__(self, msg, path_to_item=None) -> None:
+        """
+        Args:
+            msg (str): the exception message
+
+        Keyword Args:
+            path_to_item (None/list): the path to the exception in the
+                received_data dict.
+        """
+        self.path_to_item = path_to_item
+        full_msg = msg
+        if path_to_item:
+            full_msg = "{0} at {1}".format(msg, render_path(path_to_item))
+        super(ApiKeyError, self).__init__(full_msg)
+
+
+class ApiException(OpenApiException):
+
+    def __init__(
+        self,
+        status=None,
+        reason=None,
+        http_resp=None,
+        *,
+        body: Optional[str] = None,
+        data: Optional[Any] = None,
+        problem: Optional["ProblemResponse"] = None,
+    ) -> None:
+        self.status = status
+        self.reason = reason
+        self.body = body
+        self.data = data
+        self.headers = None
+
+        self.problem: Optional["ProblemResponse"] = problem
+        self.error_code: Optional[Union["ErrorCode", str]] = None
+
+        if http_resp is not None:
+            if self.status is None:
+                self.status = getattr(http_resp, "status", None)
+
+            if self.reason is None:
+                self.reason = getattr(http_resp, "reason", None)
+
+            self.headers = self._try_get_headers(http_resp)
+
+            if self.data is None:
+                self.data = getattr(http_resp, "data", None)
+
+            if self.body is None and self.data is not None:
+                self.body = self._try_decode_body(self.data)
+
+        if self.problem is None:
+            self.problem = self._try_parse_problem_response(
+                data if data is not None
+                else self.data if self.data is not None
+                else body if body is not None
+                else self.body
+            )
+
+        if self.problem is not None:
+            raw_error_code = getattr(self.problem, "error_code", None)
+            if raw_error_code is not None:
+                self.error_code = self._try_parse_error_code(raw_error_code)
+
+        super(ApiException, self).__init__(self.__str__())
+
+    @staticmethod
+    def _try_get_headers(http_resp) -> Optional[Any]:
+        if http_resp is None:
+            return None
+
+        if hasattr(http_resp, "headers"):
+            return http_resp.headers
+
+        if hasattr(http_resp, "getheaders"):
+            try:
+                return http_resp.getheaders()
+            except Exception:
+                return None
+
+        return None
+
+    @staticmethod
+    def _try_decode_body(data: Any) -> Optional[str]:
+        if data is None:
+            return None
+
+        if isinstance(data, bytes):
+            try:
+                return data.decode("utf-8")
+            except Exception:
+                return None
+
+        if isinstance(data, str):
+            return data
+
+        try:
+            return json.dumps(data)
+        except Exception:
+            return str(data)
+
+    @staticmethod
+    def _try_parse_problem_response(data: Any) -> Optional["ProblemResponse"]:
+        if data is None:
+            return None
+
+        try:
+            from {{packageName}}.models.problem_response import ProblemResponse
+
+            if isinstance(data, ProblemResponse):
+                return data
+
+            # Some generated model classes may not behave well with isinstance
+            # because of forward refs / reloads, so accept model-shaped objects too.
+            if (
+                hasattr(data, "status")
+                and hasattr(data, "error_code")
+                and hasattr(data, "title")
+            ):
+                return data
+
+            if isinstance(data, bytes):
+                data = data.decode("utf-8")
+
+            if isinstance(data, str):
+                data = json.loads(data)
+
+            if isinstance(data, dict):
+                from {{packageName}}.models.problem_response import ProblemResponse
+                return ProblemResponse.from_dict(data)
+        except Exception:
+            return None
+
+        return None
+
+    @staticmethod
+    def _try_parse_error_code(value: Any) -> Union["ErrorCode", str]:
+        if value is None:
+            return value
+
+        try:
+            from {{packageName}}.models.error_code import ErrorCode
+            return ErrorCode(value)
+        except Exception:
+            return value
+
+    @classmethod
+    def from_response(
+        cls,
+        *,
+        http_resp,
+        body: Optional[str],
+        data: Optional[Any],
+    ) -> NoReturn:
+        if http_resp.status == 400:
+            raise BadRequestException(http_resp=http_resp, body=body, data=data)
+
+        if http_resp.status == 401:
+            raise UnauthorizedException(http_resp=http_resp, body=body, data=data)
+
+        if http_resp.status == 403:
+            raise ForbiddenException(http_resp=http_resp, body=body, data=data)
+
+        if http_resp.status == 404:
+            raise NotFoundException(http_resp=http_resp, body=body, data=data)
+
+        if http_resp.status == 409:
+            raise ConflictException(http_resp=http_resp, body=body, data=data)
+
+        if http_resp.status == 422:
+            raise UnprocessableEntityException(http_resp=http_resp, body=body, data=data)
+
+        if 500 <= http_resp.status <= 599:
+            raise ServiceException(http_resp=http_resp, body=body, data=data)
+
+        raise ApiException(http_resp=http_resp, body=body, data=data)
+
+    def __str__(self):
+        """Custom error messages for exception"""
+        error_message = "({0})\nReason: {1}\n".format(self.status, self.reason)
+
+        if self.problem is not None:
+            title = getattr(self.problem, "title", None)
+            error_code = getattr(self.problem, "error_code", None)
+
+            if error_code:
+                error_message += "ErrorCode: {0}\n".format(error_code)
+
+            if title:
+                error_message += "Title: {0}\n".format(title)
+
+        if self.headers:
+            error_message += "HTTP response headers: {0}\n".format(
+                self.headers
+            )
+
+        if self.body:
+            error_message += "HTTP response body: {0}\n".format(self.body)
+
+        if self.data and self.data != self.body:
+            error_message += "HTTP response data: {0}\n".format(self.data)
+
+        return error_message
+
+
+class BadRequestException(ApiException):
+    pass
+
+
+class NotFoundException(ApiException):
+    pass
+
+
+class UnauthorizedException(ApiException):
+    pass
+
+
+class ForbiddenException(ApiException):
+    pass
+
+
+class ServiceException(ApiException):
+    pass
+
+
+class ConflictException(ApiException):
+    """Exception for HTTP 409 Conflict."""
+    pass
+
+
+class UnprocessableEntityException(ApiException):
+    """Exception for HTTP 422 Unprocessable Entity."""
+    pass
+
+
+def render_path(path_to_item):
+    """Returns a string representation of a path"""
+    result = ""
+    for pth in path_to_item:
+        if isinstance(pth, int):
+            result += "[{0}]".format(pth)
+        else:
+            result += "['{0}']".format(pth)
+    return result

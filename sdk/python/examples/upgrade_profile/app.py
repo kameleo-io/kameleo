@@ -4,10 +4,11 @@ import time
 import os
 
 
-# This is the port Kameleo.CLI is listening on. Default value is 5050, but can be overridden in appsettings.json file
+# This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
 kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 
 client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
+client.verify_engine_ready()
 
 # Search for a Desktop fingerprint with Windows OS and Chrome browser
 fingerprints = client.fingerprint.search_fingerprints(
