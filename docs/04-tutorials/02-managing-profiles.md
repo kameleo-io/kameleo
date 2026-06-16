@@ -19,9 +19,12 @@ Pick a recent desktop Chrome fingerprint (adjust filters as needed). Limit filte
 +++ Python
 
 ```python
-fps = client.fingerprint.search_fingerprints(device_type="desktop", browser_product="chrome")
+fps = client.fingerprint.search_fingerprints(
+    device_type='desktop',
+    browser_product='chrome',
+)
 fingerprint = fps[0]
-print("Selected fingerprint", fingerprint.id)
+print('Selected fingerprint:', fingerprint.id)
 ```
 
 +++ JavaScript
@@ -29,7 +32,7 @@ print("Selected fingerprint", fingerprint.id)
 ```javascript
 const fps = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 const fingerprint = fps[0];
-console.log("Selected fingerprint", fingerprint.id);
+console.log("Selected fingerprint:", fingerprint.id);
 ```
 
 +++ C#
@@ -37,7 +40,7 @@ console.log("Selected fingerprint", fingerprint.id);
 ```csharp
 var fps = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
 var fingerprint = fps[0];
-Console.WriteLine($"Selected fingerprint {fingerprint.Id}");
+Console.WriteLine($"Selected fingerprint: {fingerprint.Id}");
 ```
 
 +++
@@ -47,7 +50,7 @@ Console.WriteLine($"Selected fingerprint {fingerprint.Id}");
 Below is a full example showing every configurable field of the profile creation request. In real use you often only set `fingerprintId`, `name`, maybe `language`, `proxy`, and a couple of masking overrides. Leave any field out to accept the default inferred from the fingerprint.
 
 !!!tip Full option reference
-For the exhaustive list of allowed values, defaults, and schema details, consult the OpenAPI specification in the [API reference](../05-reference/02-api-reference.md).
+For the exhaustive list of allowed values, defaults, and schema details, consult the OpenAPI specification in the [API reference](../05-reference/03-api-reference.md).
 !!!
 
 +++ Python

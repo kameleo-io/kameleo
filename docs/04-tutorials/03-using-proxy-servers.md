@@ -23,7 +23,7 @@ Select a fingerprint and attach a proxy at creation. Provide credentials only wh
 ```python
 from kameleo.local_api_client.models import CreateProfileRequest, ProxyChoice, Server
 
-fps = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='chrome')
+fps = client.fingerprint.search_fingerprints(browser_product='chrome')
 profile = client.profile.create_profile(CreateProfileRequest(
     fingerprint_id=fps[0].id,
     name='proxy tutorial',
@@ -39,7 +39,7 @@ print('Created profile with proxy:', profile.id, profile.proxy.value)
 
 ```javascript
 // Assumes you created a local API client instance named `client`.
-const fps = await client.fingerprint.searchFingerprints({ deviceType: "desktop", browserProduct: "chrome" }); // Fetch a Chrome desktop fingerprint
+const fps = await client.fingerprint.searchFingerprints(undefined, undefined, "chrome"); // Fetch a Chrome fingerprint
 const profile = await client.profile.createProfile({
     fingerprintId: fps[0].id,
     name: "proxy tutorial",

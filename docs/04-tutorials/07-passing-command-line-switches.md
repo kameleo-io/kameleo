@@ -60,7 +60,7 @@ If any supplied switch is blacklisted, Kameleo returns an error explaining which
 
 ## 2. Blacklisted switches
 
-Some native browser switches are blocked to preserve fingerprint integrity and avoid conflicts. See the full list: [Blacklisted browser switches](../05-reference/06-blacklisted-browser-switches.md).
+Some native browser switches are blocked to preserve fingerprint integrity and avoid conflicts. See the full list: [Blacklisted browser switches](../05-reference/09-blacklisted-browser-switches.md).
 
 ## 3. Full references
 
