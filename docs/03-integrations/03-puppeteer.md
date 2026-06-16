@@ -38,6 +38,7 @@ from kameleo.local_api_client import KameleoLocalApiClient
 from kameleo.local_api_client.models import CreateProfileRequest
 
 client = KameleoLocalApiClient(endpoint='http://localhost:5050')
+client.verify_engine_ready()
 
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
@@ -57,6 +58,7 @@ profile = client.profile.create_profile(create_req)
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 
 const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
+await client.verifyEngineReady();
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 const createProfileRequest = { fingerprintId: fingerprints[0].id, name: "puppeteer explicit start example" };
 const profile = await client.profile.createProfile(createProfileRequest);
@@ -69,6 +71,7 @@ using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
 
 var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
+await client.VerifyEngineReadyAsync();
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
 var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id) { Name = "puppeteer explicit start example" };
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
@@ -211,7 +214,11 @@ import asyncio
 
 async def main():
     client = KameleoLocalApiClient(endpoint='http://localhost:5050')
-    fps = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='chrome')
+    client.verify_engine_ready()
+    fps = client.fingerprint.search_fingerprints(
+        device_type='desktop',
+        browser_product='chrome',
+    )
     profile = client.profile.create_profile(CreateProfileRequest(
         fingerprint_id=fps[0].id,
         name='puppeteer auto-start example'
@@ -232,6 +239,7 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import puppeteer from "puppeteer";
 
 const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
+await client.verifyEngineReady();
 const fps = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 const profile = await client.profile.createProfile({ fingerprintId: fps[0].id, name: "puppeteer auto-start example" });
 
@@ -249,6 +257,7 @@ using Kameleo.LocalApiClient.Model;
 using PuppeteerSharp;
 
 var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
+await client.VerifyEngineReadyAsync();
 var fps = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
 var profile = await client.Profile.CreateProfileAsync(new CreateProfileRequest(fps[0].Id) { Name = "puppeteer auto-start example" });
 

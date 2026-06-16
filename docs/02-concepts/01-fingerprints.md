@@ -43,8 +43,11 @@ Example:
 +++ Python
 
 ```python
-fps = await client.fingerprint.search_fingerprints(
-    "desktop", "windows", "chrome", ">145"
+fps = client.fingerprint.search_fingerprints(
+    device_type='desktop',
+    os_family='windows',
+    browser_product='chrome',
+    browser_version='>145',
 )
 ```
 
@@ -59,7 +62,7 @@ const fps = await client.fingerprint.searchFingerprints("desktop", "windows", "c
 ```csharp
 var fps = await client.Fingerprint.SearchFingerprintsAsync(
     deviceType: "desktop",
-    platform: "windows",
+    osFamily: "windows",
     browserProduct: "chrome",
     browserVersion: ">145");
 ```

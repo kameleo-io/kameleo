@@ -5,12 +5,12 @@ description: Configure Kameleo via appsettings.json, environment variables, or f
 permalink: /getting-started/configure
 ---
 
-This page explains how to configure the Kameleo CLI using an appsettings.json file, environment variables, or command-line flags, and the precedence between them.
+This page explains how to configure the Kameleo Engine using an appsettings.json file, environment variables, or command-line flags, and the precedence between them.
 
 ## Prerequisites
 
 - Kameleo installed (see [Installation](./01-installation.md))
-- Ability to run the CLI binary (headless or via Desktop)
+- Ability to run the Engine binary (headless or via Desktop)
 - Text editor for creating `appsettings.json` (optional)
 
 ## 1. Choose a configuration method
@@ -24,7 +24,7 @@ You can supply values via (choose any combination):
 Use the method that matches your deployment style (local dev, CI, container, etc.).
 
 !!!tip Mix & match
-You can keep stable defaults in the file and override sensitive credentials via environment variables or flags. Precedence (highest wins): flags > environment variables > appsettings.json.
+You can keep stable defaults in the file and override the PAT via environment variables or flags. Precedence (highest wins): flags > environment variables > appsettings.json.
 !!!
 
 ## 2. Create `appsettings.json` (optional)
@@ -48,49 +48,62 @@ Minimal example:
 }
 ```
 
-Complete key list and defaults are available at [Configuration options](../05-reference/04-configuration-options.md)
+Complete key list and defaults are available at [Configuration options](../05-reference/06-configuration-options.md)
 
-## 3. (Alternative) Use environment variables
+## 3. Generate a personal access token (PAT)
 
-Set variables before launching the CLI.
+A personal access token (PAT) authenticates the Engine with your Kameleo account. You must either provide a valid PAT every time the Engine starts (suited for automation scenarios) or login using the GUI once to access your account.
+
+1. Open [https://login.kameleo.io/PAT](https://login.kameleo.io/PAT) in your browser and sign in.
+2. Click **Generate new token**.
+3. Copy the token immediately — it is shown only once.
+4. Store the token securely (e.g., in a secrets manager or environment variable). Do not commit it to source control.
+
+!!!warning Token visibility
+The token value is displayed only at creation time. If you lose it, generate a new one and revoke the old token.
+!!!
+
+## 4. (Alternative) Use environment variables
+
+Set variables before launching the Engine.
 
 +++ Windows
 
 ```powershell
-$Env:EMAIL="your-email@example.com"; $Env:PASSWORD="your-password"; ./Kameleo.CLI.exe
+$Env:PAT="your-pat"; ./Kameleo.Engine.exe
 ```
 
 +++ macOS
 
 ```bash
-EMAIL="your-email@example.com" PASSWORD="your-password" ./Kameleo.app/Contents/Resources/CLI/Kameleo.CLI
+PAT="your-pat" ./Kameleo.app/Contents/Resources/Engine/Kameleo.Engine
 ```
 
 +++
 
-## 4. (Alternative) Use command-line flags
+## 5. (Alternative) Use command-line flags
 
 Append `key=value` arguments to the executable.
 
 +++ Windows
 
 ```powershell
-./Kameleo.CLI.exe email=your-email@example.com password=your-password
+./Kameleo.Engine.exe pat=your-pat
 ```
 
 +++ macOS
 
 ```bash
-./Kameleo.app/Contents/Resources/CLI/Kameleo.CLI email=your-email@example.com password=your-password
+./Kameleo.app/Contents/Resources/Engine/Kameleo.Engine pat=your-pat
 ```
 
 +++
 
-## 5. Start the CLI
+## 6. Start the Engine
 
-Run the CLI (Desktop auto-starts it). Example with flags shown above; omit if using file+env only.
+Run the Engine (Desktop auto-starts it). Example with flags shown above; omit if using file+env only.
 
-## 6. Verify
+## 7. Verify
 
 Open: <http://localhost:5050/swagger>
 

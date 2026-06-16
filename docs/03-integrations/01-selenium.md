@@ -32,6 +32,7 @@ from kameleo.local_api_client import KameleoLocalApiClient
 from kameleo.local_api_client.models import CreateProfileRequest
 
 client = KameleoLocalApiClient(endpoint='http://localhost:5050')
+client.verify_engine_ready()
 
 fingerprints = client.fingerprint.search_fingerprints(
     device_type='desktop',
@@ -51,6 +52,7 @@ profile = client.profile.create_profile(create_req)
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 
 const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
+await client.verifyEngineReady();
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 const createProfileRequest = { fingerprintId: fingerprints[0].id, name: "selenium explicit start example" };
 const profile = await client.profile.createProfile(createProfileRequest);
@@ -63,6 +65,7 @@ using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
 
 var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
+await client.VerifyEngineReadyAsync();
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
 var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id) { Name = "selenium explicit start example" };
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
@@ -203,6 +206,7 @@ from kameleo.local_api_client.models import CreateProfileRequest
 from selenium import webdriver
 
 client = KameleoLocalApiClient(endpoint='http://localhost:5050')
+client.verify_engine_ready()
 fps = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='chrome')
 profile = client.profile.create_profile(CreateProfileRequest(
     fingerprint_id=fps[0].id,
@@ -217,6 +221,7 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import { Builder } from "selenium-webdriver";
 
 const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
+await client.verifyEngineReady();
 const fps = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
 const profile = await client.profile.createProfile({ fingerprintId: fps[0].id, name: "selenium auto-start example" });
 ```
@@ -230,6 +235,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 
 var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
+await client.VerifyEngineReadyAsync();
 var fps = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
 var profile = await client.Profile.CreateProfileAsync(new CreateProfileRequest(fps[0].Id) { Name = "selenium auto-start example" });
 ```

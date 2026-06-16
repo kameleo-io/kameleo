@@ -23,7 +23,7 @@ flowchart LR
   SERVICES["Kameleo Cloud Services"]:::cloud
 
   %% Center
-  CLI["Local CLI instance"]
+  ENGINE["Local Engine instance"]
 
   %% Right (Profiles)
   subgraph P1["Chroma instance"]
@@ -37,16 +37,16 @@ flowchart LR
   end
 
   %% Connections
-  SERVICES <--> CLI
-  GUI --> CLI
-  SCRIPT --> CLI
-  CLI --> P1
-  CLI --> P2
+  SERVICES <--> ENGINE
+  GUI --> ENGINE
+  SCRIPT --> ENGINE
+  ENGINE --> P1
+  ENGINE --> P2
 ```
 
 ## Core components
 
-**Kameleo CLI (local)**  
+**Kameleo Engine (local)**  
 The central orchestrator that runs on your computer. It exposes a local REST API (default: `http://localhost:5050`) used by the Desktop GUI, your automation scripts (SDKs / HTTP calls), and other tools. All functional operations you perform - creating profiles, launching browsers, exporting cookies, shutting down sessions - are executed by this process.
 
 **GUI (Desktop UI)**  
@@ -56,7 +56,7 @@ Primarily a rich client atop the local API, but with added convenience and produ
 Your scripts (C#, TypeScript/JavaScript, Python, etc.) talk directly to the local API or via official SDKs. They perform the same actions the GUI does, enabling CI/CD and large‑scale orchestration.
 
 **Cloud services**  
-Kameleo cloud-side infrastructure provides authentication, subscription & team management, fingerprint generation, and other remote capabilities the CLI depends on. The CLI maintains secure sessions with these services as needed.
+Kameleo cloud-side infrastructure provides authentication, subscription & team management, fingerprint generation, and other remote capabilities the Engine depends on. The Engine maintains secure sessions with these services as needed.
 
 **Profile data (virtual browsers)**  
-Each running browser instance (e.g., Chroma, Junglefox) is tied to a virtual browser profile storing fingerprint parameters, storage (cookies, localStorage), stateful artifacts, and session history. The CLI persists and updates these as you operate the profile.
+Each running browser instance (e.g., Chroma, Junglefox) is tied to a virtual browser profile storing fingerprint parameters, storage (cookies, localStorage), stateful artifacts, and session history. The Engine persists and updates these as you operate the profile.

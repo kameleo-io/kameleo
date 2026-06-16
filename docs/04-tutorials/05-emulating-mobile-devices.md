@@ -25,7 +25,7 @@ fingerprints = client.fingerprint.search_fingerprints(
     browser_product='safari'
 )
 fingerprint = fingerprints[0]
-print('Selected fingerprint', fingerprint.id)
+print('Selected fingerprint:', fingerprint.id)
 ```
 
 +++ JavaScript
@@ -33,7 +33,7 @@ print('Selected fingerprint', fingerprint.id)
 ```javascript
 const fingerprints = await client.fingerprint.searchFingerprints("mobile", "ios", "safari");
 const fingerprint = fingerprints[0];
-console.log("Selected fingerprint", fingerprint.id);
+console.log("Selected fingerprint:", fingerprint.id);
 ```
 
 +++ C#
@@ -44,7 +44,7 @@ using Kameleo.LocalApiClient.Model;
 
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync("mobile", "ios", "safari");
 var fingerprint = fingerprints[0];
-Console.WriteLine($"Selected fingerprint {fingerprint.Id}");
+Console.WriteLine($"Selected fingerprint: {fingerprint.Id}");
 ```
 
 +++
@@ -191,7 +191,7 @@ await driver.get("https://wikipedia.org");
 await driver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
 await driver.wait(until.elementLocated(By.id("content")));
 console.log("Title:", await driver.getTitle());
-await driver.sleep(5000);
+await driver.sleep(5_000);
 await client.profile.stopProfile(profile.id);
 ```
 

@@ -5,22 +5,22 @@ description: Create, start, automate, and stop a profile via the Local API.
 permalink: /getting-started/quickstart
 ---
 
-Learn how to spin up the local Kameleo CLI, connect via an SDK, search a fingerprint, then create, start, automate, and stop a reusable profile. Core automation examples (Selenium, Puppeteer, Playwright) show how to drive the running profile immediately.
+Learn how to spin up the local Kameleo Engine, connect via an SDK, search a fingerprint, then create, start, automate, and stop a reusable profile. Core automation examples (Selenium, Puppeteer, Playwright) show how to drive the running profile immediately.
 
 !!!tip Note
-API usage is subject to requests-per-minute limits. See the detailed limits table in [API rate limits](../05-reference/03-api-rate-limits.md).
+API usage is subject to requests-per-minute limits. See the detailed limits table in [API rate limits](../05-reference/04-api-rate-limits.md).
 !!!
 
-## 1. Start Kameleo CLI
+## 1. Start the Kameleo Engine
 
-Ensure the Kameleo CLI is installed and running (see [Installation](./01-installation.md)). When started locally, it serves its API at <http://localhost:5050> by default.
+Ensure the Kameleo Engine is installed and running (see [Installation](./01-installation.md)). When started locally, it serves its API at <http://localhost:5050> by default.
 
 ## 2. Install an SDK
 
-Kameleo components and SDKs follow semantic versioning (_major_._minor_._patch_). For the most reliable experience, install SDK versions whose _major_ and _minor_ match your running Kameleo CLI version.
+Kameleo components and SDKs follow semantic versioning (_major_._minor_._patch_). For the most reliable experience, install SDK versions whose _major_ and _minor_ match your running Kameleo Engine version.
 
 !!!warning Version compatibility
-Using a significantly newer SDK with an older CLI (or vice versa) can result in missing operations, model field mismatches, or unexpected errors.
+Using a significantly newer SDK with an older Engine (or vice versa) can result in missing operations, model field mismatches, or unexpected errors.
 !!!
 
 Select one of the language SDKs below to get started:
@@ -60,6 +60,7 @@ Create a client instance pointed at the local endpoint. All SDKs expose the same
 ```python
 from kameleo.local_api_client import KameleoLocalApiClient
 client = KameleoLocalApiClient(endpoint='http://localhost:5050')
+client.verify_engine_ready()
 ```
 
 +++ JavaScript
@@ -67,6 +68,7 @@ client = KameleoLocalApiClient(endpoint='http://localhost:5050')
 ```js
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
+await client.verifyEngineReady();
 ```
 
 +++ C#
@@ -74,6 +76,7 @@ const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
 ```csharp
 using Kameleo.LocalApiClient;
 var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
+await client.VerifyEngineReadyAsync();
 ```
 
 +++
@@ -85,7 +88,12 @@ Search for a fingerprint matching the desired device type, operating system, bro
 +++ Python
 
 ```python
-fps = client.fingerprint.search_fingerprints(device_type='desktop', platform='windows', browser_product='chrome', browser_version='>145')
+fps = client.fingerprint.search_fingerprints(
+    device_type='desktop',
+    os_family='windows',
+    browser_product='chrome',
+    browser_version='>145',
+)
 ```
 
 +++ JavaScript

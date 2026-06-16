@@ -32,7 +32,7 @@ For the always up-to-date list of shipped Chroma and Junglefox kernel versions, 
 
 ## Update cadence
 
-Kernels ship separately from the GUI/CLI so you get:
+Kernels ship separately from the GUI/Engine so you get:
 
 - Faster security fixes
 - Fewer full app updates

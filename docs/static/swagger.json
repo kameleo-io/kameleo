@@ -8,7 +8,7 @@
       "name": "Kameleo Team",
       "url": "https://developer.kameleo.io"
     },
-    "version": "4.5.0"
+    "version": "5.0.0"
   },
   "servers": [
     {
@@ -215,7 +215,7 @@
           {
             "name": "deviceType",
             "in": "query",
-            "description": "Filter option for the Device Type. Possible values are 'desktop', 'mobile'.\r\nYou can also use a comma-separated list to provide more than one value.",
+            "description": "Filter option for the Device Type. Possible values are 'desktop', 'mobile'.\r\nDefaults to desktop, unless overridden by other parameters.",
             "schema": {
               "type": "string",
               "example": "desktop"
@@ -225,7 +225,7 @@
           {
             "name": "osFamily",
             "in": "query",
-            "description": "Filter option for os family. Possible values are 'windows', 'macos', 'linux', 'android', 'ios'.\r\nYou can also use a comma-separated list to provide more than one value.",
+            "description": "Filter option for os family. Possible values are 'windows', 'macos', 'linux', 'android', 'ios'.\r\nDefaults to the Engine's OS, unless overridden by other parameters.",
             "schema": {
               "type": "string",
               "example": "windows"
@@ -235,7 +235,7 @@
           {
             "name": "browserProduct",
             "in": "query",
-            "description": "Filter option for browser product. Possible values are 'chrome', 'firefox', 'edge', 'safari'.\r\nYou can also use a comma-separated list to provide more than one value.",
+            "description": "Filter option for browser product. Possible values are 'chrome', 'firefox', 'edge', 'safari'.\r\nDefaults to Chrome, unless overridden by other parameters.",
             "schema": {
               "type": "string",
               "example": "safari"
@@ -898,6 +898,16 @@
           "200": {
             "description": "OK."
           },
+          "503": {
+            "description": "Service Unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
           "default": {
             "description": "Error",
             "content": {
@@ -943,7 +953,7 @@
     "/general/terminate": {
       "post": {
         "tags": ["General"],
-        "summary": "Terminate your current Kameleo session by deauthenticating and exiting the CLI. Use this to safely close your session and release any\r\nassociated resources.",
+        "summary": "Terminate your current Kameleo session by deauthenticating and exiting the Engine. Use this to safely close your session and release any\r\nassociated resources.",
         "operationId": "TerminateApplication",
         "responses": {
           "200": {
@@ -2386,6 +2396,55 @@
         "type": "string",
         "description": "Specifies how the deviceMemory will be spoofed. Possible values:\r\n'automatic': Automatically set the values based on the fingerprint.\r\n'manual': Manually set the value in the profile. Valid values: 0.25, 0.5, 1, 2, 4, 8, 16, 32.\r\n'off': Turn off the spoofing, use the original settings."
       },
+      "ErrorCode": {
+        "enum": [
+          "no_token",
+          "unauthorized",
+          "invalid_session",
+          "token_expired",
+          "authentication_failed",
+          "accountless_limit_reached",
+          "no_capability",
+          "no_cookies_capability",
+          "no_mobile_capability",
+          "no_proxy_test_capability",
+          "no_cloud_capability",
+          "no_local_capability",
+          "no_groups_capability",
+          "no_headless_capability",
+          "profile_not_found",
+          "profile_already_running",
+          "profile_not_running",
+          "profile_running",
+          "profile_locked",
+          "profile_syncing",
+          "profile_never_started",
+          "browser_engine_outdated",
+          "proxy_connection_issue",
+          "cloud_limit_reached",
+          "cloud_profile_not_exportable",
+          "profile_already_imported",
+          "incompatible_file",
+          "running_profiles_limit_reached",
+          "profile_minutes_limit_reached",
+          "downloaded_cloud_profile_bytes_limit_reached",
+          "folder_not_found",
+          "database_not_found",
+          "validation_failed",
+          "invalid_request",
+          "service_not_ready",
+          "rate_limit_exceeded",
+          "kernel_download_limit_reached",
+          "kernel_not_found",
+          "kernel_in_use",
+          "cdp_connection_failed",
+          "browser_instrumentation_disabled",
+          "vnc_not_supported",
+          "upload_failed",
+          "unexpected_error"
+        ],
+        "type": "string"
+      },
       "ExportProfileRequest": {
         "required": ["path"],
         "type": "object",
@@ -2844,26 +2903,54 @@
         "additionalProperties": {}
       },
       "ProblemResponse": {
+        "required": ["errorCode", "status", "title"],
         "type": "object",
         "properties": {
-          "code": {
+          "status": {
             "type": "integer",
-            "format": "int32",
+            "description": "The HTTP status code generated by the origin server for this occurrence of the problem.",
+            "format": "int32"
+          },
+          "errorCode": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorCode"
+              }
+            ],
+            "description": "A machine-readable error code that identifies the specific error condition. This can be used by clients to programmatically handle different error scenarios."
+          },
+          "type": {
+            "type": "string",
+            "description": "A URI reference that identifies the problem type.",
             "nullable": true
           },
-          "error": {
+          "title": {
+            "type": "string",
+            "description": "A short, human-readable summary of the problem type."
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human-readable explanation specific to this occurrence of the problem.",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "description": "A URI reference that identifies the specific occurrence of the problem.",
+            "nullable": true
+          },
+          "errors": {
             "type": "object",
             "additionalProperties": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "nullable": true
+              }
             },
+            "description": "The validation errors, if any. The keys are field names and the values are arrays of error messages.",
             "nullable": true
           }
         },
-        "additionalProperties": false
+        "additionalProperties": {}
       },
       "ProfileLifetimeState": {
         "enum": ["created", "starting", "running", "terminating", "terminated", "locked", "loading", "unknown"],
@@ -3270,7 +3357,33 @@
         },
         "additionalProperties": false
       },
+      "RunningProfiles": {
+        "required": ["tenant", "user"],
+        "type": "object",
+        "properties": {
+          "user": {
+            "required": ["automated", "manual", "total"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunningProfilesStatistics"
+              }
+            ],
+            "description": "Current usage and maximum limit of running manual and automated profiles for the logged-in user."
+          },
+          "tenant": {
+            "required": ["automated", "manual", "total"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunningProfilesStatistics"
+              }
+            ],
+            "description": "Current usage and maximum limit of running manual and automated profiles across the tenant."
+          }
+        },
+        "additionalProperties": false
+      },
       "RunningProfilesStatistics": {
+        "required": ["automated", "manual", "total"],
         "type": "object",
         "properties": {
           "automated": {
@@ -3280,8 +3393,7 @@
                 "$ref": "#/components/schemas/QuotaStatistics"
               }
             ],
-            "description": "Quota usage of the profiles that are running with an automation framework.",
-            "nullable": true
+            "description": "Quota usage of the profiles that are running with an automation framework."
           },
           "manual": {
             "required": ["currentUsage", "maximumLimit"],
@@ -3290,8 +3402,7 @@
                 "$ref": "#/components/schemas/QuotaStatistics"
               }
             ],
-            "description": "Quota usage of the profiles that are running manually (were started from GUI or API).",
-            "nullable": true
+            "description": "Quota usage of the profiles that are running manually (were started from GUI or API)."
           },
           "total": {
             "required": ["currentUsage", "maximumLimit"],
@@ -3300,8 +3411,7 @@
                 "$ref": "#/components/schemas/QuotaStatistics"
               }
             ],
-            "description": "Quota usage of the profiles that are running either manually or with an automation framework.",
-            "nullable": true
+            "description": "Quota usage of the profiles that are running either manually or with an automation framework."
           }
         },
         "additionalProperties": false
@@ -3715,6 +3825,7 @@
         "required": [
           "capabilities",
           "cloudStorage",
+          "cloudTraffic",
           "displayName",
           "email",
           "emailConfirmed",
@@ -3723,8 +3834,11 @@
           "lastAppLogin",
           "localStorage",
           "plan",
+          "profileMinutes",
+          "runningProfiles",
           "subscriptionEnd",
           "userId",
+          "version",
           "workspaceFolder"
         ],
         "type": "object",
@@ -3780,6 +3894,11 @@
             "format": "date-time",
             "example": "2020-01-01T00:00:00Z"
           },
+          "version": {
+            "type": "string",
+            "description": "The version of the app.",
+            "example": "5.0.0"
+          },
           "workspaceFolder": {
             "type": "string",
             "description": "Path to the user's workspace folder where profiles are stored. Modifying these files outside of Kameleo is strictly prohibited.",
@@ -3821,32 +3940,14 @@
             "nullable": true,
             "example": "member"
           },
-          "runningUserProfiles": {
+          "runningProfiles": {
+            "required": ["user", "tenant"],
             "allOf": [
               {
-                "$ref": "#/components/schemas/RunningProfilesStatistics"
+                "$ref": "#/components/schemas/RunningProfiles"
               }
             ],
-            "description": "Current usage and maximum limit of running manual and automated profiles for the logged-in user.",
-            "nullable": true
-          },
-          "runningTeamProfiles": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/RunningProfilesStatistics"
-              }
-            ],
-            "description": "Current usage and maximum limit of running manual and automated profiles across the user's team.",
-            "nullable": true
-          },
-          "runningTenantProfiles": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/RunningProfilesStatistics"
-              }
-            ],
-            "description": "Current usage and maximum limit of running manual and automated profiles across the tenant.",
-            "nullable": true
+            "description": "Current usage and maximum limit of the running profiles."
           },
           "profileMinutes": {
             "allOf": [
@@ -3854,8 +3955,7 @@
                 "$ref": "#/components/schemas/ProfileMinutesQuota"
               }
             ],
-            "description": "Current usage and maximum limit of profile minutes across the tenant.",
-            "nullable": true
+            "description": "Current usage and maximum limit of profile minutes across the tenant."
           },
           "cloudTraffic": {
             "allOf": [
@@ -3863,8 +3963,7 @@
                 "$ref": "#/components/schemas/CloudTrafficQuota"
               }
             ],
-            "description": "Current usage and maximum limit of cloud traffic quota across the tenant.",
-            "nullable": true
+            "description": "Current usage and maximum limit of cloud traffic quota across the tenant."
           }
         },
         "additionalProperties": false

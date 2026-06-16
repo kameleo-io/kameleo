@@ -17,42 +17,42 @@ In this tutorial you will query the `SearchFingerprints` endpoint to retrieve ca
 
 The `SearchFingerprints` endpoint accepts these optional parameters (all are filters; omit to broaden results):
 
-| Name             | Description                                                                                                   | Examples                 |
-| ---------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `deviceType`     | Device category. Accepts `desktop`, `mobile`. Comma-separated list allowed.                                   | `desktop`, `mobile`      |
-| `osFamily`       | Operating system family. Accepts `windows`, `macos`, `linux`, `android`, `ios`. Comma-separated list allowed. | `windows`, `macos,linux` |
-| `browserProduct` | Browser engine/product. Accepts `chrome`, `firefox`, `edge`, `safari`. Comma-separated list allowed.          | `chrome`, `chrome,edge`  |
-| `browserVersion` | Version filter. Optional comparator + major number (`>145`, `<=147`, `=146`). No comparator means equality.   | `>145`, `146`, `<=147`   |
+| Name             | Description                                                                                                      | Examples               |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `deviceType`     | Device category. Accepts `desktop`, `mobile`. **Defaults to desktop**                                            | `desktop`, `mobile`    |
+| `osFamily`       | Operating system family. Accepts `windows`, `macos`, `linux`, `android`, `ios`. **Defaults to the Engine's OS**. | `windows`, `macos`     |
+| `browserProduct` | Browser engine/product. Accepts `chrome`, `firefox`, `edge`, `safari`. **Defaults to Chrome**                    | `chrome`, `edge`       |
+| `browserVersion` | Version filter. Optional comparator + major number (`>145`, `<=147`, `=146`). No comparator means equality.      | `>145`, `146`, `<=147` |
 
 Notes:
 
-- Multiple comma-separated values perform a logical OR per field.
-- Unspecified fields broaden the search and may increase diversity.
-- The API returns an array of `FingerprintPreview` objects (see [API reference](../05-reference/02-api-reference.md)). Each preview contains enough metadata for choosing a candidate; you supply its attributes when creating a profile.
+- Unspecified fields give you the recommended defaults - desktop Chrome fingerprints, matching your Engine's host OS.
+- Defaults only apply when compatible with your filters - e.g. your host OS won't be forced if you specify mobile.
+- The API returns an array of `FingerprintPreview` objects (see [API reference](../05-reference/03-api-reference.md)). Each preview contains enough metadata for choosing a candidate; you supply its attributes when creating a profile.
 
 ## Basic search example
 
 The endpoint always returns up to 25 matching items ordered by newest browser versions first. Repeating the same query yields a different random subset - cache or persist the one you pick if you need stability. Below you'll see how to fetch Windows Chrome fingerprints newer than version 145.
 
 !!!warning API rate limits
-Each fingerprint search request counts toward your API quota. Avoid rapid polling loops; broaden filters or cache previously retrieved candidates instead of re-querying repeatedly. See the [API rate limits](../05-reference/03-api-rate-limits.md) page for details.
+Each fingerprint search request counts toward your API quota. Avoid rapid polling loops; broaden filters or cache previously retrieved candidates instead of re-querying repeatedly. See the [API rate limits](../05-reference/04-api-rate-limits.md) page for details.
 !!!
 
 +++ Python
 
 ```python
 fingerprints = client.fingerprint.search_fingerprints(
-    device_type="desktop",
-    os_family="windows",
-    browser_product="chrome",
-    browser_version=">145",
+    device_type='desktop',
+    os_family='windows',
+    browser_product='chrome',
+    browser_version='>145',
 )
 
 if not fingerprints:
-    print("No fingerprints found; broaden filters (remove version or add more osFamily values).")
+    print('No fingerprints found; broaden filters (remove version or add more osFamily values).')
 else:
     fp = fingerprints[0]
-    print(f"Picked fingerprint: {fp.browser.product} {fp.browser.version} on {fp.os.family}")
+    print(f'Picked fingerprint: {fp.browser.product} {fp.browser.version} on {fp.os.family}')
 ```
 
 +++ JavaScript
@@ -77,10 +77,10 @@ if (!fingerprints.length) {
 
 ```csharp
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(
-    "desktop", // deviceType
-    "windows", // osFamily
-    "chrome",  // browserProduct
-    ">145"    // browserVersion
+    deviceType: "desktop",
+    osFamily: "windows",
+    browserProduct: "chrome",
+    browserVersion: ">145"
 );
 
 if (fingerprints.Count == 0)
@@ -100,6 +100,7 @@ else
 
 Follow these guidelines:
 
+- Use the default options for the best results. The below advice is applied automatically for fingerprint selection, but you can explore other options too.
 - Align `osFamily`, proxy geo, and locale (e.g. `windows` + US proxy + `en-US`) for coherent targeting.
 - Prefer current stable major versions (`chrome`, `edge`) unless you have a site-specific requirement.
 - Avoid extremely old or rare combinations unless testing edge behavior.
@@ -114,40 +115,7 @@ Start broad: query without `browserVersion`, inspect results, then narrow (e.g. 
 If a query returns zero fingerprints:
 
 1. Remove the `browserVersion` filter.
-2. Drop to a single value in multi-value fields to reduce mutually exclusive combinations.
-3. Confirm spelling (`macos`, not `macOS`; `osFamily` not `platform`).
-4. Try only `deviceType` first, then incrementally add filters.
+2. Confirm spelling (`macos`, not `macOS`; `osFamily` not `platform`).
+3. Try only `deviceType` first, then incrementally add filters.
 
-Programmatically, detect empties and fallback to a broader search (e.g. call again without version).
-
-## Advanced multi-value queries
-
-You can OR values inside a parameter:
-
-+++ Python
-
-```python
-fingerprints = client.fingerprint.search_fingerprints(
-    device_type="desktop",
-    os_family="windows,macos",
-    browser_product="chrome,edge",
-)
-```
-
-+++ JavaScript
-
-```javascript
-const fingerprints = await client.fingerprint.searchFingerprints("desktop", "windows,macos", "chrome,edge");
-```
-
-+++ C#
-
-```csharp
-var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(
-    deviceType: "desktop",
-    osFamily: "windows,macos",
-    browserProduct: "chrome,edge"
-);
-```
-
-+++
+Programmatically, detect empties and fallback to a broader search (e.g. call again without version) or more common OS + browser combinations.
