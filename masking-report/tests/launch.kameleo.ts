@@ -3,7 +3,7 @@ import { test as setup } from "@playwright/test";
 import assert from "assert";
 import { spawn } from "child_process";
 import { existsSync } from "fs";
-import { mkdir, rm } from "fs/promises";
+import { rm } from "fs/promises";
 import path from "path";
 import { setTimeout } from "timers/promises";
 
@@ -12,16 +12,15 @@ import {
     ARTIFACTORY_HOSTNAME,
     ARTIFACTORY_PASSWORD,
     ARTIFACTORY_USERNAME,
-    KAMELEO_EMAIL,
     KAMELEO_KERNELS,
-    KAMELEO_PASSWORD,
+    KAMELEO_PAT,
     KAMELEO_PORT,
     KAMELEO_VERBOSE,
     KAMELEO_VERSION,
 } from "../config.ts";
 import { downloadFile, extractSevenZip, isWindows, runCommand } from "../utils/common.ts";
 
-setup("launch Kameleo CLI", async () => {
+setup("launch Kameleo Engine", async () => {
     if (process.platform == "linux") {
         await launchKameleoDocker();
     } else {
@@ -52,16 +51,15 @@ async function launchKameleoLocal(): Promise<void> {
             .toLowerCase();
     }
 
-    const artifactsDirectory = "dist/cli";
+    const artifactsDirectory = "dist/engine";
     const baseDirectory = path.resolve(`${artifactsDirectory}/${artifactDirectoryName}`);
-    const cliPath = path.join(
+    const enginePath = path.join(
         baseDirectory,
-        ...(isWindows() ? ["Kameleo.CLI.exe"] : ["Kameleo.app", "Contents", "Resources", "CLI", "Kameleo.CLI"]),
+        ...(isWindows() ? ["Kameleo.Engine.exe"] : ["Kameleo.app", "Contents", "Resources", "Engine", "Kameleo.Engine"]),
     );
-    const pwBridgePath = path.join(path.dirname(cliPath), isWindows() ? "pw-bridge.exe" : "pw-bridge");
 
     // Download and extract Kameleo if not already present
-    if (!existsSync(cliPath) || !existsSync(pwBridgePath)) {
+    if (!existsSync(enginePath)) {
         const artifactPath = path.resolve(`${artifactsDirectory}/kameleo-artifact`);
 
         await rm(artifactPath, { force: true });
@@ -72,19 +70,17 @@ async function launchKameleoLocal(): Promise<void> {
 
         await rm(artifactPath, { force: true });
 
-        assert.ok(existsSync(cliPath), `CLI executable not found at ${cliPath}`);
-        assert.ok(existsSync(pwBridgePath), `pw-bridge executable not found at ${pwBridgePath}`);
+        assert.ok(existsSync(enginePath), `Engine executable not found at ${enginePath}`);
     }
 
     const kernelOverrides = Object.fromEntries((KAMELEO_KERNELS ?? []).map((kernel, index) => [`KernelOverrides__${index}`, kernel]));
 
-    // Launch Kameleo CLI
-    spawn(cliPath, {
+    // Launch the Kameleo Engine
+    spawn(enginePath, {
         stdio: "inherit",
         shell: true,
         env: {
-            EMAIL: KAMELEO_EMAIL,
-            PASSWORD: KAMELEO_PASSWORD,
+            PAT: KAMELEO_PAT,
             LISTENINGPORT: KAMELEO_PORT.toString(),
             VERBOSE: KAMELEO_VERBOSE,
             USERDIRECTORYOVERRIDE: baseDirectory,
@@ -94,21 +90,10 @@ async function launchKameleoLocal(): Promise<void> {
 }
 
 // see: https://developer.kameleo.io/integrations/docker/
+// eslint-disable-next-line @typescript-eslint/require-await
 async function launchKameleoDocker(): Promise<void> {
     const kameleoDockerImage = `kameleo/kameleo-app:${KAMELEO_VERSION}`;
     runCommand("docker", ["image", "pull", kameleoDockerImage]);
-
-    // copy pw-bridge from docker image to host
-    const pwBridgeDest = path.resolve("dist/linux-pw-bridge");
-    if (!existsSync(pwBridgeDest)) {
-        await mkdir(path.dirname(pwBridgeDest), { recursive: true });
-        const containerId = runCommand("docker", ["create", kameleoDockerImage]).trim();
-        try {
-            runCommand("docker", ["cp", `${containerId}:/app/pw-bridge`, pwBridgeDest]);
-        } finally {
-            runCommand("docker", ["rm", containerId]);
-        }
-    }
 
     const kernelOverrides = Object.fromEntries((KAMELEO_KERNELS ?? []).map((kernel, index) => [`KernelOverrides__${index}`, kernel]));
 
@@ -123,9 +108,7 @@ async function launchKameleoDocker(): Promise<void> {
             `${KAMELEO_PORT}:5050`,
             "--shm-size=2g",
             "-e",
-            `EMAIL=${KAMELEO_EMAIL}`,
-            "-e",
-            `PASSWORD=${KAMELEO_PASSWORD}`,
+            `PAT=${KAMELEO_PAT}`,
             "-e",
             `VERBOSE=${KAMELEO_VERBOSE}`,
             ...Object.entries(kernelOverrides)
@@ -146,6 +129,7 @@ async function kameleoHealthcheck(): Promise<void> {
     while (Date.now() < deadline) {
         try {
             await kameleoClient.general.healthcheck();
+            await kameleoClient.verifyEngineReady();
             return;
         } catch (e) {
             lastError = e;
