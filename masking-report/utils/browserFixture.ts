@@ -1,9 +1,15 @@
-import { type BrowserSettings, KameleoLocalApiClient, type ProfileResponse, type ProxyChoice } from "@kameleo/local-api-client";
+import {
+    type BrowserSettings,
+    JunglefoxHelper,
+    KameleoLocalApiClient,
+    type ProfileResponse,
+    type ProxyChoice,
+} from "@kameleo/local-api-client";
 import { type BrowserContext, type BrowserContextOptions, test as base } from "@playwright/test";
 import assert from "assert";
 import { randomInt } from "crypto";
 
-import { KAMELEO_PORT, KAMELEO_VERSION, PROXY_PASSWORD, PROXY_USERNAME } from "../config.ts";
+import { KAMELEO_PORT, PROXY_PASSWORD, PROXY_USERNAME } from "../config.ts";
 import { generateVideoName } from "./common.ts";
 
 function getProxy(): ProxyChoice {
@@ -65,17 +71,10 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
             const browserWSEndpoint = `ws://localhost:${KAMELEO_PORT}/playwright/${profile.id}`;
 
             if (browserProduct == "firefox") {
-                const pwBridgePath =
-                    process.platform == "win32"
-                        ? `dist/cli/${KAMELEO_VERSION}/pw-bridge.exe` // Windows
-                        : process.platform == "darwin"
-                          ? `dist/cli/${KAMELEO_VERSION}/Kameleo.app/Contents/Resources/CLI/pw-bridge` // macOS
-                          : "dist/linux-pw-bridge"; // Linux docker
-
                 context = await playwright.firefox.launchPersistentContext("", {
                     ...commonContextOptions,
-                    executablePath: pwBridgePath,
-                    args: ["-target", browserWSEndpoint],
+                    executablePath: JunglefoxHelper.getBridgePath(),
+                    args: JunglefoxHelper.getBridgeArgs(kameleoClient, profile),
                     timeout: 90_000,
                 });
             } else {
