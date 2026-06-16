@@ -24,7 +24,7 @@ Do not install extensions that alter user agent, canvas, WebGL, timezone, or lan
 ```python
 from kameleo.local_api_client.models import CreateProfileRequest, UpdateProfileRequest
 
-fp = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='chrome')[0]
+fp = client.fingerprint.search_fingerprints(browser_product='chrome')[0]
 profile = client.profile.create_profile(
     CreateProfileRequest(
         fingerprint_id=fp.id,
@@ -38,7 +38,7 @@ print('Created profile with extensions', profile.id)
 +++ JavaScript
 
 ```javascript
-const fp = (await client.fingerprint.searchFingerprints("desktop", undefined, "chrome"))[0];
+const fp = (await client.fingerprint.searchFingerprints(undefined, undefined, "chrome"))[0];
 const profile = await client.profile.createProfile({
     fingerprintId: fp.id,
     name: "with-extensions",
@@ -54,7 +54,7 @@ using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
 using System.Linq;
 
-var fp = (await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome"))[0];
+var fp = (await client.Fingerprint.SearchFingerprintsAsync(browserProduct: "chrome"))[0];
 
 var create = new CreateProfileRequest(
     fingerprintId: fp.Id,

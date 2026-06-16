@@ -15,7 +15,7 @@ The [`kameleo/kameleo-app:latest`](https://hub.docker.com/r/kameleo/kameleo-app)
 
 - A Linux host (amd64), **or** Docker Desktop on Windows/macOS running in Linux containers mode (the default)
 - Basic Docker experience (running containers, mounting volumes, using compose files)
-- Valid Kameleo account credentials (email & password)
+- Valid Kameleo personal access token (PAT) — see [Configure](../01-getting-started/03-configure.md) to generate one
 
 !!!warning Shared memory size
 Always start the Linux container with `--shm-size=2g`. The default `/dev/shm` size of 64 MB is too small and will cause browser crashes.
@@ -25,13 +25,49 @@ Always start the Linux container with `--shm-size=2g`. The default `/dev/shm` si
 
 - Docker compatible [Windows host OS](https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility)
 - Basic Docker experience (running containers, mounting volumes, using compose files)
-- Valid Kameleo account credentials (email & password)
+- Valid Kameleo personal access token (PAT) — see [Configure](../01-getting-started/03-configure.md) to generate one
 
 !!!warning Host OS compatibility
 The Windows variant is built from the _Windows Server Core LTSC 2022_ base image. You must run it on a host that supports Windows containers: Windows 11, Windows Server 2022, or Windows Server 2025.
 !!!
 
 +++
+
+## Architecture
+
+```mermaid
+flowchart LR
+  classDef cloud fill:#eef6ff,stroke:#88a,stroke-dasharray:5 5;
+
+  SERVICES["Kameleo Cloud Services"]:::cloud
+  SCRIPT["Your automation scripts"]
+  BROWSER["Your browser"]
+
+  SERVICES <--> CLI
+
+  subgraph CONTAINER["Docker container"]
+    direction LR
+    GUI["Web UI"]
+    CLI["Local CLI instance"]
+
+    subgraph P1["Chroma instance"]
+      direction TB
+      CHROME(("Profile #1 data"))
+    end
+
+    subgraph P2["Junglefox instance"]
+      direction TB
+      FIREFOX(("Profile #2 data"))
+    end
+
+    GUI --> CLI
+    CLI --> P1
+    CLI --> P2
+  end
+
+  BROWSER <--> GUI
+  SCRIPT <--> CLI
+```
 
 ## Container layout & persistence
 
@@ -54,15 +90,15 @@ If you don't mount the volume at all, every new container starts empty. Kameleo 
 
 You can configure Kameleo inside the container using the same precedence described in [Configure](../01-getting-started/03-configure.md). In container workflows you typically rely on environment variables or command-line flags appended to `docker run`.
 
-Accepted environment variable names mirror the CLI keys with uppercase; see the full list and defaults in [Configuration options](../05-reference/04-configuration-options.md).
+Accepted environment variable names mirror the Engine keys with uppercase; see the full list and defaults in [Configuration options](../05-reference/06-configuration-options.md).
 
-Mandatory credentials must always be provided; without them the app will not authenticate and container startup will fail.
+Mandatory credential must always be provided; without it the app will not authenticate and container startup will fail.
 
 ## Steps
 
 ### 1. Run the container
 
-Expose port 5050, pass credentials, and mount the named volume for persistent data:
+Expose port 5050, pass the PAT, and mount the named volume for persistent data:
 
 +++ Linux-based container
 
@@ -70,8 +106,7 @@ Expose port 5050, pass credentials, and mount the named volume for persistent da
 docker run --platform linux/amd64 \
     --shm-size=2g \
     -p 5050:5050 \
-    -e EMAIL="email" \
-    -e PASSWORD="pw" \
+    -e PAT="your-pat" \
     -v kameleo-data:/data \
     kameleo/kameleo-app:latest
 ```
@@ -80,7 +115,7 @@ docker run --platform linux/amd64 \
 
 ```powershell
 docker pull kameleo/kameleo-app:latest
-docker run --name kameleo-app -p 5050:5050 -e EMAIL="email" -e PASSWORD="pw" -v kameleo-data:C:\data kameleo/kameleo-app:latest
+docker run --name kameleo-app -p 5050:5050 -e PAT="your-pat" -v kameleo-data:C:\data kameleo/kameleo-app:latest
 ```
 
 +++
@@ -111,8 +146,7 @@ services:
         ports:
             - "5050:5050"
         environment:
-            EMAIL: your-email@example.com
-            PASSWORD: your-password
+            PAT: your-pat
         volumes:
             - "kameleo-data:/data"
         shm_size: 2g
@@ -130,8 +164,7 @@ services:
         ports:
             - "5050:5050"
         environment:
-            EMAIL: your-email@example.com
-            PASSWORD: your-password
+            PAT: your-pat
         volumes:
             - 'kameleo-data:C:\data'
         restart: unless-stopped
@@ -151,7 +184,7 @@ docker ps
 
 If you build a custom derivative image (e.g., adding tools) and replace the base `CMD`, ensure you keep or re-add a healthcheck so orchestrators wait for readiness.
 
-## Kameleo GUI (only in Linux-based container)
+## Web UI (only in Linux-based container)
 
 The Linux container includes the Kameleo GUI, a browser-based interface served on port **80**. Expose that port to open it on your host:
 
@@ -160,8 +193,7 @@ docker run --platform linux/amd64 \
     --shm-size=2g \
     -p 5050:5050 \
     -p 80:80 \
-    -e EMAIL="email" \
-    -e PASSWORD="pw" \
+    -e PAT="your-pat" \
     -v kameleo-data:/data \
     kameleo/kameleo-app:latest
 ```
@@ -173,88 +205,30 @@ http://localhost:80
 ```
 
 !!!warning Limited functionality in Docker
-The GUI served from a container has reduced functionality compared to the desktop application. Features that depend on direct filesystem access are not available or behave differently. Use the GUI for basic profile management and monitoring. For automation, use the [SDK](../05-reference/02-api-reference.md) directly.
+The GUI served from a container has reduced functionality compared to the desktop application. Features that depend on direct filesystem access are not available or behave differently. Use the GUI for basic profile management and monitoring. For automation, use the [SDK](../05-reference/03-api-reference.md) directly.
 !!!
 
 ## VNC viewer (only in Linux-based container)
 
-The Linux container ships a built-in browser-based VNC viewer that lets you watch or interact with the virtual display where browsers run. The viewer is served on port **8080** and is accessible from any modern browser — no additional software is required.
+The Kameleo GUI in the Linux container ships a built-in browser-based VNC viewer that lets you watch or interact with the virtual display where browsers run. It is accessible in any modern browser — no additional software is required.
 
-The VNC server is disabled by default to keep resource utilization low. Enable the VNC server by setting the VNC_ENABLE environment variable and expose port 8080 alongside the API port to access the viewer:
-
-```bash
-docker run --platform linux/amd64 \
-    --shm-size=2g \
-    -p 5050:5050 \
-    -p 8080:8080 \
-    -e EMAIL="email" \
-    -e PASSWORD="pw" \
-    -e VNC_ENABLE="1" \
-    -v kameleo-data:/data \
-    kameleo/kameleo-app:latest
-```
-
-Then open the viewer in your browser:
-
-```text
-http://localhost:8080
-```
-
-### Password protection
-
-By default the VNC session requires no password. Set `VNC_PASSWORD` to require a password when connecting through the browser viewer or a native VNC client:
-
-```bash
-docker run --platform linux/amd64 \
-    --shm-size=2g \
-    -p 5050:5050 \
-    -p 8080:8080 \
-    -e EMAIL="email" \
-    -e PASSWORD="pw" \
-    -e VNC_ENABLE="1" \
-    -e VNC_PASSWORD="your-vnc-password" \
-    -v kameleo-data:/data \
-    kameleo/kameleo-app:latest
-```
-
-!!!warning Expose VNC only on trusted networks
-Port 8080 gives full control of the virtual display. Do not expose it on a public interface without a VNC password or a network-level access control layer such as a reverse proxy with authentication.
-!!!
-
-### Native VNC clients
-
-If you prefer a native VNC client (for example, RealVNC Viewer or TigerVNC), expose port **5900** instead of 8080. Port 5900 carries the raw RFB protocol:
+The VNC server is disabled by default to keep resource utilization low. The VNC server starts automatically when opened from the GUI, or you can make it start by setting the VNCENABLE and VNCPASSWORD environment variables. This is necessary if you prefer a native VNC client (for example, RealVNC Viewer or TigerVNC), and you also need to expose port **5900** that carries the raw RFB protocol:
 
 ```bash
 docker run --platform linux/amd64 \
     --shm-size=2g \
     -p 5050:5050 \
     -p 5900:5900 \
-    -e EMAIL="email" \
-    -e PASSWORD="pw" \
-    -e VNC_ENABLE="1" \
+    -e PAT="your-pat" \
+    -e VNCENABLE="1" \
+    -e VNCPASSWORD="your-vnc-password" \
     -v kameleo-data:/data \
     kameleo/kameleo-app:latest
 ```
 
-## Using Junglefox (Playwright pw-bridge)
-
-Playwright cannot connect directly to Firefox; it needs Kameleo's `pw-bridge` helper binary. Copy it from the running container to your host machine once, then use that local path as `executablePath` in your Playwright script.
-
-+++ Linux-based container
-
-```bash
-docker cp kameleo-app:/app/pw-bridge ./pw-bridge
-chmod +x ./pw-bridge
-```
-
-+++ Windows-based container
-
-```powershell
-docker cp kameleo-app:C:\app\pw-bridge.exe .\pw-bridge.exe
-```
-
-+++
+!!!warning Expose VNC only on trusted networks
+Port 5900 gives full control of the virtual display. Do not expose it on a public interface without a network-level access control layer such as a reverse proxy with authentication.
+!!!
 
 ## AWS ECS Support
 
@@ -287,8 +261,7 @@ docker run --platform linux/amd64 \
     --group-add $(stat -c '%g' /dev/dri/card0) \
     --group-add $(stat -c '%g' /dev/dri/renderD128) \
     -p 5050:5050 \
-    -e EMAIL="email" \
-    -e PASSWORD="pw" \
+    -e PAT="your-pat" \
     -v kameleo-data:/data \
     kameleo/kameleo-app:latest
 ```
@@ -302,8 +275,7 @@ docker run --platform linux/amd64 \
     --shm-size=2g \
     --gpus all \
     -p 5050:5050 \
-    -e EMAIL="email" \
-    -e PASSWORD="pw" \
+    -e PAT="your-pat" \
     -v kameleo-data:/data \
     kameleo/kameleo-app:latest
 ```
@@ -322,13 +294,13 @@ Check the container logs first:
 docker logs <container-name>
 ```
 
-**Authentication error** (`AUTH_INVALID_CREDENTIALS`, exit code 102): credentials are wrong. Verify `EMAIL` and `PASSWORD`.
+**Authentication error** (`PAT_INVALID`, exit code 111): the PAT is wrong or expired. Verify the `PAT` environment variable.
 
 **Permission denied on `/data`** (`Access to the path '/data/...' is denied`): you are using a host bind mount instead of a named volume. Replace `-v ~/kameleo-data:/data` with `-v kameleo-data:/data`. The container runs as a non-root user and cannot write to a host directory owned by a different user.
 
 ### Service is not responding
 
-Manually query the health endpoint to confirm whether the CLI started successfully:
+Manually query the health endpoint to confirm whether the Engine started successfully:
 
 ```bash
 curl http://localhost:5050/general/healthcheck

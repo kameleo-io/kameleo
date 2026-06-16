@@ -27,7 +27,7 @@ from kameleo.local_api_client.models import CreateProfileRequest, CookieRequest
 from selenium import webdriver
 import time, os
 
-fingerprints = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='firefox')
+fingerprints = client.fingerprint.search_fingerprints(browser_product='firefox')
 profile = client.profile.create_profile(CreateProfileRequest(fingerprint_id=fingerprints[0].id, name='cookie tutorial'))
 
 opts = webdriver.FirefoxOptions()
@@ -46,7 +46,7 @@ client.profile.stop_profile(profile.id)
 ```javascript
 import { Builder } from "selenium-webdriver";
 
-const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "firefox");
+const fingerprints = await client.fingerprint.searchFingerprints(undefined, undefined, "firefox");
 const profile = await client.profile.createProfile({ fingerprintId: fingerprints[0].id, name: "cookie tutorial" });
 
 const driver = await new Builder()
@@ -56,7 +56,7 @@ const driver = await new Builder()
 
 for (const url of ["https://www.nytimes.com", "https://whoer.net", "https://www.youtube.com"]) {
     await driver.get(url);
-    await driver.sleep(5000);
+    await driver.sleep(5_000);
 }
 
 await client.profile.stopProfile(profile.id);
@@ -72,7 +72,7 @@ using Kameleo.LocalApiClient.Model;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 
-var fps = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "firefox");
+var fps = await client.Fingerprint.SearchFingerprintsAsync(browserProduct: "firefox");
 var profile = await client.Profile.CreateProfileAsync(new CreateProfileRequest(fps[0].Id) { Name = "cookie tutorial" });
 
 var wdUri = new Uri("http://localhost:5050/webdriver");
@@ -81,7 +81,7 @@ opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
 var driver = new RemoteWebDriver(wdUri, opts);
 
 foreach (var url in new[] { "https://www.nytimes.com", "https://whoer.net", "https://www.youtube.com" }) {
-    await driver.Navigate().GoToUrlAsync(url); await Task.Delay(5000);
+    await driver.Navigate().GoToUrlAsync(url); await Task.Delay(5_000);
 }
 
 await client.Profile.StopProfileAsync(profile.Id);

@@ -5,7 +5,7 @@ description: Locate logs & data, interpret exit codes, and gather diagnostics.
 permalink: /getting-started/troubleshooting
 ---
 
-Use this guide to quickly locate user data and logs, interpret CLI exit codes, and gather the right diagnostics for troubleshooting Kameleo. Following these steps accelerates root-cause analysis and enables efficient support escalation.
+Use this guide to quickly locate user data and logs, interpret Engine exit codes, and gather the right diagnostics for troubleshooting Kameleo. Following these steps accelerates root-cause analysis and enables efficient support escalation.
 
 ## Locate user data files
 
@@ -71,9 +71,9 @@ docker exec kameleo-app powershell -NoProfile -Command "Get-Content (Get-ChildIt
 
 +++
 
-## CLI exit codes
+## Engine exit codes
 
-Refer to the consolidated list in [CLI exit codes](../05-reference/05-cli-exit-codes.md) for meanings and remediation guidance. Use these codes in scripts to branch on transient vs. persistent failures.
+Refer to the consolidated list in [Engine exit codes](../05-reference/08-engine-exit-codes.md) for meanings and remediation guidance. Use these codes in scripts to branch on transient vs. persistent failures.
 
 ## Gathering diagnostic info
 
