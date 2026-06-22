@@ -14,7 +14,7 @@ test.describe(() => {
 
         await page.waitForTimeout(5_000); // for video presentation purposes
 
-        const successLocator = iframeLocator.locator("#success");
+        const successLocator = iframeLocator.getByText("Success!");
         await successLocator.waitFor({ state: "attached" });
         await expect(successLocator).toBeVisible();
     });
