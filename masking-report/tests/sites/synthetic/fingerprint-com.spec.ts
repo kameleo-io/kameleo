@@ -3,7 +3,7 @@ import { scrollDown } from "../../../utils/pageUtils.ts";
 
 test.describe(() => {
     test.use({
-        kameleoProxy: { value: "none" },
+        profileOptions: { proxy: { value: "none" } },
     });
     test("Fingerprint.com", async ({ page }) => {
         await page.goto("https://demo.fingerprint.com/playground", { waitUntil: "networkidle" });
@@ -19,6 +19,15 @@ test.describe(() => {
         const failedRows = suspiciousRows.filter((row) =>
             ["Bot", "Browser Tampering", "Virtual Machine"].some((issue) => row.startsWith(issue)),
         );
+
+        // log server API response for more details
+        // a json view in an element next to the "Server API Response" heading
+        const serverApiResponseLocator = page.locator('h4:has-text("Server API Response") + * .json-view');
+        if (await serverApiResponseLocator.isVisible()) {
+            console.log(`Server API Response:\n${await serverApiResponseLocator.innerText()}`);
+        } else {
+            console.log("Server API Response not found!");
+        }
 
         await scrollDown(page);
 

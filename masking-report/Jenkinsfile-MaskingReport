@@ -1,5 +1,5 @@
 String emailOverride = null
-String kernelsOverride = null
+String[] kernelsOverride = []
 String artifactUrlOverrides = null
 
 def runCommand(String cmd) {
@@ -14,8 +14,9 @@ pipeline {
     }
     parameters {
         string(name: 'emailOverride', defaultValue: emailOverride)
+        string(name: 'testFilter', defaultValue: '')
+        text(name: 'kernelsOverride', defaultValue: '')
         text(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides)
-        text(name: 'kernelsOverride', defaultValue: kernelsOverride)
     }
 
     stages {
@@ -24,11 +25,13 @@ pipeline {
                 script {
                     emailOverride = params.emailOverride?.trim() ?: emailOverride
                     artifactUrlOverrides = params.artifactUrlOverrides?.trim() ?: artifactUrlOverrides
-                    kernelsOverride = params.kernelsOverride?.trim() ?: kernelsOverride
+                    // parse any combination of comma / whitespace separated lists or JSON arrays
+                    kernelsOverride = params.kernelsOverride.tokenize('"`\'[]{},; \n\r\t').findAll { it.length() >= 10 }
 
-                    echo "Report email recipient override: ${emailOverride}"
-                    echo "Artifact url override: ${artifactUrlOverrides}"
-                    echo "Kernels override: ${kernelsOverride}"
+                    echo "Report email recipient override: $emailOverride"
+                    echo "Test filter: ${params.testFilter ?: 'none'}"
+                    echo "Kernels override:\n\t${kernelsOverride.join('\n\t')}"
+                    echo "Artifact url override: $artifactUrlOverrides"
                 }
             }
         }
@@ -39,6 +42,14 @@ pipeline {
                     axis {
                         name 'AGENT'
                         values 'windows11', 'macos', 'ubuntu'
+                    }
+                }
+                when {
+                    expression {
+                        !kernelsOverride ||
+                        (AGENT == 'windows11' && kernelsOverride.any { kernel -> kernel.contains('win') }) ||
+                        (AGENT == 'macos' && kernelsOverride.any { kernel -> kernel.contains('osx') }) ||
+                        (AGENT == 'ubuntu' && kernelsOverride.any { kernel -> kernel.contains('linux') })
                     }
                 }
                 agent { label "${AGENT} && gui" }
@@ -63,11 +74,21 @@ pipeline {
                             ]) {
                                 script {
                                     if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
-                                    if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride
+                                    if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride.join(',')
+                                    boolean hasChroma = kernelsOverride.any { kernel -> kernel.contains('chroma') }
+                                    boolean hasJunglefox = kernelsOverride.any { kernel -> kernel.contains('junglefox') }
+                                    String testFilter = ''
+
+                                    if ((hasChroma ^ hasJunglefox) || params.testFilter != ''){
+                                        testFilter = ' -- '
+                                        if(hasChroma && !hasJunglefox) testFilter += '--project=Chroma'
+                                        if(hasJunglefox && !hasChroma) testFilter += '--project=Junglefox'
+                                        if(params.testFilter != '') testFilter += " -g ${params.testFilter}"
+                                    }
 
                                     int testExitCode = isUnix()
-                                        ? sh(script: 'npm test', returnStatus: true)
-                                        : powershell(script: 'npm test', returnStatus: true)
+                                        ? sh(script: "npm test $testFilter", returnStatus: true)
+                                        : powershell(script: "npm test $testFilter", returnStatus: true)
 
                                     echo "npm test exited with ${testExitCode} (ignored by design)"
                                 }
@@ -86,7 +107,7 @@ pipeline {
                                 ]) {
                                     script {
                                         if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
-                                        if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride
+                                        if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride.join(',')
                                         env.REPORT_EMAIL_RECIPIENT = emailOverride ?: env.REPORT_EMAIL_RECIPIENT_DEFAULT
 
                                         runCommand 'node build/sendEmail.ts'

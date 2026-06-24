@@ -1,5 +1,6 @@
 import {
     type BrowserSettings,
+    type CreateProfileRequest,
     JunglefoxHelper,
     KameleoLocalApiClient,
     type ProfileResponse,
@@ -28,20 +29,20 @@ function getProxy(): ProxyChoice {
 export interface ConfiguredContextOptions {
     useKameleo?: boolean;
     browserProduct: string;
-    osFamily: string;
+    osFamily?: string;
     deviceType: string;
-    kameleoProxy?: ProxyChoice;
+    profileOptions?: Omit<CreateProfileRequest, "fingerprintId">;
     browserSettings?: BrowserSettings;
 }
 
 export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
     useKameleo: [true, { option: true }],
     browserProduct: ["chrome", { option: true }],
-    osFamily: [process.platform == "win32" ? "windows" : process.platform == "darwin" ? "macos" : "linux", { option: true }],
+    osFamily: [undefined, { option: true }],
     deviceType: ["desktop", { option: true }],
-    kameleoProxy: [undefined, { option: true }],
+    profileOptions: [undefined, { option: true }],
     browserSettings: [undefined, { option: true }],
-    context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo, kameleoProxy }, use, testInfo) => {
+    context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo, profileOptions }, use, testInfo) => {
         // setup
         const kameleoClient = new KameleoLocalApiClient({ basePath: `http://localhost:${KAMELEO_PORT}` });
         let profile: ProfileResponse | undefined;
@@ -63,7 +64,8 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
 
             profile = await kameleoClient.profile.createProfile({
                 fingerprintId: fingerprintId,
-                proxy: kameleoProxy ?? getProxy(),
+                proxy: getProxy(),
+                ...profileOptions,
             });
 
             // Kameleo must be started before Playwright attaches to the browser context
