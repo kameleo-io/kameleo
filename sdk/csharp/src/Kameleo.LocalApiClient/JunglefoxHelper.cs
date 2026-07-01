@@ -36,13 +36,21 @@ namespace Kameleo.LocalApiClient
         {
             string folder;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
                 folder = "win-x64";
+            }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
                 folder = "linux-x64";
+            }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
                 folder = "osx-arm64";
+            }
             else
+            {
                 throw new PlatformNotSupportedException($"Unsupported platform: {RuntimeInformation.OSDescription} ({RuntimeInformation.ProcessArchitecture})");
+            }
 
             string exe = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "pw-bridge.exe" : "pw-bridge";
 
@@ -51,13 +59,17 @@ namespace Kameleo.LocalApiClient
             var assemblyDir = ResolveAssemblyDirectory();
             var candidate = Path.Combine(assemblyDir, "bin", folder, exe);
             if (File.Exists(candidate))
+            {
                 return candidate;
+            }
 
             // Strategy 2: NuGet package cache — the assembly is under lib/<tfm>/,
             // so going up two levels reaches the package root where runtimes/ lives.
             candidate = Path.GetFullPath(Path.Combine(assemblyDir, "..", "..", "runtimes", folder, "native", exe));
             if (File.Exists(candidate))
+            {
                 return candidate;
+            }
 
             throw new FileNotFoundException(
                 $"pw-bridge executable not found for {folder}. " +
@@ -94,7 +106,9 @@ namespace Kameleo.LocalApiClient
             {
                 var baseDir = new DirectoryInfo(AppContext.BaseDirectory);
                 if (baseDir.Exists && File.Exists(Path.Combine(baseDir.FullName, "Kameleo.LocalApiClient.dll")))
+                {
                     return baseDir.FullName;
+                }
             }
 
             // Fall back to the actual location of this assembly.

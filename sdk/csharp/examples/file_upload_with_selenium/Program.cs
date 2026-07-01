@@ -32,6 +32,7 @@ var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
 var opts = new ChromeOptions();
 opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
 var driver = new RemoteWebDriver(uri, opts);
+driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
 
 // Open uplad site
 driver.Url = "https://the-internet.herokuapp.com/upload";
