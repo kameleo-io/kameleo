@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Kameleo.LocalApiClient" Version="5.0.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="4.41.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.45.0" />
   </ItemGroup>
 
 </Project>
