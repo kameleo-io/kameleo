@@ -60,7 +60,10 @@ namespace Kameleo.LocalApiClient.Client
                 {
                     problemResponse = JsonConvert.DeserializeObject<ProblemResponse>(response.RawContent);
                 }
-                catch { }
+                catch
+                {
+                    // continue without problemResponse
+                }
 
                 return new ApiException(
                         statusCode,

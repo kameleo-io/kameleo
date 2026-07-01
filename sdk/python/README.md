@@ -13,7 +13,7 @@ Kameleo adapts automatically to anti-bot changes, so your browser operations kee
 
 ## Quickstart
 
-You'll need a Kameleo account to run the Engine — the free tier includes 2 concurrent browsers and no credit card is required. [Create a free account →](https://billing.kameleo.io/my-account/get-app/?method_hint=register)
+No account needed to get started — install and run immediately. A free account unlocks additional features (no credit card required). [Create a free account →](https://login.kameleo.io/Account/Register)
 
 ### 1. Install Kameleo
 
