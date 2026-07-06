@@ -27,12 +27,15 @@ We run automated tests frequently. Here are the results with recordings of each 
 
 | Website | Playwright + Chromium | Playwright + Kameleo |
 | --- | :---: | :---: |
+| [fingerprint.com](masking-report/tests/sites/synthetic/fingerprint-com.spec.ts) | ❌<br>[Watch](masking-report/videos/fingerprint.com-windows-chromium.webm) | ✅<br>[Watch](masking-report/videos/fingerprint.com-windows-chrome.webm) |
+| [Reddit](masking-report/tests/sites/anti-bot/reddit.spec.ts) | ❌<br>[Watch](masking-report/videos/reddit-windows-chromium.webm) | ✅<br>[Watch](masking-report/videos/reddit-windows-firefox.webm) |
+| [Iphey](masking-report/tests/sites/synthetic/iphey.spec.ts) | ❌<br>[Watch](masking-report/videos/iphey-windows-chromium.webm) | ✅<br>[Watch](masking-report/videos/iphey-windows-firefox.webm) |
 | [Pixelscan](masking-report/tests/sites/synthetic/pixelscan.spec.ts) | ❌<br>[Watch](masking-report/videos/pixelscan-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/pixelscan-macos-chrome.webm) |
 | [BrowserScan](masking-report/tests/sites/synthetic/browserscan.spec.ts) | ❌<br>[Watch](masking-report/videos/browserscan-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/browserscan-macos-chrome.webm) |
 | [Brotector](masking-report/tests/sites/synthetic/brotector.spec.ts) | ❌<br>[Watch](masking-report/videos/brotector-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/brotector-macos-chrome.webm) |
 | [CreepJS](masking-report/tests/sites/synthetic/creepjs.spec.ts) | ❌<br>[Watch](masking-report/videos/creepjs-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/creepjs-macos-chrome.webm) |
 | [Bot Sannysoft](masking-report/tests/sites/synthetic/bot-sannysoft.spec.ts) | ❌<br>[Watch](masking-report/videos/sannysoft-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/sannysoft-macos-chrome.webm) |
-| [Cloudflare Turnstile](masking-report/tests/sites/anti-bot/cloudflare-turnstile.spec.ts) | ❌<br>[Watch](masking-report/videos/cloudflare-turnstile-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/cloudflare-turnstile-macos-chrome.webm) |
+| [Cloudflare Turnstile](masking-report/tests/sites/anti-bot/cloudflare-turnstile.spec.ts) | ❌<br>[Watch](masking-report/videos/cloudflare-turnstile-windows-chromium.webm) | ✅<br>[Watch](masking-report/videos/cloudflare-turnstile-windows-chrome.webm) |
 | [Google Search](masking-report/tests/sites/anti-bot/google.spec.ts) | ❌<br>[Watch](masking-report/videos/google-macos-chromium.webm) | ✅<br>[Watch](masking-report/videos/google-macos-chrome.webm) |
 
 **[View masking report →](https://kameleo.io/masking-status-report)**
