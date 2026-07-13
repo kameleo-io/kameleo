@@ -1,4 +1,4 @@
-String videoPathsInput = null
+String[] videoPaths = []
 
 def runCommand(String cmd) {
     isUnix() ? sh(cmd) : powershell(cmd)
@@ -13,44 +13,43 @@ pipeline {
     environment {
         ARTIFACTORY_REPOSITORY = 'masking-audit'
     }
+    parameters {
+        text(name: 'videoPaths', defaultValue: '',
+             description: '''\
+                               Enter Nexus video file paths to publish.
+                               Accepted formats: separate lines, whitespace/comma separated list or a JSON array.
+
+                               Provide paths relative to repository root (DO NOT include the 'repo/' prefix).
+
+                               Example: windows/123/google-windows-chrome-260316053516.webm,macos/124/brotector-macos-firefox-260316080530.webm
+
+                               Example:
+                                    windows/123/google-windows-chrome-260316053516.webm
+                                    macos/124/brotector-macos-firefox-260316080530.webm
+                            ''')
+    }
 
     stages {
-        stage('Get Video Paths') {
+        stage('Parse job parameters') {
             steps {
                 script {
-                    try {
-                        timeout(time: 10, unit: 'MINUTES') {
-                            def repo = env.ARTIFACTORY_REPOSITORY
-                            def example1 = 'windows/123/google-windows-chrome-260316053516.webm'
-                            def example2 = 'macos/124/brotector-macos-firefox-260316080530.webm'
-                            def desc = "Comma-separated paths relative to repository root (DO NOT include the ${repo}/ prefix). Example: ${example1},${example2}"
+                    // parse any combination of comma / whitespace separated lists or JSON arrays
+                    videoPaths = params.videoPaths.tokenize('"`\'[]{},; \n\r\t').findAll { it.length() >= 6 }
 
-                            videoPathsInput = input(
-                                id: 'videoPathsInput',
-                                message: 'Enter Nexus video file paths to publish (comma-separated)',
-                                parameters: [ text(description: desc, name: 'VIDEO_PATHS') ]
-                            )
-
-                            if (videoPathsInput == null || videoPathsInput.trim().isEmpty()) {
-                                error('No video paths provided')
-                            }
-
-                            // Validate paths: ensure .webm extension; strip any accidental leading repo prefix
-                            def paths = videoPathsInput.split(',')
-                            def cleaned = paths.collect { p ->
-                                def trimmed = p.trim()
-                                if (!trimmed.endsWith('.webm')) {
-                                    error("Invalid file path: ${trimmed}. All paths must be .webm video files.")
-                                }
-                                def prefix = env.ARTIFACTORY_REPOSITORY + '/'
-                                trimmed.startsWith(prefix) ? trimmed.substring(prefix.length()) : trimmed
-                            }
-                            videoPathsInput = cleaned.join(',')
-                        }
-                    } catch(err) {
-                        error("Failed to get valid video paths: ${err.getMessage()}")
+                    if (!videoPaths) {
+                        error('No video paths provided')
                     }
-                    echo "Video paths to publish: ${videoPathsInput}"
+
+                    // Validate paths: ensure .webm extension; strip any accidental leading repo prefix
+                    videoPaths = videoPaths.collect { p ->
+                        def trimmed = p.trim()
+                        if (!trimmed.endsWith('.webm')) {
+                            error("Invalid file path: ${trimmed}. All paths must be .webm video files.")
+                        }
+                        def prefix = env.ARTIFACTORY_REPOSITORY + '/'
+                        trimmed.startsWith(prefix) ? trimmed.substring(prefix.length()) : trimmed
+                    }
+                    echo "Video paths to publish: \n\t${videoPaths.join('\n\t')}"
                 }
             }
         }
@@ -72,7 +71,7 @@ pipeline {
                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
                     string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
                 ]) {
-                    withEnv(["VIDEO_PATHS=${videoPathsInput}"]) {
+                    withEnv(["VIDEO_PATHS=${videoPaths.join(',')}"]) {
                         runCommand 'node build/publishVideos.ts'
                     }
                 }
@@ -83,11 +82,11 @@ pipeline {
     post {
         success {
             echo 'Videos published successfully'
-            echo "Published video paths: ${videoPathsInput}"
+            echo "Published video paths:\n\t${videoPaths.join('\n\t')}"
         }
         failure {
             echo 'Failed to publish videos'
-            echo "Attempted paths: ${videoPathsInput ?: 'none provided'}"
+            echo "Attempted paths: ${videoPaths ? ('\n\t' + videoPaths.join('\n\t')) : 'none provided'}"
         }
     }
 }
