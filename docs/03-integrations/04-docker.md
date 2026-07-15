@@ -43,12 +43,12 @@ flowchart LR
   SCRIPT["Your automation scripts"]
   BROWSER["Your browser"]
 
-  SERVICES <--> CLI
+  SERVICES <--> ENGINE
 
   subgraph CONTAINER["Docker container"]
     direction LR
     GUI["Web UI"]
-    CLI["Local CLI instance"]
+    ENGINE["Local Engine instance"]
 
     subgraph P1["Chroma instance"]
       direction TB
@@ -60,13 +60,13 @@ flowchart LR
       FIREFOX(("Profile #2 data"))
     end
 
-    GUI --> CLI
-    CLI --> P1
-    CLI --> P2
+    GUI --> ENGINE
+    ENGINE --> P1
+    ENGINE --> P2
   end
 
   BROWSER <--> GUI
-  SCRIPT <--> CLI
+  SCRIPT <--> ENGINE
 ```
 
 ## Container layout & persistence
