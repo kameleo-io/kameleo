@@ -62,7 +62,7 @@ Firefox (Junglefox) uses the single-dash `-headless` flag. Keep arguments minima
 from kameleo.local_api_client.models import BrowserSettings
 
 client.profile.start_profile(profile_id, BrowserSettings(
-    arguments=['headless']
+    arguments=['-headless']
 ))
 print('Started Junglefox headless')
 ```
@@ -71,7 +71,7 @@ print('Started Junglefox headless')
 
 ```javascript
 await client.profile.startProfile(profile.id, {
-    arguments: ["headless"],
+    arguments: ["-headless"],
 });
 console.log("Started Junglefox headless");
 ```
@@ -84,7 +84,7 @@ using Kameleo.LocalApiClient.Model;
 
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    Arguments = ["headless"]
+    Arguments = ["-headless"]
 });
 Console.WriteLine("Started Junglefox headless");
 ```
