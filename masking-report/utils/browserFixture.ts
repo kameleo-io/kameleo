@@ -15,12 +15,13 @@ import { generateVideoName } from "./common.ts";
 
 function getProxy(): ProxyChoice {
     const sessionId = Array.from({ length: 6 }, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[randomInt(0, 36)]).join("");
+    console.log(`using proxy with session id ${sessionId}`);
     return {
         value: "http",
         extra: {
             host: "network.joinmassive.com",
             port: 65534,
-            id: `${PROXY_USERNAME}-session-${sessionId}`,
+            id: `${PROXY_USERNAME}-sessionmode-norotate-session-${sessionId}`,
             secret: PROXY_PASSWORD,
         },
     };
@@ -108,7 +109,7 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
             }
         }
     },
-    page: async ({ page, browserProduct }, use, testInfo) => {
+    page: async ({ page }, use, testInfo) => {
         // setup
         const video = page.video();
 
@@ -130,7 +131,7 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
         }
 
         if (video) {
-            const filename = generateVideoName(testInfo.title, browserProduct);
+            const filename = generateVideoName(testInfo.title, testInfo.project.name, testInfo.status);
 
             await video.saveAs(`videos/${filename}`);
             await video.delete();
