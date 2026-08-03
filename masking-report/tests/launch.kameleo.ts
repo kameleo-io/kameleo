@@ -12,6 +12,7 @@ import {
     ARTIFACTORY_HOSTNAME,
     ARTIFACTORY_PASSWORD,
     ARTIFACTORY_USERNAME,
+    KAMELEO_ENGINE_ALREADY_RUNNING,
     KAMELEO_KERNELS,
     KAMELEO_PAT,
     KAMELEO_PORT,
@@ -21,7 +22,9 @@ import {
 import { downloadFile, extractSevenZip, isWindows, runCommand } from "../utils/common.ts";
 
 setup("launch Kameleo Engine", async () => {
-    if (process.platform == "linux") {
+    if (KAMELEO_ENGINE_ALREADY_RUNNING) {
+        // nothing to do
+    } else if (process.platform == "linux") {
         await launchKameleoDocker();
     } else {
         await launchKameleoLocal();

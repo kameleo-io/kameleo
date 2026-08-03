@@ -13,7 +13,7 @@ pipeline {
         ARTIFACTORY_REPOSITORY = 'masking-audit'
     }
     parameters {
-        string(name: 'emailOverride', defaultValue: emailOverride)
+        string(name: 'emailOverride', defaultValue: env.REPORT_EMAIL_RECIPIENT_DEFAULT)
         string(name: 'testFilter', defaultValue: '')
         text(name: 'kernelsOverride', defaultValue: '')
         text(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides)
