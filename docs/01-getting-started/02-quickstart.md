@@ -1,14 +1,15 @@
 ---
 order: -102
 title: Quickstart
-description: Create, start, automate, and stop a profile via the Local API.
+meta:
+    description: Install a Kameleo SDK, search a fingerprint, then create, start, automate with Selenium or Playwright, and stop your first browser profile.
 permalink: /getting-started/quickstart
 ---
 
 Learn how to spin up the local Kameleo Engine, connect via an SDK, search a fingerprint, then create, start, automate, and stop a reusable profile. Core automation examples (Selenium, Puppeteer, Playwright) show how to drive the running profile immediately.
 
 !!!tip Note
-API usage is subject to requests-per-minute limits. See the detailed limits table in [API rate limits](../05-reference/04-api-rate-limits.md).
+API usage is subject to requests-per-minute limits. See the detailed limits table in [Usage limits](../05-reference/03-usage-limits.md).
 !!!
 
 ## 1. Start the Kameleo Engine

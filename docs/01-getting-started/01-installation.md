@@ -1,7 +1,8 @@
 ---
 order: -101
 title: Installation
-description: Install the Kameleo Engine & Desktop, then verify it's running.
+meta:
+    description: Install the Kameleo Engine and Desktop on Windows, macOS, or Docker, generate a personal access token, and verify the Local API is running.
 permalink: /getting-started/installation
 ---
 

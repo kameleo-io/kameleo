@@ -1,7 +1,8 @@
 ---
 order: -303
 title: Puppeteer
-description: Use Puppeteer with Kameleo's Chroma kernel to run fingerprinted automation over WebSocket with explicit or auto start options.
+meta:
+    description: Automate Kameleo's Chroma browser profiles with Puppeteer over a WebSocket endpoint using explicit or auto-start connection options.
 permalink: /integrations/puppeteer
 ---
 

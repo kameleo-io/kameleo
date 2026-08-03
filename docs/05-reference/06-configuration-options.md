@@ -1,7 +1,8 @@
 ---
 order: -506
 title: Configuration options
-description: List of all configuration keys, sources, precedence, and defaults.
+meta:
+    description: Reference every Kameleo Engine configuration key, its environment variable and command-line flag names, default values, and precedence order.
 permalink: /reference/configuration-options
 ---
 

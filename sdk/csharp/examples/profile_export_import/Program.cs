@@ -13,16 +13,9 @@ if (!int.TryParse(Environment.GetEnvironmentVariable("KAMELEO_PORT"), out var Ka
 var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"));
 await client.VerifyEngineReadyAsync();
 
-// Search a fingerprint
-var fingerprints = await client.Fingerprint.SearchFingerprintsAsync();
-
-// Create a new profile with recommended settings
-var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
-{
-    Name = "profile export import example",
-};
-
-var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
+// Create a new profile with the default settings (note: the default can change in the future without notice, use it only for quick prototyping)
+// You can find the default settings here: https://developer.kameleo.io/tutorials/filtering-fingerprints/
+var profile = await client.Profile.CreateProfileAsync();
 
 // export the profile to a given path
 var exportPath = Path.Combine(Environment.CurrentDirectory, "test.kameleo");

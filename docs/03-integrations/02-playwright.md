@@ -1,7 +1,8 @@
 ---
 order: -302
 title: Playwright
-description: Integrate Playwright with Kameleo (Chroma & Junglefox) via explicit or auto start for fingerprinted, kernel-aware automated browsing.
+meta:
+    description: Integrate Playwright with Kameleo's Chroma and Junglefox kernels via explicit or auto-start for fingerprinted, detection-resistant browser automation.
 permalink: /integrations/playwright
 ---
 

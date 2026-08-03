@@ -1,11 +1,10 @@
 ---
 order: -502
 title: Code examples
-description: Browse self-contained, runnable code examples for the Kameleo SDK.
+meta:
+    description: Browse self-contained, runnable Kameleo SDK examples in Python, JavaScript, and C# covering profiles, proxies, cookies, and automation frameworks.
 permalink: /reference/code-examples
 ---
-
-# Code examples
 
 The [kameleo-io/kameleo](https://github.com/kameleo-io/kameleo) GitHub repository contains a collection of self-contained, runnable examples for each SDK. Each example covers one specific task and can be cloned and run on its own. Topics include profile management, browser automation frameworks, proxy setup, and cookie handling.
 

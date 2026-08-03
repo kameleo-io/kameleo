@@ -13,6 +13,11 @@ if (!int.TryParse(Environment.GetEnvironmentVariable("KAMELEO_PORT"), out var Ka
 var client = new KameleoLocalApiClient(new Uri($"http://localhost:{KameleoPort}"));
 await client.VerifyEngineReadyAsync();
 
+// Create a new profile with the default settings (note: the default can change in the future without notice, use it only for quick prototyping)
+// You can find the default settings here: https://developer.kameleo.io/tutorials/filtering-fingerprints/
+var defaultProfile = await client.Profile.CreateProfileAsync();
+Console.WriteLine($"New default profile has been created: [{defaultProfile.Id}] {defaultProfile.Name}");
+
 // Search Chrome fingerprints
 // Possible deviceType value: desktop, mobile
 // Possible browserProduct value: chrome, firefox, edge, ...

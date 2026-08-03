@@ -1,7 +1,8 @@
 ---
 order: -401
 title: Filter browser fingerprints
-description: Search and filter up to 25 realistic fingerprints before creating a profile.
+meta:
+    description: Search and filter Kameleo's fingerprint database by device type, OS, browser, and version to pick a realistic candidate before creating a profile.
 permalink: /tutorials/filtering-fingerprints
 ---
 
@@ -28,14 +29,14 @@ Notes:
 
 - Unspecified fields give you the recommended defaults - desktop Chrome fingerprints, matching your Engine's host OS.
 - Defaults only apply when compatible with your filters - e.g. your host OS won't be forced if you specify mobile.
-- The API returns an array of `FingerprintPreview` objects (see [API reference](../05-reference/03-api-reference.md)). Each preview contains enough metadata for choosing a candidate; you supply its attributes when creating a profile.
+- The API returns an array of `FingerprintPreview` objects (see [API reference](../05-reference/04-api-reference.md)). Each preview contains enough metadata for choosing a candidate; you supply its attributes when creating a profile.
 
 ## Basic search example
 
 The endpoint always returns up to 25 matching items ordered by newest browser versions first. Repeating the same query yields a different random subset - cache or persist the one you pick if you need stability. Below you'll see how to fetch Windows Chrome fingerprints newer than version 145.
 
 !!!warning API rate limits
-Each fingerprint search request counts toward your API quota. Avoid rapid polling loops; broaden filters or cache previously retrieved candidates instead of re-querying repeatedly. See the [API rate limits](../05-reference/04-api-rate-limits.md) page for details.
+Each fingerprint search request counts toward your API quota. Avoid rapid polling loops; broaden filters or cache previously retrieved candidates instead of re-querying repeatedly. See the [Usage limits](../05-reference/03-usage-limits.md) page for details.
 !!!
 
 +++ Python

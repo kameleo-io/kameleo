@@ -1,7 +1,8 @@
 ---
 order: -509
 title: Blacklisted browser switches
-description: Disallowed Chromium and Firefox command-line switches blocked by Kameleo and the rationale for each.
+meta:
+    description: See which Chromium and Firefox command-line switches Kameleo blocks to protect fingerprint integrity and profile isolation, and why each is disallowed.
 permalink: /reference/blacklisted-browser-switches
 ---
 

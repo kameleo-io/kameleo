@@ -13,7 +13,7 @@
     <Description>This .NET Standard package provides convenient access to the Local API REST interface of the Kameleo Client.</Description>
     <Copyright>MIT</Copyright>
     <RootNamespace>Kameleo.LocalApiClient</RootNamespace>
-    <Version>5.0.0</Version>
+    <Version>5.1.0</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/kameleo-io/kameleo.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

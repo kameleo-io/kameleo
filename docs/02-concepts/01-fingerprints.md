@@ -1,7 +1,8 @@
 ---
 order: -201
 title: Fingerprints
-description: What fingerprints are and how they shape realistic browser profiles.
+meta:
+    description: Learn what browser fingerprints are, the device and OS attributes they include, and how Kameleo uses real fingerprint data to build authentic profiles.
 permalink: /concepts/fingerprints
 ---
 
@@ -11,7 +12,7 @@ A fingerprint is a real set of browser and device details (like user agent, OS, 
 
 A fingerprint encapsulates a coherent set of attributes sourced from real telemetry and curated datasets:
 
-- User agent (including build & patch numbers) aligned with engine capabilities
+- User agent (including build & patch numbers) aligned with kernel capabilities
 - Platform & OS metadata (e.g., Windows 11 64-bit, macOS 14, Android 14)
 - Hardware exposure: device memory tiers, logical processor count buckets
 - Rendering surfaces: WebGL vendor/renderer pairs, canvas entropy seeds

@@ -11,16 +11,9 @@ const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
 await client.verifyEngineReady();
 
-// Search one of the fingerprints
-const fingerprints = await client.fingerprint.searchFingerprints();
-
-// Create a new profile with recommended settings
-/** @type {import("@kameleo/local-api-client").CreateProfileRequest} */
-const createProfileRequest = {
-    fingerprintId: fingerprints[0].id,
-    name: "profile export import example",
-};
-let profile = await client.profile.createProfile(createProfileRequest);
+// Create a new profile with the default settings (note: the default can change in the future without notice, use it only for quick prototyping)
+// You can find the default settings here: https://developer.kameleo.io/tutorials/filtering-fingerprints/
+let profile = await client.profile.createProfile();
 
 // export the profile to a given path
 const exportPath = path.join(cwd(), "test.kameleo");
@@ -28,7 +21,7 @@ const exportPath = path.join(cwd(), "test.kameleo");
 await client.profile.exportProfile(profile.id, {
     path: exportPath,
 });
-console.log("Profile has been exported to", cwd());
+console.log("Profile has been exported to " + exportPath);
 
 // You have to delete this profile if you want to import back
 await client.profile.deleteProfile(profile.id);

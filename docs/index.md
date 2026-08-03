@@ -2,7 +2,7 @@
 title: Welcome to Kameleo Developer Center
 meta:
     title: Kameleo Developer Center
-description: Documentation for Kameleo SDKs, API reference, fingerprinting, automation, scraping, and multi‑account profile guides.
+    description: Kameleo is an anti-detect browser platform for automating fingerprinted profiles with Selenium, Playwright, or Puppeteer using Python, JS, or C# SDKs.
 label: Home
 icon: home
 ---

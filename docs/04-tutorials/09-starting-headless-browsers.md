@@ -1,7 +1,8 @@
 ---
 order: -409
 title: Start headless browsers
-description: Run Chroma and Junglefox profiles in headless mode while keeping masking fidelity and avoiding common pitfalls.
+meta:
+    description: Launch Kameleo's Chroma and Junglefox browser profiles in headless mode with the correct flags while preserving fingerprint masking fidelity.
 permalink: /tutorials/starting-headless-browsers
 ---
 
