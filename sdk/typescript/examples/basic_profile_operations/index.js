@@ -9,6 +9,11 @@ const kameleoEngineUri = `http://localhost:${kameleoPort}`;
 const client = new KameleoLocalApiClient({ basePath: kameleoEngineUri });
 await client.verifyEngineReady();
 
+// Create a new profile with the default settings (note: the default can change in the future without notice, use it only for quick prototyping)
+// You can find the default settings here: https://developer.kameleo.io/tutorials/filtering-fingerprints/
+const defaultProfile = await client.profile.createProfile();
+console.log(`New default profile has been created: [${defaultProfile.id}] '${defaultProfile.name}'`);
+
 // Search Chrome fingerprints
 // Possible deviceType value: desktop, mobile
 // Possible browserProduct value: chrome, firefox, edge, ...

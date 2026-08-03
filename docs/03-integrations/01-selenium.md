@@ -1,7 +1,8 @@
 ---
 order: -301
 title: Selenium
-description: Automate Kameleo profiles with Selenium using explicit or auto start plus custom arguments, preferences, and full lifecycle control.
+meta:
+    description: Automate fingerprinted Kameleo browser profiles with Selenium WebDriver using explicit or auto-start, custom arguments, preferences, and full lifecycle control.
 permalink: /integrations/selenium
 ---
 

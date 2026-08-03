@@ -1,7 +1,8 @@
 ---
 order: -407
 title: Pass command-line switches
-description: Safely add extra Chromium / Firefox command-line switches when starting a profile without weakening fingerprint masking.
+meta:
+    description: Safely pass extra Chromium or Firefox command-line switches when starting a Kameleo profile without breaking fingerprint masking or hitting blocked flags.
 permalink: /tutorials/passing-command-line-switches
 ---
 

@@ -1,11 +1,12 @@
 ---
 order: -410
-title: Disable closed Shadow DOMs
-description: Open otherwise closed Shadow DOM roots in every page to simplify automation and scraping.
+title: Disable closed shadow DOMs
+meta:
+    description: Force closed shadow DOM roots open on every page in a Kameleo profile to simplify automation selectors, scraping, and CAPTCHA widget interaction.
 permalink: /tutorials/disable-closed-shadow-doms
 ---
 
-This tutorial shows you how to force every closed Shadow DOM on visited pages to open so your automation code can query inside without custom execution contexts. You'll enable the `forceOpenShadowRoot` feature, start a profile, validate it works, and learn the trade‑offs.
+This tutorial shows you how to force every closed shadow DOM on visited pages to open so your automation code can query inside without custom execution contexts. You'll enable the `forceOpenShadowRoot` feature, start a profile, validate it works, and learn the trade‑offs.
 
 ## Prerequisites
 

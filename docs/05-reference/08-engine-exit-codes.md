@@ -1,7 +1,8 @@
 ---
 order: -508
 title: Engine exit codes
-description: Complete list of Kameleo Engine process exit codes and their meanings for scripting and automation.
+meta:
+    description: Look up every Kameleo Engine process exit code, its meaning, and the recommended remediation for scripting, CI pipelines, and monitoring.
 permalink: /reference/engine-exit-codes
 ---
 
@@ -25,6 +26,7 @@ Kameleo Engine returns specific numeric exit codes to signal termination reasons
 | 111  | PAT_INVALID                | Personal access token is invalid                    | Generate a new personal access token at [https://login.kameleo.io/PAT](https://login.kameleo.io/PAT). |
 | 112  | DEVICE_ACCOUNTLESS_LIMIT   | Device has been used with a registered account      | Use the registered account or contact support.                                                        |
 | 113  | UNSUPPORTED_AUTH_METHOD    | The email+password authentication is not supported  | Use PAT instead, see: [Configure](../01-getting-started/03-configure.md)                              |
+| 114  | AUTH_PARAMS_EXPIRED        | Expired authentication parameters                   | Retry authentication.                                                                                 |
 | 200  | INTERNAL_UNKNOWN           | Unknown internal error                              | Re-run with `Verbose=2`; file ticket with logs.                                                       |
 | 201  | NETWORK_FAILURE            | Network connection failed                           | Check connectivity, proxy/firewall rules; retry.                                                      |
 | 202  | INSTANCE_ALREADY_RUNNING   | Another instance already running                    | Stop existing instance or use different port/user directory.                                          |

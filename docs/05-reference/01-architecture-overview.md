@@ -1,7 +1,8 @@
 ---
 order: -501
 title: Architecture overview
-description: High-level architecture of local and cloud components and their interactions.
+meta:
+    description: See how Kameleo's local Engine, Desktop GUI, automation SDKs, and cloud services work together to run and manage fingerprinted browser profiles.
 permalink: /reference/architecture-overview
 ---
 

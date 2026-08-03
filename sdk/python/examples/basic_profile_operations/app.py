@@ -18,6 +18,11 @@ kameleo_port = os.getenv('KAMELEO_PORT', '5050')
 client = KameleoLocalApiClient(endpoint=f'http://localhost:{kameleo_port}')
 client.verify_engine_ready()
 
+# Create a new profile with the default settings (note: the default can change in the future without notice, use it only for quick prototyping)
+# You can find the default settings here: https://developer.kameleo.io/tutorials/filtering-fingerprints/
+default_profile = client.profile.create_profile()
+print(f'New default profile has been created: [{default_profile.id}] {default_profile.name}')
+
 # Search Chrome fingerprints
 # Possible deviceType value: desktop, mobile
 # Possible browserProduct value: chrome, firefox, edge, ...

@@ -1,7 +1,8 @@
 ---
 order: -204
 title: Teamwork
-description: See how cloud storage, profile groups, and roles enable safe multi-user collaboration on identities without data clashes or lock conflicts.
+meta:
+    description: See how Kameleo cloud storage, profile groups, and team roles let multiple users collaborate on shared browser profiles without lock conflicts.
 permalink: /concepts/teamwork
 ---
 

@@ -1,7 +1,8 @@
 ---
 order: -404
 title: Import & export cookies
-description: Create, modify, and remove all cookies of a Kameleo profile safely using the SDK.
+meta:
+    description: Use the Kameleo SDK to list, add, update, and delete a browser profile's cookies programmatically to preserve or reset authenticated sessions.
 permalink: /tutorials/import-export-cookies
 ---
 
