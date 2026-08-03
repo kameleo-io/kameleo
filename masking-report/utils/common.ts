@@ -91,10 +91,10 @@ export function runCommand(command: string, args: string[] = [], cwd?: string, e
     }
 }
 
-export function generateVideoName(testTitle: string, browserProduct: string): string {
-    const timestamp = new Date().toISOString().replace(/\D/g, "").slice(2, 14);
-    const safeTitle = testTitle.replace(/\s+/g, "-").toLowerCase();
+export function generateVideoName(testTitle: string, browserProject: string, status?: string): string {
+    const timestamp = new Date().toISOString().slice(0, 19).replaceAll(/\W/g, "_");
+    const safeTitle = testTitle.replaceAll(/\W/g, "_").toLowerCase();
     const platform = process.platform === "win32" ? "windows" : process.platform == "darwin" ? "macos" : process.platform;
 
-    return `${safeTitle}-${platform}-${browserProduct.toLowerCase()}-${timestamp}.webm`;
+    return `${safeTitle}-${platform}-${browserProject.toLowerCase()}-${status}-${timestamp}.webm`;
 }

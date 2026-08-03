@@ -50,13 +50,13 @@ export default defineConfig<ConfiguredContextOptions>({
             use: { browserProduct: "firefox" },
         },
         {
-            name: "Chromium",
+            name: "Chrome",
             testIgnore: ["launch.kameleo.ts", "terminate.kameleo.ts"],
             retries: 0,
             use: {
                 channel: "chrome",
                 useKameleo: false,
-                browserProduct: "chromium",
+                browserProduct: "chrome",
             },
         },
     ],
