@@ -1,7 +1,8 @@
 ---
 order: -406
 title: Install browser extensions
-description: Load, persist, update, and troubleshoot browser extensions in profiles.
+meta:
+    description: Load Chrome or Firefox extensions into a Kameleo profile at creation or later, understand persistence across exports, and troubleshoot common issues.
 permalink: /tutorials/install-browser-extensions
 ---
 

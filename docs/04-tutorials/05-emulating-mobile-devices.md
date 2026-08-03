@@ -1,7 +1,8 @@
 ---
 order: -405
 title: Emulate mobile devices
-description: Create Android and iOS style mobile profiles with authentic fingerprints and automate them.
+meta:
+    description: Create authentic Android or iOS mobile browser profiles in Kameleo, tune touch emulation and device scale factor, and automate them with Selenium.
 permalink: /tutorials/emulating-mobile-devices
 ---
 

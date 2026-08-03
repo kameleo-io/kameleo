@@ -1,11 +1,10 @@
 ---
 order: -507
 title: Performance benchmark
-description: Benchmark results for Wikipedia and Amazon scraping across AWS m7i instance sizes with time and cost characteristics.
+meta:
+    description: Compare Kameleo scraping throughput and cost across AWS instance sizes for Wikipedia and Amazon workloads to plan concurrency and budget.
 permalink: /reference/performance-benchmark
 ---
-
-# Performance benchmark
 
 This benchmark helps you estimate the expected performance of Kameleo-based scraping setups and choose the most suitable server type for your workload. By comparing throughput and cost efficiency across different EC2 instances, you can make data-driven decisions about scaling, concurrency tuning and infrastructure budgeting.
 

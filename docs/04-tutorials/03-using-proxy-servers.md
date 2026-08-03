@@ -1,7 +1,8 @@
 ---
 order: -403
 title: Using proxy servers
-description: Add, update, rotate, and remove HTTP, HTTPS, SOCKS5, and SSH proxies on profiles.
+meta:
+    description: Attach, update, rotate, and remove HTTP, HTTPS, SOCKS5, or SSH proxies on a Kameleo profile, including proxy bypass rules for trusted domains.
 permalink: /tutorials/using-proxy-servers
 ---
 
@@ -146,7 +147,7 @@ Console.WriteLine($"Proxy removed: {(removed.Proxy == null ? "yes" : "no")}");
 
 Some destinations do not need to go through your proxy. Bypassing them reduces proxy bandwidth usage and lowers costs. Common candidates include CDN hosts serving static assets (images, fonts, scripts), video streaming domains, and internal services. Configure a bypass list so those hosts connect directly while the rest of the traffic uses the proxy.
 
-Kameleo automatically adds its own loopback endpoints. You only provide the additional hosts or CIDR ranges. The mechanism differs per browser engine:
+Kameleo automatically adds its own loopback endpoints. You only provide the additional hosts or CIDR ranges. The mechanism differs per kernel:
 
 - Chroma: supply an extra command-line switch `proxy-bypass-list` with a semicolon-separated list.
 - Junglefox: set the preference `network.proxy.no_proxies_on` with a comma-separated list.
@@ -228,7 +229,7 @@ Guidelines:
 
 Kameleo automatically masks your WebRTC IP address to match your proxy IP. However, WebRTC can still leak your real IP through non-proxied UDP connections because browsers do not route UDP traffic through HTTP/SOCKS proxies by default, and some proxy providers do not support UDP traffic at all.
 
-To prevent IP leaks, configure the browser to only allow WebRTC connections over TCP that go through your proxy. The mechanism differs per browser engine:
+To prevent IP leaks, configure the browser to only allow WebRTC connections over TCP that go through your proxy. The mechanism differs per kernel:
 
 - Chroma: set the preference `webrtc.ip_handling_policy` to `disable_non_proxied_udp`.
 - Junglefox: set the preference `media.peerconnection.ice.proxy_only` to `true`.

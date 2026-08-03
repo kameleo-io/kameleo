@@ -8,7 +8,7 @@
       "name": "Kameleo Team",
       "url": "https://developer.kameleo.io"
     },
-    "version": "5.0.1"
+    "version": "5.1.0"
   },
   "servers": [
     {
@@ -1178,8 +1178,7 @@
                 ]
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -1884,6 +1883,67 @@
           }
         }
       }
+    },
+    "/profiles/{profileId}/kernel-install": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Installs the kernel that best suits the specified profile's fingerprint, downloading it if it's not already available locally.",
+        "operationId": "InstallProfileKernel",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KernelResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2132,13 +2192,12 @@
         "additionalProperties": false
       },
       "CreateProfileRequest": {
-        "required": ["fingerprintId"],
         "type": "object",
         "properties": {
           "fingerprintId": {
-            "minLength": 1,
             "type": "string",
-            "description": "The unique identifier of the fingerprint. This references the fingerprint which should be used to build the new profile.",
+            "description": "The unique identifier of the fingerprint. This references the fingerprint which should be used to build the new profile.\r\nIf not provided, a fingerprint will be automatically selected using the recommended fingerprint search defaults, see: https://developer.kameleo.io/tutorials/filtering-fingerprints/",
+            "nullable": true,
             "example": "555b894595b5cd242ead1533218a5ee93dd7c7ebfbff4dccb80fdb112f6cda27"
           },
           "name": {
@@ -2426,6 +2485,7 @@
           "profile_already_imported",
           "incompatible_file",
           "running_profiles_limit_reached",
+          "running_mobile_profiles_limit_reached",
           "profile_minutes_limit_reached",
           "downloaded_cloud_profile_bytes_limit_reached",
           "folder_not_found",
@@ -3362,28 +3422,28 @@
         "type": "object",
         "properties": {
           "user": {
-            "required": ["automated", "manual", "total"],
+            "required": ["automated", "manual", "mobile", "total"],
             "allOf": [
               {
                 "$ref": "#/components/schemas/RunningProfilesStatistics"
               }
             ],
-            "description": "Current usage and maximum limit of running manual and automated profiles for the logged-in user."
+            "description": "Current usage and maximum limit of running automated, manual, mobile and total profiles for the logged-in user."
           },
           "tenant": {
-            "required": ["automated", "manual", "total"],
+            "required": ["automated", "manual", "mobile", "total"],
             "allOf": [
               {
                 "$ref": "#/components/schemas/RunningProfilesStatistics"
               }
             ],
-            "description": "Current usage and maximum limit of running manual and automated profiles across the tenant."
+            "description": "Current usage and maximum limit of running automated, manual, mobile and total profiles across the tenant."
           }
         },
         "additionalProperties": false
       },
       "RunningProfilesStatistics": {
-        "required": ["automated", "manual", "total"],
+        "required": ["automated", "manual", "mobile", "total"],
         "type": "object",
         "properties": {
           "automated": {
@@ -3403,6 +3463,15 @@
               }
             ],
             "description": "Quota usage of the profiles that are running manually (were started from GUI or API)."
+          },
+          "mobile": {
+            "required": ["currentUsage", "maximumLimit"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuotaStatistics"
+              }
+            ],
+            "description": "Quota usage of the profiles having mobile fingerprints."
           },
           "total": {
             "required": ["currentUsage", "maximumLimit"],

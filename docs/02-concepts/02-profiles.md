@@ -1,11 +1,12 @@
 ---
 order: -202
 title: Profiles
-description: Understand reusable browser profiles that bundle fingerprints, state, and settings for consistent, resumable, shareable sessions.
+meta:
+    description: Understand Kameleo browser profiles that bundle fingerprints, cookies, and settings into reusable, resumable sessions you can start, stop, and share.
 permalink: /concepts/profiles
 ---
 
-Kameleo profiles are reusable containers that bundle a full browser fingerprint (hardware, network, environment traits) together with persistent state like cookies, history, storage, passwords, and bookmarks plus user customizations (proxy, extensions, switches). Each profile is tied to a specific kernel (browser engine/version) and can be started, stopped, exported/imported, and safely shared via locking when stored in the cloud. They let every session appear as a distinct consistent device that you can pause and later resume without losing context.
+Kameleo profiles are reusable containers that bundle a full browser fingerprint (hardware, network, environment traits) together with persistent state like cookies, history, storage, passwords, and bookmarks plus user customizations (proxy, extensions, switches). Each profile is tied to a specific kernel and can be started, stopped, exported/imported, and safely shared via locking when stored in the cloud. They let every session appear as a distinct consistent device that you can pause and later resume without losing context.
 
 ## Components of a profile
 

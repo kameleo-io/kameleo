@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kameleo.local_api_client"
-version = "5.0.0"
+version = "5.1.0"
 description = "kameleo-local-api"
 authors = ["Kameleo Team <support@kameleo.io>"]
 license = "MIT"

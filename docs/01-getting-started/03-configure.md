@@ -1,7 +1,8 @@
 ---
 order: -103
 title: Configure
-description: Configure Kameleo via appsettings.json, environment variables, or flags.
+meta:
+    description: Configure the Kameleo Engine's host, port, and personal access token using appsettings.json, environment variables, or command-line flags, in that precedence order.
 permalink: /getting-started/configure
 ---
 

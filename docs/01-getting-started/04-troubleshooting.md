@@ -1,7 +1,8 @@
 ---
 order: -104
 title: Troubleshooting
-description: Locate logs & data, interpret exit codes, and gather diagnostics.
+meta:
+    description: Locate Kameleo's log files and data folder, interpret Engine exit codes, and gather the diagnostics needed to resolve issues or file a support ticket.
 permalink: /getting-started/troubleshooting
 ---
 

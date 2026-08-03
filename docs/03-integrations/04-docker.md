@@ -1,7 +1,8 @@
 ---
 order: -304
 title: Docker
-description: Run Kameleo in a Docker container on Windows or Linux, persist data, configure via environment variables, and expose the Local API.
+meta:
+    description: Run Kameleo in a Docker container on Windows or Linux, persist profile data with named volumes, configure via environment variables, and expose the Local API.
 permalink: /integrations/docker
 ---
 
@@ -205,7 +206,7 @@ http://localhost:80
 ```
 
 !!!warning Limited functionality in Docker
-The GUI served from a container has reduced functionality compared to the desktop application. Features that depend on direct filesystem access are not available or behave differently. Use the GUI for basic profile management and monitoring. For automation, use the [SDK](../05-reference/03-api-reference.md) directly.
+The GUI served from a container has reduced functionality compared to the desktop application. Features that depend on direct filesystem access are not available or behave differently. Use the GUI for basic profile management and monitoring. For automation, use the [SDK](../05-reference/04-api-reference.md) directly.
 !!!
 
 ## VNC viewer (only in Linux-based container)

@@ -1,7 +1,8 @@
 ---
 order: -505
 title: API error handling
-description: How the Local API reports errors, what ProblemResponse contains, and how to catch exceptions in each SDK.
+meta:
+    description: Learn how the Kameleo Local API returns errors and how to catch and branch on error codes in Python, JavaScript, or C#.
 permalink: /reference/api-error-handling
 ---
 
@@ -39,7 +40,7 @@ The `errorCode` field is a string enum. All possible values are listed below.
 | `accountless_limit_reached`                    | The accountless usage limit is reached.                                          |
 | `no_capability`                                | The subscription does not include the required capability.                       |
 | `no_cookies_capability`                        | The subscription does not include the cookie management capability.              |
-| `no_mobile_capability`                         | The subscription does not allow using multiple mobile profiles.                  |
+| `no_mobile_capability`                         | The subscription does not include mobile profiles.                               |
 | `no_proxy_test_capability`                     | The subscription does not include proxy testing.                                 |
 | `no_cloud_capability`                          | The subscription does not include cloud profiles.                                |
 | `no_local_capability`                          | The subscription does not include local profiles.                                |
@@ -59,6 +60,7 @@ The `errorCode` field is a string enum. All possible values are listed below.
 | `profile_already_imported`                     | The profile has already been imported.                                           |
 | `incompatible_file`                            | The file is incompatible with this version of Kameleo.                           |
 | `running_profiles_limit_reached`               | Concurrent browser limit is reached.                                             |
+| `running_mobile_profiles_limit_reached`        | Mobile concurrent browser limit is reached.                                      |
 | `profile_minutes_limit_reached`                | The browser usage quota is exhausted.                                            |
 | `downloaded_cloud_profile_bytes_limit_reached` | The cloud profile download quota is exhausted.                                   |
 | `folder_not_found`                             | No folder with the given ID exists.                                              |
@@ -76,31 +78,35 @@ The `errorCode` field is a string enum. All possible values are listed below.
 | `upload_failed`                                | Uploading the file failed.                                                       |
 | `unexpected_error`                             | An unexpected internal error occurred.                                           |
 
+!!!tip Note
+For how concurrent browser (CB) and mobile CB quotas work and how to check current usage, see [Usage limits](./03-usage-limits.md).
+!!!
+
 ## Exception types per SDK
 
 ### Python — `ApiException`
 
 Raised by every API call that returns a non-2xx status. Import it from `kameleo.local_api_client.exceptions`.
 
-| Property     | Type             | Description         |
+| Property | Type | Description |
 | ------------ | ---------------- | ------------------- | ------------------------------------ | ------------------------------------------------------------------ |
-| `status`     | `int`            | HTTP status code.   |
-| `error_code` | `ErrorCode       | str                 | None`                                | Deserialized `ErrorCode` enum value, or the raw string if unknown. |
-| `problem`    | `ProblemResponse | None`               | Full deserialized `ProblemResponse`. |
-| `reason`     | `str`            | HTTP reason phrase. |
-| `body`       | `str             | None`               | Raw response body string.            |
-| `headers`    | any              | Response headers.   |
+| `status` | `int` | HTTP status code. |
+| `error_code` | `ErrorCode       | str                 | None` | Deserialized `ErrorCode` enum value, or the raw string if unknown. |
+| `problem` | `ProblemResponse | None` | Full deserialized `ProblemResponse`. |
+| `reason` | `str` | HTTP reason phrase. |
+| `body` | `str             | None` | Raw response body string. |
+| `headers` | any | Response headers. |
 
 ### JavaScript / TypeScript — `ResponseError`
 
 Thrown by every SDK method on a non-2xx response. Import it from `@kameleo/local-api-client`.
 
-| Property    | Type             | Description                        |
+| Property | Type | Description |
 | ----------- | ---------------- | ---------------------------------- | ------------------------------------ |
-| `response`  | `Response`       | The raw `fetch` `Response` object. |
-| `errorCode` | `ErrorCode       | undefined`                         | Deserialized `ErrorCode` enum value. |
-| `problem`   | `ProblemResponse | undefined`                         | Full deserialized `ProblemResponse`. |
-| `message`   | `string`         | Human-readable error message.      |
+| `response` | `Response` | The raw `fetch` `Response` object. |
+| `errorCode` | `ErrorCode       | undefined` | Deserialized `ErrorCode` enum value. |
+| `problem` | `ProblemResponse | undefined` | Full deserialized `ProblemResponse`. |
+| `message` | `string` | Human-readable error message. |
 
 ### C# — `ApiException`
 
