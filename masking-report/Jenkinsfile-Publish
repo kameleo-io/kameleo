@@ -11,7 +11,7 @@ pipeline {
         timeout(time: 20, unit: 'MINUTES')
     }
     environment {
-        ARTIFACTORY_REPOSITORY = 'masking-audit'
+        ARTIFACTORY_REPOSITORY = 'masking-report'
     }
     parameters {
         text(name: 'videoPaths', defaultValue: '',

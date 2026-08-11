@@ -85,6 +85,8 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
                     timeout: 90_000,
                     noDefaults: true,
                 });
+                // here, we create a new context for the simplest Playwright video recording setup
+                // but for the best masking, we recommend using the existing default context via browser.contexts()[0]
                 context = await browser.newContext(commonContextOptions);
             }
         } else {
