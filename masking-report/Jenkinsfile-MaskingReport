@@ -10,7 +10,7 @@ pipeline {
     agent none
     options { disableConcurrentBuilds() }
     environment {
-        ARTIFACTORY_REPOSITORY = 'masking-audit'
+        ARTIFACTORY_REPOSITORY = 'masking-report'
     }
     parameters {
         string(name: 'emailOverride', defaultValue: env.REPORT_EMAIL_RECIPIENT_DEFAULT)
