@@ -37,22 +37,22 @@ pipeline {
         }
         stage('Matrix') {
             matrix {
-                // restrict to a single agent per OS for consistency
                 axes {
                     axis {
                         name 'AGENT'
-                        values 'windows11', 'macos', 'ubuntu'
+                        values 'windows', 'macos', 'ubuntu'
                     }
                 }
                 when {
                     expression {
                         !kernelsOverride ||
-                        (AGENT == 'windows11' && kernelsOverride.any { kernel -> kernel.contains('win') }) ||
+                        (AGENT == 'windows' && kernelsOverride.any { kernel -> kernel.contains('win') }) ||
                         (AGENT == 'macos' && kernelsOverride.any { kernel -> kernel.contains('osx') }) ||
                         (AGENT == 'ubuntu' && kernelsOverride.any { kernel -> kernel.contains('linux') })
                     }
                 }
-                agent { label "${AGENT} && gui" }
+                // restrict to a single agent per OS for consistency
+                agent { label "${AGENT} && masking-runner" }
                 stages {
                     stage('Init Repository') {
                         options { timeout(time: 5, unit: 'MINUTES') }
@@ -69,10 +69,11 @@ pipeline {
                                 string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                                 string(credentialsId: 'ma-adscore-api', variable: 'ADSCORE_API_KEY'),
                                 usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
-                                string(credentialsId: 'ma-app-pat', variable: 'KAM_PAT'),
+                                string(credentialsId: 'ma-app-pat', variable: 'KAM_PAT_DEFAULT'),
                                 usernamePassword(credentialsId: 'ma-proxy', usernameVariable: 'PROXY_USERNAME', passwordVariable: 'PROXY_PASSWORD'),
                             ]) {
                                 script {
+                                    env.KAM_PAT = env.KAM_PAT ?: env.KAM_PAT_DEFAULT
                                     if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
                                     if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride.join(',')
                                     boolean hasChroma = kernelsOverride.any { kernel -> kernel.contains('chroma') }
