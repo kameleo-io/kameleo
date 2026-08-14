@@ -24,7 +24,7 @@ test("Vinted", async ({ page }) => {
     await page.press("input#search_text", "Enter");
 
     // click item and buy
-    await page.locator(".feed-grid").getByTestId("grid-item").nth(2).click();
+    await page.locator('a[href^="/items/"]').nth(2).click();
     await page.waitForTimeout(2_000); // for video presentation purposes
     await page.getByText("Buy now").click();
     await page.waitForTimeout(2_000); // for video presentation purposes

@@ -17,6 +17,9 @@ pipeline {
         string(name: 'testFilter', defaultValue: '')
         text(name: 'kernelsOverride', defaultValue: '')
         text(name: 'artifactUrlOverrides', defaultValue: artifactUrlOverrides)
+        booleanParam(name: 'testWindows', defaultValue: true, description: 'Test on Windows')
+        booleanParam(name: 'testMacos', defaultValue: true, description: 'Test on macOS')
+        booleanParam(name: 'testLinux', defaultValue: true, description: 'Test on Linux')
     }
 
     stages {
@@ -45,10 +48,12 @@ pipeline {
                 }
                 when {
                     expression {
-                        !kernelsOverride ||
-                        (AGENT == 'windows' && kernelsOverride.any { kernel -> kernel.contains('win') }) ||
-                        (AGENT == 'macos' && kernelsOverride.any { kernel -> kernel.contains('osx') }) ||
-                        (AGENT == 'ubuntu' && kernelsOverride.any { kernel -> kernel.contains('linux') })
+                        def hasWindowsKey = kernelsOverride.any { kernel -> kernel.contains('win') }
+                        def hasMacKey = kernelsOverride.any { kernel -> kernel.contains('osx') }
+                        def hasLinuxKey = kernelsOverride.any { kernel -> kernel.contains('linux') }
+                        return (params.testWindows && AGENT == 'windows' && (!kernelsOverride || hasWindowsKey)) ||
+                                 (params.testMacos && AGENT == 'macos' && (!kernelsOverride || hasMacKey)) ||
+                                 (params.testLinux && AGENT == 'ubuntu' && (!kernelsOverride || hasLinuxKey))
                     }
                 }
                 // restrict to a single agent per OS for consistency
@@ -84,7 +89,7 @@ pipeline {
                                         testFilter = ' -- '
                                         if(hasChroma && !hasJunglefox) testFilter += '--project=Chroma'
                                         if(hasJunglefox && !hasChroma) testFilter += '--project=Junglefox'
-                                        if(params.testFilter != '') testFilter += " -g ${params.testFilter}"
+                                        if(params.testFilter != '') testFilter += " -g '${params.testFilter}'"
                                     }
 
                                     int testExitCode = isUnix()
