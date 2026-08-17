@@ -1,0 +1,34 @@
+// TODO: deprecated pipeline
+String[] videoPaths = []
+
+def runCommand(String cmd) {
+    isUnix() ? sh(cmd) : powershell(cmd)
+}
+
+pipeline {
+    agent any
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Init Repository') {
+            options { timeout(time: 5, unit: 'MINUTES') }
+            steps {
+                runCommand 'npm ci'
+            }
+        }
+
+        stage('Publish run') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
+                    usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
+                ]) {
+                    runCommand 'node build/publishRun.ts'
+                }
+            }
+        }
+    }
+}

@@ -25,7 +25,7 @@ pipeline {
                 runCommand "npm run lint"
             }
         }
-        stage('Sync to GitHub') {
+        stage('Sync code to GitHub') {
             when {
                 expression {
                     return env.BRANCH_NAME == 'master'
@@ -34,7 +34,7 @@ pipeline {
             options { timeout(time: 10, unit: 'MINUTES') }
             steps {
                 withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
-                    runCommand 'node build/publishGitHub.ts'
+                    runCommand 'node build/publishCode.ts'
                 }
             }
         }

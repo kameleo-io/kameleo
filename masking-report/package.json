@@ -32,6 +32,7 @@
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.66.0"
+    "typescript-eslint": "^8.66.0",
+    "webflow-api": "^3.3.4"
   }
 }
