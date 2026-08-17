@@ -16,7 +16,7 @@ export async function scrollDown(page: Page): Promise<void> {
             window.scrollBy({ top: distance });
             await new Promise((resolve) => setTimeout(resolve, delaySec * 1_000));
 
-            if (previousScrollTop != document.documentElement.scrollTop) {
+            if (previousScrollTop !== document.documentElement.scrollTop) {
                 lastSuccessfulScrollTime = Temporal.Now.instant();
             }
         } while (

@@ -24,7 +24,7 @@ import { downloadFile, extractSevenZip, isWindows, runCommand } from "../utils/c
 setup("launch Kameleo Engine", async () => {
     if (KAMELEO_ENGINE_ALREADY_RUNNING) {
         // nothing to do
-    } else if (process.platform == "linux") {
+    } else if (process.platform === "linux") {
         await launchKameleoDocker();
     } else {
         await launchKameleoLocal();

@@ -73,7 +73,7 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
             await kameleoClient.profile.startProfile(profile.id, browserSettings);
             const browserWSEndpoint = `ws://localhost:${KAMELEO_PORT}/playwright/${profile.id}`;
 
-            if (browserProduct == "firefox") {
+            if (browserProduct === "firefox") {
                 context = await playwright.firefox.launchPersistentContext("", {
                     ...commonContextOptions,
                     executablePath: JunglefoxHelper.getBridgePath(),
