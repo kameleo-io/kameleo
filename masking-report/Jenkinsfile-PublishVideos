@@ -1,3 +1,4 @@
+// TODO: deprecated pipeline
 String[] videoPaths = []
 
 def runCommand(String cmd) {

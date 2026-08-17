@@ -22,6 +22,7 @@ export default tseslint.config(
             // additional rules
             "@typescript-eslint/explicit-function-return-type": ["error", { allowExpressions: true }],
             "@typescript-eslint/explicit-member-accessibility": "error",
+            eqeqeq: ["error"],
 
             /// stylistic rules
             "import/first": "warn",
