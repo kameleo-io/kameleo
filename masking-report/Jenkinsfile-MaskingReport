@@ -62,8 +62,6 @@ pipeline {
                     stage('Init Repository') {
                         options { timeout(time: 5, unit: 'MINUTES') }
                         steps {
-                            runCommand 'git clean -fxd'
-                            runCommand 'git reset --hard HEAD'
                             runCommand 'npm ci'
                         }
                     }
