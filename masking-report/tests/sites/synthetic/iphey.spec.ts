@@ -3,19 +3,11 @@ import { scrollDown } from "../../../utils/pageUtils.ts";
 
 test.describe(() => {
     test.use({
-        profileOptions: {
-            proxy: { value: "none" },
-            fonts: "off",
-        },
+        profileOptions: { fonts: "off" },
     });
     test("Iphey", async ({ page }) => {
         await page.goto("https://iphey.com/", { waitUntil: "networkidle" });
         await page.locator("#signals").waitFor({ timeout: 90_000 });
-
-        const knownSignals = new Set([
-            "status: Not detected",
-            "browser: Detected the following processes on your device: Remote Desktop Protocol (RDP)", // caused by non-Kameleo related dev environment
-        ]);
 
         const signalLocators = await page.locator("#signals + .detail-list .detail-entry").all();
         const issues = new Set<string>();
@@ -27,7 +19,7 @@ test.describe(() => {
 
         await scrollDown(page);
 
-        const unknownIssues = [...issues.difference(knownSignals)];
+        const unknownIssues = [...issues.difference(new Set(["status: Not detected"]))];
         expect(unknownIssues, `Unknown signals detected:\n\t${unknownIssues.join("\n\t")}`).toHaveLength(0);
     });
 });
