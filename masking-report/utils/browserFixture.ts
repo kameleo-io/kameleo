@@ -10,7 +10,7 @@ import { type BrowserContext, type BrowserContextOptions, test as base } from "@
 import assert from "assert";
 import { randomInt } from "crypto";
 
-import { KAMELEO_PORT, PROXY_PASSWORD, PROXY_USERNAME } from "../config.ts";
+import { kameleo, proxy } from "../config.ts";
 import { generateVideoName } from "./common.ts";
 
 function getProxy(): ProxyChoice {
@@ -21,8 +21,8 @@ function getProxy(): ProxyChoice {
         extra: {
             host: "network.joinmassive.com",
             port: 65534,
-            id: `${PROXY_USERNAME}-sessionmode-norotate-session-${sessionId}`,
-            secret: PROXY_PASSWORD,
+            id: `${proxy.username}-sessionmode-norotate-session-${sessionId}`,
+            secret: proxy.password,
         },
     };
 }
@@ -45,7 +45,7 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
     browserSettings: [undefined, { option: true }],
     context: async ({ playwright, browserProduct, osFamily, deviceType, browserSettings, useKameleo, profileOptions }, use, testInfo) => {
         // setup
-        const kameleoClient = new KameleoLocalApiClient({ basePath: `http://localhost:${KAMELEO_PORT}` });
+        const kameleoClient = new KameleoLocalApiClient({ basePath: `http://localhost:${kameleo.port}` });
         let profile: ProfileResponse | undefined;
         let context: BrowserContext;
 
@@ -71,7 +71,7 @@ export const testWithConfiguredContext = base.extend<ConfiguredContextOptions>({
 
             // Kameleo must be started before Playwright attaches to the browser context
             await kameleoClient.profile.startProfile(profile.id, browserSettings);
-            const browserWSEndpoint = `ws://localhost:${KAMELEO_PORT}/playwright/${profile.id}`;
+            const browserWSEndpoint = `ws://localhost:${kameleo.port}/playwright/${profile.id}`;
 
             if (browserProduct === "firefox") {
                 context = await playwright.firefox.launchPersistentContext("", {
