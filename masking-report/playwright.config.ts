@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
-import { PLAYWRIGHT_RETRIES, PLAYWRIGHT_WORKERS } from "./config.ts";
+import { playwright } from "./config.ts";
 import type { ConfiguredContextOptions } from "./utils/browserFixture.ts";
 
 /** @see https://playwright.dev/docs/test-configuration */
@@ -10,8 +10,8 @@ export default defineConfig<ConfiguredContextOptions>({
     fullyParallel: true,
     timeout: 120_000,
     forbidOnly: !!process.env.CI,
-    retries: PLAYWRIGHT_RETRIES,
-    workers: PLAYWRIGHT_WORKERS,
+    retries: playwright.retries,
+    workers: playwright.workers,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
         ["list"],

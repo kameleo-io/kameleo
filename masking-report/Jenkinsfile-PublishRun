@@ -10,6 +10,12 @@ pipeline {
         disableConcurrentBuilds()
         timeout(time: 20, unit: 'MINUTES')
     }
+    environment {
+        ARTIFACTORY_REPOSITORY = 'masking-report'
+    }
+    parameters {
+        string(name: 'runIdOverride', defaultValue: '', description: 'Optional CI job number to publish instead of the latest run')
+    }
 
     stages {
         stage('Init Repository') {
@@ -24,8 +30,11 @@ pipeline {
                 withCredentials([
                     string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
+                    string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
                 ]) {
-                    runCommand 'node build/publishRun.ts'
+                    withEnv(["RUN_ID_OVERRIDE=${params.runIdOverride}"]) {
+                        runCommand 'node build/publishRun.ts'
+                    }
                 }
             }
         }
