@@ -1,6 +1,6 @@
 {
   "name": "@kameleo/local-api-client",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "author": "Kameleo Team",
   "description": "This JavaScript/TypeScript package provides convenient access to the Local API REST interface of the Kameleo Client.",
   "engines": {

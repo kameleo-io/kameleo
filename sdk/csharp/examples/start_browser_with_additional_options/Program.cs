@@ -32,7 +32,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 // start the browser with the --mute-audio command line argument
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    Arguments = ["mute-audio"]
+    Arguments = ["--mute-audio"]
 });
 
 // Wait for 10 seconds

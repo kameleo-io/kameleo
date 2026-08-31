@@ -30,6 +30,18 @@ See our [Code examples](../05-reference/02-code-examples.md) for the latest vers
 Always verify and use the Playwright library version recommended for your current [Junglefox kernel release](https://kameleo.io/browser-kernel-releases). Mismatched versions can cause launch, connection, or protocol errors.
 !!!
 
+!!!tip Downloading pw-bridge
+The `pw-bridge` executable is bundled inside the SDK packages, so `JunglefoxHelper` finds it for you. You only need the standalone download if you are not using an SDK, for whatever reason.
+
+It currently also ships with the Kameleo app, but that is deprecated and will be removed in 6.0. The SDK packages keep bundling it. Download it for your platform:
+
+- [Windows x64](https://get.kameleo.io/pw-bridge/2.0.0/win-x64/pw-bridge.exe)
+- [Linux x64](https://get.kameleo.io/pw-bridge/2.0.0/linux-x64/pw-bridge)
+- [macOS arm64](https://get.kameleo.io/pw-bridge/2.0.0/osx-arm64/pw-bridge)
+
+On Linux and macOS, make it executable with `chmod +x pw-bridge`. Then launch Playwright with it as the browser executable, passing `-target ws://localhost:5050/playwright/{profileId}` as its argument.
+!!!
+
 ## Best practices
 
 - Do not add third-party stealth / fingerprint patches (playwright-extra, Canvas defenders, etc.). They can reduce masking quality.
@@ -103,7 +115,7 @@ Below are three common customization patterns. Pick one (or combine arguments + 
 from kameleo.local_api_client.models import BrowserSettings, Preference
 
 client.profile.start_profile(profile.id, BrowserSettings(
-    arguments=["mute-audio"],
+    arguments=["--mute-audio"],
     additional_options=[
         Preference(key='pageLoadStrategy', value='eager'),
     ],
@@ -118,7 +130,7 @@ client.profile.start_profile(profile.id, BrowserSettings(
 ```js
 await client.profile.startProfile(profile.id, {
     browserSettings: {
-        arguments: ["mute-audio"],
+        arguments: ["--mute-audio"],
         additionalOptions: [{ key: "pageLoadStrategy", value: "eager" }],
         preferences: [{ key: "profile.managed_default_content_settings.images", value: 2 }],
     },
@@ -131,7 +143,7 @@ await client.profile.startProfile(profile.id, {
 using Kameleo.LocalApiClient.Model;
 
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings(
-    arguments: new List<string> { "mute-audio" },
+    arguments: new List<string> { "--mute-audio" },
     additionalOptions: new List<Preference> {
         new Preference("pageLoadStrategy", "eager"),
     },
