@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kameleo.LocalApiClient;
+using Kameleo.LocalApiClient.Client;
 using Kameleo.LocalApiClient.Model;
 
 // This is the port the Kameleo Engine is listening on. Default value is 5050, but can be overridden in appsettings.json file
@@ -32,7 +33,34 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
     Proxy = new(ProxyConnectionType.Socks5, new Server(proxyHost, proxyPort, proxyUsername, proxyPassword))
 };
 
+// Optional: test the proxy settings before creating a profile with them. Skip this step if you do not need it.
+// An unusable proxy comes back as a 503 error response, so the call throws instead of returning a result.
+try
+{
+    var proxyTest = await client.General.TestProxyAsync(new TestProxyRequest(createProfileRequest.Proxy));
+    Console.WriteLine($"Proxy test result: {proxyTest.Result}");
+    foreach (var step in proxyTest.Steps)
+    {
+        Console.WriteLine($"  {(step.Successful ? "OK  " : "FAIL")} {step.Name}{(step.Successful ? "" : $" ({step.Comment})")}");
+    }
+}
+catch (ApiException)
+{
+    Console.WriteLine("Proxy test failed, this proxy is not usable.");
+}
+
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
+
+// Optional: test the proxy stored on the profile, without sending the credentials again. Skip this step if you do not need it.
+try
+{
+    var profileProxyTest = await client.Profile.TestProfileProxyAsync(profile.Id);
+    Console.WriteLine($"Profile proxy test result: {profileProxyTest.Result}");
+}
+catch (ApiException)
+{
+    Console.WriteLine("Profile proxy test failed, this proxy is not usable.");
+}
 
 // Start the profile
 await client.Profile.StartProfileAsync(profile.Id);

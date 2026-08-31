@@ -8,7 +8,7 @@
       "name": "Kameleo Team",
       "url": "https://developer.kameleo.io"
     },
-    "version": "5.1.0"
+    "version": "5.2.0"
   },
   "servers": [
     {
@@ -972,6 +972,78 @@
         }
       }
     },
+    "/general/test-proxy": {
+      "post": {
+        "tags": ["General"],
+        "summary": "Tests the given proxy connection and returns every individual test step together with an overall summary. The summary is 'success' when\r\nevery step passes, 'partial_success' when the website could be reached through at least one of IPv4, IPv6 or DNS name and the IP location\r\nlookup also succeeded, otherwise 'failure'.",
+        "operationId": "TestProxy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TestProxyRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestProxyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The proxy connection failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/kernels": {
       "get": {
         "tags": ["Kernel"],
@@ -1379,6 +1451,87 @@
           },
           "409": {
             "description": "Profile is running.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{profileId}/test-proxy": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Tests the proxy connection configured on the given profile and returns every individual test step together with an overall summary. The\r\nsummary is 'success' when every step passes, 'partial_success' when the website could be reached through at least one of IPv4, IPv6 or DNS\r\nname and the IP location lookup also succeeded, otherwise 'failure'.",
+        "operationId": "TestProfileProxy",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "description": "The unique identifier of the profile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestProxyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profile not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The proxy connection failed.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2063,16 +2216,16 @@
             "items": {
               "type": "string"
             },
-            "description": "Command line arguments that can be passed to the browser at startup. This applies to both Chroma and Junglefox browsers. Do not include the\r\nstarting double dash (--).",
+            "description": "Command line arguments that can be passed to the browser at startup. This applies to both Chroma and Junglefox browsers.",
             "nullable": true,
-            "example": ["disable-notifications"]
+            "example": ["--disable-notifications"]
           },
           "preferences": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Preference"
             },
-            "description": "List of preferences for browsers that can be passed at startup. In case of Chromium based options it will be a user profile preference. In\r\ncase of Firefox profiles it will be a preference.",
+            "description": "List of preferences for browsers that can be passed at startup. In case of Chromium-based options it will be a user profile preference. In\r\ncase of Firefox profiles it will be a preference.",
             "nullable": true,
             "example": [
               {
@@ -3398,6 +3551,46 @@
         "type": "string",
         "description": "Proxy connection settings of the profiles. Possible values:\r\n'none': Direct connection without any proxy.\r\n'http': Use a HTTP proxy for upstream communication.\r\n'socks5': Use a SOCKS5 proxy for upstream communication.\r\n'ssh': Use an SSH connection for upstream communication. Basically a SOCKS5 proxy created at the given SSH host."
       },
+      "ProxyTestResultStatus": {
+        "enum": ["success", "partial_success", "failure"],
+        "type": "string",
+        "description": "Summarizes the overall outcome of a proxy connectivity test. Possible values:\r\n'success': Every test step passed.\r\n'partial_success': The website could be reached through at least one of IPv4, IPv6 or DNS name, and the IP location lookup succeeded.\r\n'failure': None of the connectivity checks succeeded."
+      },
+      "ProxyTestStepResponse": {
+        "required": ["comment", "name", "step", "successful"],
+        "type": "object",
+        "properties": {
+          "step": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyValidationStep"
+              }
+            ],
+            "description": "Identifier of the executed test step.",
+            "example": ""
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the executed test case.",
+            "example": "Testing direct internet connectivity by pinging a remote host"
+          },
+          "successful": {
+            "type": "boolean",
+            "description": "Whether the test was successful or not.",
+            "example": true
+          },
+          "comment": {
+            "type": "string",
+            "description": "Any additional details about the test case, such as error messages.",
+            "example": "Proxy authentication failed"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProxyValidationStep": {
+        "enum": ["ssh_connection", "direct_ping", "direct_https", "proxy_ipv4", "proxy_ipv6", "proxy_website", "proxy_location"],
+        "type": "string"
+      },
       "QuotaStatistics": {
         "required": ["currentUsage", "maximumLimit"],
         "type": "object",
@@ -3640,6 +3833,45 @@
         },
         "additionalProperties": false,
         "description": "Status information about the profile"
+      },
+      "TestProxyRequest": {
+        "required": ["proxy"],
+        "type": "object",
+        "properties": {
+          "proxy": {
+            "required": ["value"],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyChoice"
+              }
+            ],
+            "description": "Sets the Proxy connection settings to test. Values can be 'none', 'http', 'socks5', 'ssh'. When it is not set to none, a server must be\r\nprovided."
+          }
+        },
+        "additionalProperties": false
+      },
+      "TestProxyResponse": {
+        "required": ["result", "steps"],
+        "type": "object",
+        "properties": {
+          "result": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProxyTestResultStatus"
+              }
+            ],
+            "description": "Summarizes the overall outcome of a proxy connectivity test. Possible values:\r\n'success': Every test step passed.\r\n'partial_success': The website could be reached through at least one of IPv4, IPv6 or DNS name, and the IP location lookup succeeded.\r\n'failure': None of the connectivity checks succeeded.",
+            "example": "success"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProxyTestStepResponse"
+            },
+            "description": "A list containing each individual test step performed while testing the proxy connection."
+          }
+        },
+        "additionalProperties": false
       },
       "TimezoneChoice": {
         "required": ["value"],

@@ -48,6 +48,9 @@ src/models/ProfileResponse.ts
 src/models/ProfileStorageLocation.ts
 src/models/ProxyChoice.ts
 src/models/ProxyConnectionType.ts
+src/models/ProxyTestResultStatus.ts
+src/models/ProxyTestStepResponse.ts
+src/models/ProxyValidationStep.ts
 src/models/QuotaStatistics.ts
 src/models/RunningProfiles.ts
 src/models/RunningProfilesStatistics.ts
@@ -59,6 +62,8 @@ src/models/ShareAccessRequest.ts
 src/models/ShareGroupRequest.ts
 src/models/SharingOptionsResponse.ts
 src/models/StatusResponse.ts
+src/models/TestProxyRequest.ts
+src/models/TestProxyResponse.ts
 src/models/TimezoneChoice.ts
 src/models/TimezoneSpoofingType.ts
 src/models/UpdateFolderRequest.ts

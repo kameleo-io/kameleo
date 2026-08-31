@@ -53,6 +53,9 @@ kameleo/local_api_client/models/profile_response.py
 kameleo/local_api_client/models/profile_storage_location.py
 kameleo/local_api_client/models/proxy_choice.py
 kameleo/local_api_client/models/proxy_connection_type.py
+kameleo/local_api_client/models/proxy_test_result_status.py
+kameleo/local_api_client/models/proxy_test_step_response.py
+kameleo/local_api_client/models/proxy_validation_step.py
 kameleo/local_api_client/models/quota_statistics.py
 kameleo/local_api_client/models/running_profiles.py
 kameleo/local_api_client/models/running_profiles_statistics.py
@@ -64,6 +67,8 @@ kameleo/local_api_client/models/share_access_request.py
 kameleo/local_api_client/models/share_group_request.py
 kameleo/local_api_client/models/sharing_options_response.py
 kameleo/local_api_client/models/status_response.py
+kameleo/local_api_client/models/test_proxy_request.py
+kameleo/local_api_client/models/test_proxy_response.py
 kameleo/local_api_client/models/timezone_choice.py
 kameleo/local_api_client/models/timezone_spoofing_type.py
 kameleo/local_api_client/models/update_folder_request.py

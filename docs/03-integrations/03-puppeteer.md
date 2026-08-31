@@ -94,7 +94,7 @@ Below are three common customization patterns. Pick one (or combine arguments + 
 from kameleo.local_api_client.models import BrowserSettings, Preference
 
 client.profile.start_profile(profile.id, BrowserSettings(
-    arguments=["mute-audio"],
+    arguments=["--mute-audio"],
     additional_options=[
         Preference(key='pageLoadStrategy', value='eager'),
     ],
@@ -109,7 +109,7 @@ client.profile.start_profile(profile.id, BrowserSettings(
 ```js
 await client.profile.startProfile(profile.id, {
     browserSettings: {
-        arguments: ["mute-audio"],
+        arguments: ["--mute-audio"],
         additionalOptions: [{ key: "pageLoadStrategy", value: "eager" }],
         preferences: [{ key: "profile.managed_default_content_settings.images", value: 2 }],
     },
@@ -122,7 +122,7 @@ await client.profile.startProfile(profile.id, {
 using Kameleo.LocalApiClient.Model;
 
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings(
-    arguments: new List<string> { "mute-audio" },
+    arguments: new List<string> { "--mute-audio" },
     additionalOptions: new List<Preference> {
         new Preference("pageLoadStrategy", "eager"),
     },

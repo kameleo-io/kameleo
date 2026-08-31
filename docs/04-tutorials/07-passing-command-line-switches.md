@@ -29,8 +29,8 @@ from kameleo.local_api_client.models import BrowserSettings
 
 client.profile.start_profile(profile_id, BrowserSettings(
         arguments=[
-            'disable-notifications',
-            'mute-audio'
+            '--disable-notifications',
+            '--mute-audio'
         ]
 ))
 print('Started profile with custom arguments')
@@ -40,7 +40,7 @@ print('Started profile with custom arguments')
 
 ```javascript
 await client.profile.startProfile(profile.id, {
-    arguments: ["disable-notifications", "mute-audio"],
+    arguments: ["--disable-notifications", "--mute-audio"],
 });
 console.log("Started profile with custom arguments");
 ```
@@ -50,7 +50,7 @@ console.log("Started profile with custom arguments");
 ```csharp
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    Arguments = ["disable-notifications", "mute-audio"]
+    Arguments = ["--disable-notifications", "--mute-audio"]
 });
 Console.WriteLine("Started profile with custom arguments");
 ```
