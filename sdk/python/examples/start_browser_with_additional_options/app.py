@@ -30,7 +30,7 @@ profile = client.profile.create_profile(create_profile_request)
 client.profile.start_profile(
     profile.id,
     BrowserSettings(
-        arguments=['mute-audio'],
+        arguments=['--mute-audio'],
     ),
 )
 # Wait for 10 seconds

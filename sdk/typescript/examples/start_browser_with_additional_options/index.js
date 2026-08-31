@@ -28,7 +28,7 @@ const profile = await client.profile.createProfile(createProfileRequest);
 
 // start the browser with the --mute-audio command line argument
 await client.profile.startProfile(profile.id, {
-    arguments: ["mute-audio"],
+    arguments: ["--mute-audio"],
 });
 // Wait for 10 seconds
 await setTimeout(10_000);

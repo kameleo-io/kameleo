@@ -24,7 +24,7 @@ Use `--headless` for Chroma. Current Chroma builds map this to the modern headle
 from kameleo.local_api_client.models import BrowserSettings
 
 client.profile.start_profile(profile.id, BrowserSettings(
-    arguments=['headless']
+    arguments=['--headless']
 ))
 print('Started Chroma headless')
 ```
@@ -33,7 +33,7 @@ print('Started Chroma headless')
 
 ```javascript
 await client.profile.startProfile(profile.id, {
-    arguments: ["headless"],
+    arguments: ["--headless"],
 });
 console.log("Started Chroma headless");
 ```
@@ -46,7 +46,7 @@ using Kameleo.LocalApiClient.Model;
 
 await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings
 {
-    Arguments = ["headless"]
+    Arguments = ["--headless"]
 });
 Console.WriteLine("Started Chroma headless");
 ```

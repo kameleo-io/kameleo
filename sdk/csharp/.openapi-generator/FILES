@@ -64,6 +64,9 @@ src/Kameleo.LocalApiClient/Model/ProfileResponse.cs
 src/Kameleo.LocalApiClient/Model/ProfileStorageLocation.cs
 src/Kameleo.LocalApiClient/Model/ProxyChoice.cs
 src/Kameleo.LocalApiClient/Model/ProxyConnectionType.cs
+src/Kameleo.LocalApiClient/Model/ProxyTestResultStatus.cs
+src/Kameleo.LocalApiClient/Model/ProxyTestStepResponse.cs
+src/Kameleo.LocalApiClient/Model/ProxyValidationStep.cs
 src/Kameleo.LocalApiClient/Model/QuotaStatistics.cs
 src/Kameleo.LocalApiClient/Model/RunningProfiles.cs
 src/Kameleo.LocalApiClient/Model/RunningProfilesStatistics.cs
@@ -75,6 +78,8 @@ src/Kameleo.LocalApiClient/Model/ShareAccessRequest.cs
 src/Kameleo.LocalApiClient/Model/ShareGroupRequest.cs
 src/Kameleo.LocalApiClient/Model/SharingOptionsResponse.cs
 src/Kameleo.LocalApiClient/Model/StatusResponse.cs
+src/Kameleo.LocalApiClient/Model/TestProxyRequest.cs
+src/Kameleo.LocalApiClient/Model/TestProxyResponse.cs
 src/Kameleo.LocalApiClient/Model/TimezoneChoice.cs
 src/Kameleo.LocalApiClient/Model/TimezoneSpoofingType.cs
 src/Kameleo.LocalApiClient/Model/UpdateFolderRequest.cs

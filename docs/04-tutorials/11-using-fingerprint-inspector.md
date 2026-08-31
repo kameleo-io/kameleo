@@ -8,6 +8,8 @@ permalink: /tutorials/using-fingerprint-inspector
 
 Fingerprint Inspector helps you reverse engineer how a site fingerprints a profile's browser, by showing you which APIs it calls - for example reading canvas or WebGL output, audio data, or navigator properties. It works by capturing these calls inside the profile's browser and streaming them to a dedicated panel in DevTools, so you can validate that your masking setup behaves as expected or debug why a site treats a profile as suspicious. In this tutorial, you'll enable Fingerprint Inspector on a profile and read its live events in DevTools.
 
+https://www.youtube.com/watch?v=IKGEG9Tj2WU
+
 ## Prerequisites
 
 - Completion of the [Quickstart](../01-getting-started/02-quickstart.md) guide
