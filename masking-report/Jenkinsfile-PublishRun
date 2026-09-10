@@ -1,11 +1,9 @@
-String[] videoPaths = []
-
 def runCommand(String cmd) {
     isUnix() ? sh(cmd) : powershell(cmd)
 }
 
 pipeline {
-    agent any
+    agent windows
     options {
         disableConcurrentBuilds()
         timeout(time: 20, unit: 'MINUTES')
@@ -15,6 +13,9 @@ pipeline {
     }
     parameters {
         string(name: 'runIdOverride', defaultValue: '', description: 'Optional CI job number to publish instead of the latest run')
+        booleanParam(name: 'updateWebflowCms', defaultValue: true, description: 'Update the Webflow CMS with the run results')
+        booleanParam(name: 'sendDiscordMessage', defaultValue: true, description: 'Send the combined masking status report to Discord')
+        choice(name: 'channel', choices: ['internal', 'public'], description: 'Discord channel to send the message to (used only if sendDiscordMessage is checked)')
     }
 
     stages {
@@ -22,6 +23,11 @@ pipeline {
             options { timeout(time: 5, unit: 'MINUTES') }
             steps {
                 runCommand 'npm ci'
+                script {
+                    if (params.sendDiscordMessage) {
+                        runCommand 'npx playwright install chromium'
+                    }
+                }
             }
         }
 
@@ -31,8 +37,16 @@ pipeline {
                     string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
                     string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
+                    string(credentialsId: 'discord-bot-token', variable: 'DISCORD_BOT_TOKEN'),
+                    string(credentialsId: 'discord-channel-id-internal', variable: 'DISCORD_CHANNEL_ID_INTERNAL'),
+                    string(credentialsId: 'discord-channel-id-public', variable: 'DISCORD_CHANNEL_ID_PUBLIC'),
                 ]) {
-                    withEnv(["RUN_ID_OVERRIDE=${params.runIdOverride}"]) {
+                    withEnv([
+                        "RUN_ID_OVERRIDE=${params.runIdOverride}",
+                        "UPDATE_WEBFLOW_CMS=${params.updateWebflowCms}",
+                        "SEND_DISCORD_MESSAGE=${params.sendDiscordMessage}",
+                        "DISCORD_CHANNEL=${params.channel}",
+                    ]) {
                         runCommand 'node build/publishRun.ts'
                     }
                 }
