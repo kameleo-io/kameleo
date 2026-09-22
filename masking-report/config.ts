@@ -61,6 +61,26 @@ export const artifactory = {
     },
 };
 
+// Cloudflare R2 (S3-compatible object storage for published masking report videos)
+export const r2 = {
+    get accountId(): string {
+        return env("R2_ACCOUNT_ID");
+    },
+    get bucket(): string {
+        return env("R2_BUCKET");
+    },
+    get accessKeyId(): string {
+        return env("R2_ACCESS_KEY_ID");
+    },
+    get secretAccessKey(): string {
+        return env("R2_SECRET_ACCESS_KEY");
+    },
+    /** public base URL of the bucket (custom domain or r2.dev URL), used to build video links */
+    get publicBaseUrl(): string {
+        return env("R2_PUBLIC_BASE_URL");
+    },
+};
+
 // Playwright runtime settings
 export const playwright = {
     get retries(): number {

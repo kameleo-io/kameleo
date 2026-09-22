@@ -36,10 +36,13 @@ pipeline {
                 withCredentials([
                     string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
-                    string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN'),
                     string(credentialsId: 'discord-bot-token', variable: 'DISCORD_BOT_TOKEN'),
                     string(credentialsId: 'discord-channel-id-internal', variable: 'DISCORD_CHANNEL_ID_INTERNAL'),
                     string(credentialsId: 'discord-channel-id-public', variable: 'DISCORD_CHANNEL_ID_PUBLIC'),
+                    string(credentialsId: 'r2-account-id', variable: 'R2_ACCOUNT_ID'),
+                    string(credentialsId: 'r2-bucket', variable: 'R2_BUCKET'),
+                    usernamePassword(credentialsId: 'r2-credentials', usernameVariable: 'R2_ACCESS_KEY_ID', passwordVariable: 'R2_SECRET_ACCESS_KEY'),
+                    string(credentialsId: 'r2-public-base-url', variable: 'R2_PUBLIC_BASE_URL'),
                 ]) {
                     withEnv([
                         "RUN_ID_OVERRIDE=${params.runIdOverride}",
