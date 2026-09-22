@@ -20,6 +20,7 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1136.0",
     "@eslint/js": "^9.39.5",
     "@getbrevo/brevo": "^4.0.1",
     "@octokit/rest": "^22.0.1",
