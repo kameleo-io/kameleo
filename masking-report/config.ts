@@ -61,6 +61,16 @@ export const artifactory = {
     },
 };
 
+// Webflow CMS (backs the public Masking Status Report page)
+export const webflow = {
+    get apiToken(): string {
+        return env("WEBFLOW_API_TOKEN");
+    },
+    get collectionId(): string {
+        return env("WEBFLOW_COLLECTION_ID");
+    },
+};
+
 // Cloudflare R2 (S3-compatible object storage for published masking report videos)
 export const r2 = {
     get accountId(): string {
