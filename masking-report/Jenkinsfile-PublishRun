@@ -13,9 +13,11 @@ pipeline {
     }
     parameters {
         string(name: 'runIdOverride', defaultValue: '', description: 'Optional CI job number to publish instead of the latest run')
+        string(name: 'previousRunIdOverride', defaultValue: '', description: 'Optional CI job number to compare against instead of the automatically detected previous run')
         booleanParam(name: 'updateWebflowCms', defaultValue: true, description: 'Update the Webflow CMS with the run results')
         booleanParam(name: 'sendDiscordMessage', defaultValue: true, description: 'Send the combined masking status report to Discord')
         choice(name: 'channel', choices: ['internal', 'public'], description: 'Discord channel to send the message to (used only if sendDiscordMessage is checked)')
+        booleanParam(name: 'updateVideos', defaultValue: true, description: 'Publish the run videos to Cloudflare R2')
     }
 
     stages {
@@ -39,6 +41,8 @@ pipeline {
                     string(credentialsId: 'discord-bot-token', variable: 'DISCORD_BOT_TOKEN'),
                     string(credentialsId: 'discord-channel-id-internal', variable: 'DISCORD_CHANNEL_ID_INTERNAL'),
                     string(credentialsId: 'discord-channel-id-public', variable: 'DISCORD_CHANNEL_ID_PUBLIC'),
+                    string(credentialsId: 'webflow-api-token', variable: 'WEBFLOW_API_TOKEN'),
+                    string(credentialsId: 'webflow-collection-id', variable: 'WEBFLOW_COLLECTION_ID'),
                     string(credentialsId: 'r2-account-id', variable: 'R2_ACCOUNT_ID'),
                     string(credentialsId: 'r2-bucket', variable: 'R2_BUCKET'),
                     usernamePassword(credentialsId: 'r2-credentials', usernameVariable: 'R2_ACCESS_KEY_ID', passwordVariable: 'R2_SECRET_ACCESS_KEY'),
@@ -46,9 +50,11 @@ pipeline {
                 ]) {
                     withEnv([
                         "RUN_ID_OVERRIDE=${params.runIdOverride}",
+                        "PREVIOUS_RUN_ID_OVERRIDE=${params.previousRunIdOverride}",
                         "UPDATE_WEBFLOW_CMS=${params.updateWebflowCms}",
                         "SEND_DISCORD_MESSAGE=${params.sendDiscordMessage}",
                         "DISCORD_CHANNEL=${params.channel}",
+                        "UPDATE_VIDEOS=${params.updateVideos}",
                     ]) {
                         runCommand 'node build/publishRun.ts'
                     }
