@@ -4,7 +4,7 @@ test.describe(() => {
     test.use({
         profileOptions: { proxy: { value: "none" } },
     });
-    test("Google", async ({ page }) => {
+    test("Google Search", async ({ page }) => {
         await page.goto("https://google.com/?hl=en");
 
         // Dismiss consent popup if present

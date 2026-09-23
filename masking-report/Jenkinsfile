@@ -3,12 +3,8 @@ def runCommand(String cmd) {
 }
 
 pipeline {
-    agent {
-        label "ubuntu"
-    }
-    options {
-        disableConcurrentBuilds()
-    }
+    agent { label 'ubuntu' }
+    options { disableConcurrentBuilds() }
     stages {
         stage('Init Repository') {
             options { timeout(time: 5, unit: 'MINUTES') }
