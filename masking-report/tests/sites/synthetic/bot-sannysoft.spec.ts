@@ -1,7 +1,7 @@
 import { expect, test } from "../../../utils/browserFixture.ts";
 import { scrollDown } from "../../../utils/pageUtils.ts";
 
-test("Sannysoft", async ({ page, browserProduct }) => {
+test("SannySoft - Antibot", async ({ page, browserProduct }) => {
     await page.goto("https://bot.sannysoft.com/");
     await page.waitForTimeout(5_000); // for video presentation purposes
 
