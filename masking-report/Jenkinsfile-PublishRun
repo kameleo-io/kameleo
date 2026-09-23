@@ -3,7 +3,7 @@ def runCommand(String cmd) {
 }
 
 pipeline {
-    agent windows
+    agent { label 'windows' }
     options {
         disableConcurrentBuilds()
         timeout(time: 20, unit: 'MINUTES')

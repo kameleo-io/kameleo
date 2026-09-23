@@ -1,7 +1,7 @@
 import { expect, type Page, test } from "../../../utils/browserFixture.ts";
 import { scrollDown } from "../../../utils/pageUtils.ts";
 
-test("Pixelscan", async ({ page }) => {
+test("Pixelscan Fingerprint Scan", async ({ page }) => {
     await page.goto("https://pixelscan.net/");
 
     const browserIntegritySelector = "pxlscn-browser-integrity";
