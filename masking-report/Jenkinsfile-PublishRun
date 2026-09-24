@@ -3,7 +3,9 @@ def runCommand(String cmd) {
 }
 
 pipeline {
-    agent { label 'windows' }
+    // restrict to a single OS for consistency
+    // masking-runner agents are also guaranteed to have Chrome installed, which spares us a Playwright Chromium install
+    agent { label 'windows && masking-runner' }
     options {
         disableConcurrentBuilds()
         timeout(time: 20, unit: 'MINUTES')
@@ -25,11 +27,6 @@ pipeline {
             options { timeout(time: 5, unit: 'MINUTES') }
             steps {
                 runCommand 'npm ci'
-                script {
-                    if (params.sendDiscordMessage) {
-                        runCommand 'npx playwright install chromium'
-                    }
-                }
             }
         }
 
