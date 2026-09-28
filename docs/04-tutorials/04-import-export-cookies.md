@@ -39,6 +39,7 @@ for url in ['https://www.nytimes.com', 'https://whoer.net', 'https://www.youtube
     driver.get(url)
     time.sleep(5)
 
+driver.quit()
 client.profile.stop_profile(profile.id)
 ```
 
@@ -60,6 +61,7 @@ for (const url of ["https://www.nytimes.com", "https://whoer.net", "https://www.
     await driver.sleep(5_000);
 }
 
+await driver.quit();
 await client.profile.stopProfile(profile.id);
 ```
 
@@ -79,7 +81,7 @@ var profile = await client.Profile.CreateProfileAsync(new CreateProfileRequest(f
 var wdUri = new Uri("http://localhost:5050/webdriver");
 var opts = new FirefoxOptions();
 opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var driver = new RemoteWebDriver(wdUri, opts);
+using var driver = new RemoteWebDriver(wdUri, opts);
 
 foreach (var url in new[] { "https://www.nytimes.com", "https://whoer.net", "https://www.youtube.com" }) {
     await driver.Navigate().GoToUrlAsync(url); await Task.Delay(5_000);

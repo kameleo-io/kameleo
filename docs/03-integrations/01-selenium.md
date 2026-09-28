@@ -8,10 +8,10 @@ permalink: /integrations/selenium
 
 Integrate Selenium WebDriver with Kameleo to automate browsing using realistic, spoofed browser fingerprints.
 
-You can start a profile in two ways:
+First create a profile, then choose how to start it:
 
-1. **Explicit start**: Create the profile via the Local API and call `startProfile`. Use this when you need custom command-line switches, proxy settings, flags, or advanced options.
-2. **Auto-start**: Skip `startProfile`. When Selenium connects with the `kameleo:profileId` capability, Kameleo automatically starts the profile using defaults.
+1. **Auto-start**: Skip `startProfile`. When Selenium connects with the `kameleo:profileId` capability, Kameleo automatically starts the profile using defaults.
+2. **Explicit start**: Call `startProfile` before connecting. Use this when you need custom command-line switches, flags, or advanced options.
 
 After either approach, you control the browser with normal Selenium commands, then clean up (stop / export / delete) the profile.
 
@@ -20,43 +20,34 @@ After either approach, you control the browser with normal Selenium commands, th
 - Completion of the [Quickstart](../01-getting-started/02-quickstart.md) guide
 - A Selenium-capable environment (Python, JavaScript, or C# with [Selenium libraries](https://www.selenium.dev/) installed)
 
-## Option 1: Explicitly start the profile (customizable)
-
-Use this when you must set advanced startup parameters. Example below show a start with some custom settings.
-
-### 1. Create a profile
+## Create a profile
 
 +++ Python
 
 ```python
 from kameleo.local_api_client import KameleoLocalApiClient
 from kameleo.local_api_client.models import CreateProfileRequest
+from selenium import webdriver
 
 client = KameleoLocalApiClient(endpoint='http://localhost:5050')
 client.verify_engine_ready()
-
-fingerprints = client.fingerprint.search_fingerprints(
-    device_type='desktop',
-    browser_product='chrome'
-)
-
-create_req = CreateProfileRequest(
-    fingerprint_id=fingerprints[0].id,
-    name='selenium explicit start example'
-)
-profile = client.profile.create_profile(create_req)
+fps = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='chrome')
+profile = client.profile.create_profile(CreateProfileRequest(
+    fingerprint_id=fps[0].id,
+    name='selenium example'
+))
 ```
 
 +++ JavaScript
 
 ```js
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
+import { Builder } from "selenium-webdriver";
 
 const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
 await client.verifyEngineReady();
-const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
-const createProfileRequest = { fingerprintId: fingerprints[0].id, name: "selenium explicit start example" };
-const profile = await client.profile.createProfile(createProfileRequest);
+const fps = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
+const profile = await client.profile.createProfile({ fingerprintId: fps[0].id, name: "selenium example" });
 ```
 
 +++ C#
@@ -64,17 +55,69 @@ const profile = await client.profile.createProfile(createProfileRequest);
 ```csharp
 using Kameleo.LocalApiClient;
 using Kameleo.LocalApiClient.Model;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 
 var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
 await client.VerifyEngineReadyAsync();
-var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
-var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id) { Name = "selenium explicit start example" };
-var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
+var fps = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
+var profile = await client.Profile.CreateProfileAsync(new CreateProfileRequest(fps[0].Id) { Name = "selenium example" });
 ```
 
 +++
 
-### 2. Start the profile (customization point)
+## Option 1: Auto-start the profile (simpler)
+
+Skip the explicit start call. Kameleo starts the profile automatically on the first WebDriver connection. Use this for quick scripts where default startup behavior is enough.
+
+### Connect Selenium WebDriver
+
+Point Selenium to `http://localhost:{port}/webdriver` and supply `kameleo:profileId`.
+
++++ Python
+
+```python
+from selenium import webdriver
+
+options = webdriver.ChromeOptions()
+options.set_capability('kameleo:profileId', profile.id)
+driver = webdriver.Remote(
+    command_executor='http://localhost:5050/webdriver',
+    options=options
+)
+```
+
++++ JavaScript
+
+```js
+import { Builder } from "selenium-webdriver";
+
+const driver = await new Builder()
+    .usingServer("http://localhost:5050/webdriver")
+    .withCapabilities({ "kameleo:profileId": profile.id, browserName: "Kameleo" })
+    .build();
+```
+
++++ C#
+
+```csharp
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
+
+var remoteUri = new Uri("http://localhost:5050/webdriver");
+var chromeOptions = new ChromeOptions();
+chromeOptions.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
+var driver = new RemoteWebDriver(remoteUri, chromeOptions);
+driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+```
+
++++
+
+## Option 2: Explicitly start the profile (customizable)
+
+Use this when you must set advanced startup parameters. The example below shows a start with some custom settings.
+
+### Start the profile (customization point)
 
 Below are three common customization patterns. Pick one (or combine arguments + preferences) before connecting Selenium. The browser must be stopped and restarted to apply a different set.
 
@@ -128,7 +171,7 @@ await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings(
 
 +++
 
-### 3. Connect Selenium WebDriver
+### Connect Selenium WebDriver
 
 Point Selenium to `http://localhost:{port}/webdriver` and supply `kameleo:profileId`.
 
@@ -171,7 +214,7 @@ driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
 +++
 
-### 4. Run Selenium commands
+## Run Selenium commands
 
 +++ Python
 
@@ -193,93 +236,7 @@ driver.Navigate().GoToUrl("https://google.com");
 
 +++
 
-## Option 2: Auto-start the profile (simpler)
-
-Skip the explicit start call. Kameleo starts the profile automatically on the first WebDriver connection. Use this for quick scripts where default startup behavior is enough.
-
-### 1. Create the profile (same as before, no start call later)
-
-+++ Python
-
-```python
-from kameleo.local_api_client import KameleoLocalApiClient
-from kameleo.local_api_client.models import CreateProfileRequest
-from selenium import webdriver
-
-client = KameleoLocalApiClient(endpoint='http://localhost:5050')
-client.verify_engine_ready()
-fps = client.fingerprint.search_fingerprints(device_type='desktop', browser_product='chrome')
-profile = client.profile.create_profile(CreateProfileRequest(
-    fingerprint_id=fps[0].id,
-    name='selenium auto-start example'
-))
-```
-
-+++ JavaScript
-
-```js
-import { KameleoLocalApiClient } from "@kameleo/local-api-client";
-import { Builder } from "selenium-webdriver";
-
-const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
-await client.verifyEngineReady();
-const fps = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
-const profile = await client.profile.createProfile({ fingerprintId: fps[0].id, name: "selenium auto-start example" });
-```
-
-+++ C#
-
-```csharp
-using Kameleo.LocalApiClient;
-using Kameleo.LocalApiClient.Model;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
-
-var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
-await client.VerifyEngineReadyAsync();
-var fps = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
-var profile = await client.Profile.CreateProfileAsync(new CreateProfileRequest(fps[0].Id) { Name = "selenium auto-start example" });
-```
-
-+++
-
-### 2. Connect (auto-start happens here)
-
-+++ Python
-
-```python
-options = webdriver.ChromeOptions()
-options.set_capability('kameleo:profileId', profile.id)
-driver = webdriver.Remote(
-    command_executor='http://localhost:5050/webdriver',
-    options=options
-)
-driver.get('https://wikipedia.org')
-```
-
-+++ JavaScript
-
-```js
-const driver = await new Builder()
-    .usingServer("http://localhost:5050/webdriver")
-    .withCapabilities({ "kameleo:profileId": profile.id, browserName: "Kameleo" })
-    .build();
-await driver.get("https://wikipedia.org");
-```
-
-+++ C#
-
-```csharp
-var remoteUri = new Uri("http://localhost:5050/webdriver");
-var chromeOptions = new ChromeOptions();
-chromeOptions.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var driver = new RemoteWebDriver(remoteUri, chromeOptions);
-driver.Navigate().GoToUrl("https://wikipedia.org");
-```
-
-+++
-
-## Cleanup (stop, export, delete)
+## Finish the session
 
 Always stop the profile to persist its state. Optionally export it for backup or delete it to reclaim space.
 
@@ -291,6 +248,7 @@ Always stop the profile to persist its state. Optionally export it for backup or
 import os
 from kameleo.local_api_client.models import ExportProfileRequest
 
+driver.quit()
 client.profile.stop_profile(profile.id)
 
 export_path = f'{os.path.dirname(os.path.realpath(__file__))}/test.kameleo'
@@ -302,6 +260,7 @@ client.profile.delete_profile(profile.id)
 +++ JavaScript
 
 ```js
+await driver.quit();
 await client.profile.stopProfile(profile.id);
 
 await client.profile.exportProfile(profile.id, { body: { path: `${import.meta.dirname}/test.kameleo` } });

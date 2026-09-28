@@ -34,68 +34,7 @@ The Windows variant is built from the _Windows Server Core LTSC 2022_ base image
 
 +++
 
-## Architecture
-
-```mermaid
-flowchart LR
-  classDef cloud fill:#eef6ff,stroke:#88a,stroke-dasharray:5 5;
-
-  SERVICES["Kameleo Cloud Services"]:::cloud
-  SCRIPT["Your automation scripts"]
-  BROWSER["Your browser"]
-
-  SERVICES <--> ENGINE
-
-  subgraph CONTAINER["Docker container"]
-    direction LR
-    GUI["Web UI"]
-    ENGINE["Local Engine instance"]
-
-    subgraph P1["Chroma instance"]
-      direction TB
-      CHROME(("Profile #1 data"))
-    end
-
-    subgraph P2["Junglefox instance"]
-      direction TB
-      FIREFOX(("Profile #2 data"))
-    end
-
-    GUI --> ENGINE
-    ENGINE --> P1
-    ENGINE --> P2
-  end
-
-  BROWSER <--> GUI
-  SCRIPT <--> ENGINE
-```
-
-## Container layout & persistence
-
-Kameleo runs under a non-administrative user inside the image. This improves isolation and reduces the surface for privilege escalation.
-
-| Property           | Linux                          | Windows                               |
-| ------------------ | ------------------------------ | ------------------------------------- |
-| **Runtime user**   | `appuser` (UID 1001, non-root) | `ContainerUser` (built-in, non-admin) |
-| **Data directory** | `/data`                        | `C:\data`                             |
-
-Mount the data directory as a named Docker volume to persist state (profiles, kernels) across container recreations.
-
-!!!tip Use named volumes, not bind mounts
-Always use a named volume (e.g. `-v kameleo-data:/data`) rather than a host bind mount (e.g. `-v ~/kameleo-data:/data`). The container runs as a non-root user (UID 1001 on Linux) and will be denied access to a host directory owned by a different user, causing an immediate startup failure.
-
-If you don't mount the volume at all, every new container starts empty. Kameleo has to download all kernels again, which is slower and uses more bandwidth. Kernel downloads are rate limited, so starting many containers without a mounted volume can hit the limit and make startup fail.
-!!!
-
-## Configuration methods
-
-You can configure Kameleo inside the container using the same precedence described in [Configure](../01-getting-started/03-configure.md). In container workflows you typically rely on environment variables or command-line flags appended to `docker run`.
-
-Accepted environment variable names mirror the Engine keys with uppercase; see the full list and defaults in [Configuration options](../05-reference/06-configuration-options.md).
-
-Mandatory credential must always be provided; without it the app will not authenticate and container startup will fail.
-
-## Steps
+## Run Kameleo in Docker
 
 ### 1. Run the container
 
@@ -121,7 +60,7 @@ docker run --name kameleo-app -p 5050:5050 -e PAT="your-pat" -v kameleo-data:C:\
 
 +++
 
-### 2. Verify the service
+### 2. Verify the container
 
 Open in a browser on the host and expect the Swagger UI to load:
 
@@ -129,11 +68,36 @@ Open in a browser on the host and expect the Swagger UI to load:
 http://localhost:5050/swagger
 ```
 
-### 3. Start your first profile
+The published image already defines a `HEALTHCHECK` that periodically queries the `/general/healthcheck` endpoint and marks the container as `healthy` once Kameleo is responsive. Nothing extra is required; the health status is visible via the `State` column:
+
+```bash
+docker ps
+```
+
+If you build a custom derivative image (e.g., adding tools) and replace the base `CMD`, ensure you keep or re-add a healthcheck so orchestrators wait for readiness.
+
+### 3. Connect to the Local API
 
 The container exposes the same Local API as the desktop app. Follow the [Quickstart guide](../01-getting-started/02-quickstart.md) to install an SDK, create a client pointed at `http://localhost:5050`, and start your first automated profile.
 
-## Example with docker-compose
+## Persist container data
+
+Kameleo runs under a non-administrative user inside the image. This improves isolation and reduces the surface for privilege escalation.
+
+| Property           | Linux                          | Windows                               |
+| ------------------ | ------------------------------ | ------------------------------------- |
+| **Runtime user**   | `appuser` (UID 1001, non-root) | `ContainerUser` (built-in, non-admin) |
+| **Data directory** | `/data`                        | `C:\data`                             |
+
+Mount the data directory as a named Docker volume to persist state (profiles, kernels) across container recreations.
+
+!!!tip Use named volumes, not bind mounts
+Always use a named volume (e.g. `-v kameleo-data:/data`) rather than a host bind mount (e.g. `-v ~/kameleo-data:/data`). The container runs as a non-root user (UID 1001 on Linux) and will be denied access to a host directory owned by a different user, causing an immediate startup failure.
+
+If you don't mount the volume at all, every new container starts empty. Kameleo has to download all kernels again, which is slower and uses more bandwidth. Kernel downloads are rate limited, so starting many containers without a mounted volume can hit the limit and make startup fail.
+!!!
+
+## Run with Docker Compose
 
 Use `docker-compose.yml` for repeatable infrastructure or CI pipelines:
 
@@ -175,17 +139,49 @@ volumes:
 
 +++
 
-## Health checks
+## Configure the container
 
-The published image already defines a `HEALTHCHECK` that periodically queries the `/general/healthcheck` endpoint and marks the container as `healthy` once Kameleo is responsive. Nothing extra is required; the health status is visible via the `State` column:
+You can configure Kameleo inside the container using the same precedence described in [Configure](../01-getting-started/03-configure.md). In container workflows you typically rely on environment variables or command-line flags appended to `docker run`. Accepted environment variable names mirror the Engine keys with uppercase; see the full list and defaults in [Configuration options](../05-reference/06-configuration-options.md).
 
-```bash
-docker ps
+## Container architecture
+
+```mermaid
+flowchart LR
+    classDef cloud fill:#eef6ff,stroke:#88a,stroke-dasharray:5 5;
+
+    SERVICES["Kameleo Cloud Services"]:::cloud
+    SCRIPT["Your automation scripts"]
+    BROWSER["Your browser"]
+
+    SERVICES <--> ENGINE
+
+    subgraph CONTAINER["Docker container"]
+        direction LR
+        GUI["Web UI"]
+        ENGINE["Local Engine instance"]
+
+        subgraph P1["Chroma instance"]
+            direction TB
+            CHROME(("Profile #1 data"))
+        end
+
+        subgraph P2["Junglefox instance"]
+            direction TB
+            FIREFOX(("Profile #2 data"))
+        end
+
+        GUI --> ENGINE
+        ENGINE --> P1
+        ENGINE --> P2
+    end
+
+    BROWSER <--> GUI
+    SCRIPT <--> ENGINE
 ```
 
-If you build a custom derivative image (e.g., adding tools) and replace the base `CMD`, ensure you keep or re-add a healthcheck so orchestrators wait for readiness.
+## Additonal features
 
-## Web UI (only in Linux-based container)
+### Open the Web UI
 
 The Linux container includes the Kameleo GUI, a browser-based interface served on port **80**. Expose that port to open it on your host:
 
@@ -209,9 +205,9 @@ http://localhost:80
 The GUI served from a container has reduced functionality compared to the desktop application. Features that depend on direct filesystem access are not available or behave differently. Use the GUI for basic profile management and monitoring. For automation, use the [SDK](../05-reference/04-api-reference.md) directly.
 !!!
 
-## VNC viewer (only in Linux-based container)
+### Access the display through VNC
 
-The Kameleo GUI in the Linux container ships a built-in browser-based VNC viewer that lets you watch or interact with the virtual display where browsers run. It is accessible in any modern browser — no additional software is required.
+The Kameleo GUI in the Linux container ships a built-in browser-based VNC viewer that lets you watch or interact with the virtual display where browsers run. It is accessible in any modern browser, no additional software is required.
 
 The VNC server is disabled by default to keep resource utilization low. The VNC server starts automatically when opened from the GUI, or you can make it start by setting the VNCENABLE and VNCPASSWORD environment variables. This is necessary if you prefer a native VNC client (for example, RealVNC Viewer or TigerVNC), and you also need to expose port **5900** that carries the raw RFB protocol:
 
@@ -231,27 +227,11 @@ docker run --platform linux/amd64 \
 Port 5900 gives full control of the virtual display. Do not expose it on a public interface without a network-level access control layer such as a reverse proxy with authentication.
 !!!
 
-## AWS ECS Support
-
-Kameleo Docker containers are compatible with **AWS ECS (Elastic Container Service)**. The supported capacity provider depends on the platform:
-
-| Platform | Capacity provider | Notes                                                    |
-| -------- | ----------------- | -------------------------------------------------------- |
-| Windows  | EC2               | Fargate does not support Windows containers with volumes |
-| Linux    | EC2 or Fargate    | Fargate fully supports Linux containers                  |
-
-When deploying to AWS ECS:
-
-- For Windows, use EC2 capacity providers with Windows Server 2022-compatible instances.
-- For Linux, EC2 and Fargate both work; Fargate is recommended for simpler infrastructure management.
-- Configure appropriate instance types with sufficient resources for your Kameleo workload.
-- Mount persistent storage using named volumes to preserve profile data across container restarts.
-
-## GPU support on Linux
+### Enable GPU acceleration
 
 By default Kameleo uses software rendering inside the Linux container. If you mount the host GPU into the container, Kameleo automatically detects it and enables hardware-accelerated rendering in the browser. This can improve performance on GPU-intensive pages such as WebGL or canvas-heavy sites.
 
-### Intel / AMD
++++ Intel / AMD
 
 Pass the DRI device directory and add the host device group IDs so the container user can access them:
 
@@ -267,7 +247,7 @@ docker run --platform linux/amd64 \
     kameleo/kameleo-app:latest
 ```
 
-### NVIDIA
++++ NVIDIA
 
 Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) on the host, then pass `--gpus all`:
 
@@ -281,9 +261,27 @@ docker run --platform linux/amd64 \
     kameleo/kameleo-app:latest
 ```
 
++++
+
 !!!info No GPU? No problem
 When no GPU device is mounted, the container falls back to software rendering automatically. No configuration change is needed.
 !!!
+
+### Deploy to AWS ECS
+
+Kameleo Docker containers are compatible with **AWS ECS (Elastic Container Service)**. The supported capacity provider depends on the platform:
+
+| Platform | Capacity provider | Notes                                                    |
+| -------- | ----------------- | -------------------------------------------------------- |
+| Windows  | EC2               | Fargate does not support Windows containers with volumes |
+| Linux    | EC2 or Fargate    | Fargate fully supports Linux containers                  |
+
+When deploying to AWS ECS:
+
+- For Windows, use EC2 capacity providers with Windows Server 2022-compatible instances.
+- For Linux, EC2 and Fargate both work; Fargate is recommended for simpler infrastructure management.
+- Configure appropriate instance types with sufficient resources for your Kameleo workload.
+- Mount persistent storage using named volumes to preserve profile data across container restarts.
 
 ## Troubleshooting
 
