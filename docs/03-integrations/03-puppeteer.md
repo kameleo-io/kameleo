@@ -8,10 +8,10 @@ permalink: /integrations/puppeteer
 
 Integrate Puppeteer with Kameleo to automate browsing using realistic, spoofed browser fingerprints (Chroma kernel only).
 
-You can start a profile in two ways:
+First create a profile, then choose how to start it:
 
-1. **Explicit start**: Create the profile via the Local API and call `startProfile`. Use this when you need custom command-line switches, proxy settings, flags, or advanced options.
-2. **Auto-start**: Skip `startProfile`. When Puppeteer connects with the WebSocket endpoint, Kameleo automatically starts the profile using defaults.
+1. **Auto-start**: Skip `startProfile`. When Puppeteer connects with the WebSocket endpoint, Kameleo automatically starts the profile using defaults.
+2. **Explicit start**: Call `startProfile` before connecting. Use this when you need custom command-line switches, flags, or advanced options.
 
 After either approach, you control the browser with normal Puppeteer commands, then clean up (stop / export / delete) the profile.
 
@@ -26,11 +26,7 @@ After either approach, you control the browser with normal Puppeteer commands, t
 - Do not add third-party stealth / fingerprint patches (puppeteer-extra-plugin-stealth, Canvas defenders, etc.). They can reduce masking quality.
 - Use one browser context per profile. Create multiple Kameleo profiles instead of multiple contexts.
 
-## Option 1: Explicitly start the profile (customizable)
-
-Use this when you must set advanced startup parameters. Example below show a start with some custom settings.
-
-### 1. Create a profile
+## Create a profile
 
 +++ Python
 
@@ -48,7 +44,7 @@ fingerprints = client.fingerprint.search_fingerprints(
 
 create_req = CreateProfileRequest(
     fingerprint_id=fingerprints[0].id,
-    name='puppeteer explicit start example'
+    name='puppeteer example'
 )
 profile = client.profile.create_profile(create_req)
 ```
@@ -61,7 +57,7 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
 await client.verifyEngineReady();
 const fingerprints = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
-const createProfileRequest = { fingerprintId: fingerprints[0].id, name: "puppeteer explicit start example" };
+const createProfileRequest = { fingerprintId: fingerprints[0].id, name: "puppeteer example" };
 const profile = await client.profile.createProfile(createProfileRequest);
 ```
 
@@ -74,13 +70,61 @@ using Kameleo.LocalApiClient.Model;
 var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
 await client.VerifyEngineReadyAsync();
 var fingerprints = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
-var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id) { Name = "puppeteer explicit start example" };
+var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id) { Name = "puppeteer example" };
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 ```
 
 +++
 
-### 2. Start the profile (customization point)
+## Option 1: Auto-start the profile (simpler)
+
+Skip the explicit start call. Kameleo starts the profile automatically on the first Puppeteer connection. Use this for quick scripts where default startup behavior is enough.
+
+### Connect Puppeteer (Chroma only)
+
+Use the WebSocket URL `ws://localhost:{port}/puppeteer/{profileId}` to connect.
+
++++ Python
+
+```python
+from pyppeteer import connect
+
+browser_ws_endpoint = f'ws://localhost:5050/puppeteer/{profile.id}'
+browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
+```
+
++++ JavaScript
+
+```js
+import puppeteer from "puppeteer";
+
+const browserWSEndpoint = `ws://localhost:5050/puppeteer/${profile.id}`;
+const browser = await puppeteer.connect({
+    browserWSEndpoint,
+    defaultViewport: null,
+});
+```
+
++++ C#
+
+```csharp
+using PuppeteerSharp;
+
+var browserWsEndpoint = $"ws://localhost:5050/puppeteer/{profile.Id}";
+var browser = await Puppeteer.ConnectAsync(new ConnectOptions
+{
+  BrowserWSEndpoint = browserWsEndpoint,
+  DefaultViewport = null
+});
+```
+
++++
+
+## Option 2: Explicitly start the profile (customizable)
+
+Use this when you must set advanced startup parameters. The example below shows a start with some custom settings.
+
+### Start the profile (customization point)
 
 Below are three common customization patterns. Pick one (or combine arguments + preferences) before connecting Puppeteer. The browser must be stopped and restarted to apply a different set.
 
@@ -134,47 +178,9 @@ await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings(
 
 +++
 
-### 3. Connect Puppeteer (Chroma only)
+After the profile starts, connect using the [same WebSocket steps as Option 1](#connect-puppeteer-chroma-only).
 
-Use the WebSocket URL `ws://localhost:{port}/puppeteer/{profileId}` to connect.
-
-+++ Python
-
-```python
-from pyppeteer import connect
-
-browser_ws_endpoint = f'ws://localhost:5050/puppeteer/{profile.id}'
-browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
-```
-
-+++ JavaScript
-
-```js
-import puppeteer from "puppeteer";
-
-const browserWSEndpoint = `ws://localhost:5050/puppeteer/${profile.id}`;
-const browser = await puppeteer.connect({
-    browserWSEndpoint,
-    defaultViewport: null,
-});
-```
-
-+++ C#
-
-```csharp
-using PuppeteerSharp;
-
-var browserWsEndpoint = $"ws://localhost:5050/puppeteer/{profile.Id}";
-var browser = await Puppeteer.ConnectAsync(new ConnectOptions
-{
-  BrowserWSEndpoint = browserWsEndpoint,
-  DefaultViewport = null
-});
-```
-
-+++
-
-### 4. Run Puppeteer commands
+## Run Puppeteer commands
 
 +++ Python
 
@@ -199,80 +205,13 @@ await page.GoToAsync("https://google.com");
 
 +++
 
-## Option 2: Auto-start the profile (simpler)
-
-Skip the explicit start call. Kameleo starts the profile automatically on the first Puppeteer connection. Use this for quick scripts where default startup behavior is enough.
-
-### 1. Create the profile (same as before, no start call later)
-
-+++ Python
-
-```python
-from kameleo.local_api_client import KameleoLocalApiClient
-from kameleo.local_api_client.models import CreateProfileRequest
-from pyppeteer import connect
-import asyncio
-
-async def main():
-    client = KameleoLocalApiClient(endpoint='http://localhost:5050')
-    client.verify_engine_ready()
-    fps = client.fingerprint.search_fingerprints(
-        device_type='desktop',
-        browser_product='chrome',
-    )
-    profile = client.profile.create_profile(CreateProfileRequest(
-        fingerprint_id=fps[0].id,
-        name='puppeteer auto-start example'
-    ))
-
-    browser_ws_endpoint = f'ws://localhost:5050/puppeteer/{profile.id}'
-    browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
-    page = await browser.newPage()
-    await page.goto('https://wikipedia.org')
-
-asyncio.run(main())
-```
-
-+++ JavaScript
-
-```js
-import { KameleoLocalApiClient } from "@kameleo/local-api-client";
-import puppeteer from "puppeteer";
-
-const client = new KameleoLocalApiClient({ basePath: "http://localhost:5050" });
-await client.verifyEngineReady();
-const fps = await client.fingerprint.searchFingerprints("desktop", undefined, "chrome");
-const profile = await client.profile.createProfile({ fingerprintId: fps[0].id, name: "puppeteer auto-start example" });
-
-const browserWSEndpoint = `ws://localhost:5050/puppeteer/${profile.id}`;
-const browser = await puppeteer.connect({ browserWSEndpoint, defaultViewport: null });
-const page = await browser.newPage();
-await page.goto("https://wikipedia.org");
-```
-
-+++ C#
-
-```csharp
-using Kameleo.LocalApiClient;
-using Kameleo.LocalApiClient.Model;
-using PuppeteerSharp;
-
-var client = new KameleoLocalApiClient(new Uri("http://localhost:5050"));
-await client.VerifyEngineReadyAsync();
-var fps = await client.Fingerprint.SearchFingerprintsAsync(deviceType: "desktop", browserProduct: "chrome");
-var profile = await client.Profile.CreateProfileAsync(new CreateProfileRequest(fps[0].Id) { Name = "puppeteer auto-start example" });
-
-var browserWsEndpoint = $"ws://localhost:5050/puppeteer/{profile.Id}";
-var browser = await Puppeteer.ConnectAsync(new ConnectOptions { BrowserWSEndpoint = browserWsEndpoint, DefaultViewport = null });
-var page = await browser.NewPageAsync();
-await page.GoToAsync("https://wikipedia.org");
-```
-
-+++
-
-## Cleanup (stop, export, delete)
+## Finish the session
 
 Always stop the profile to persist its state. Optionally export it for backup or delete it to reclaim space.
+
+!!!tip Note
+Disconnect Puppeteer before stopping the profile. Disconnecting only detaches Puppeteer from the browser, so Kameleo can still shut it down cleanly.
+!!!
 
 ### Stop, export, or delete
 
@@ -282,6 +221,7 @@ Always stop the profile to persist its state. Optionally export it for backup or
 import os
 from kameleo.local_api_client.models import ExportProfileRequest
 
+await browser.disconnect()
 client.profile.stop_profile(profile.id)
 
 export_path = f'{os.path.dirname(os.path.realpath(__file__))}/test.kameleo'
@@ -293,6 +233,7 @@ client.profile.delete_profile(profile.id)
 +++ JavaScript
 
 ```js
+await browser.disconnect();
 await client.profile.stopProfile(profile.id);
 
 await client.profile.exportProfile(profile.id, { body: { path: `${import.meta.dirname}/test.kameleo` } });
@@ -305,6 +246,7 @@ await client.profile.deleteProfile(profile.id);
 ```csharp
 using Kameleo.LocalApiClient.Model;
 
+// the `await using` statement ensures the proper disposal of the connection so no `browser.Disconnect()` is needed
 await client.Profile.StopProfileAsync(profile.Id);
 
 await client.Profile.ExportProfileAsync(profile.Id, new ExportProfileRequest(Path.Combine(Environment.CurrentDirectory, "test.kameleo")));

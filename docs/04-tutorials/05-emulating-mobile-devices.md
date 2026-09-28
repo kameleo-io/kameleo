@@ -175,6 +175,7 @@ driver.find_element(By.NAME, 'search').send_keys('Chameleon', Keys.ENTER)
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'content')))
 print('Title:', driver.title)
 time.sleep(5)
+driver.quit()
 client.profile.stop_profile(profile.id)
 ```
 
@@ -193,6 +194,7 @@ await driver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
 await driver.wait(until.elementLocated(By.id("content")));
 console.log("Title:", await driver.getTitle());
 await driver.sleep(5_000);
+await driver.quit();
 await client.profile.stopProfile(profile.id);
 ```
 
@@ -207,7 +209,7 @@ using System.Threading.Tasks;
 var uri = new Uri("http://localhost:5050/webdriver");
 var chromeOpts = new ChromeOptions();
 chromeOpts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var driver = new RemoteWebDriver(uri, chromeOpts);
+using var driver = new RemoteWebDriver(uri, chromeOpts);
 driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
 await driver.Navigate().GoToUrlAsync("https://wikipedia.org");

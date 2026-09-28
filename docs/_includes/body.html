@@ -12,21 +12,29 @@
             "#windows-based-container",
         ]);
         const TAB_SELECTOR = Array.from(TAB_HASHES)
-            .map((h) => `a[href="${h}"]`)
+            .flatMap((h) => [`a[href="${h}"]`, `a[href^="${h}-"]`])
             .join(", ");
+
+        function getTabHash(link) {
+            const hash = link.getAttribute("href");
+            if (!hash) return null;
+
+            const normalizedHash = hash.replace(/-\d+$/, "");
+            return TAB_HASHES.has(normalizedHash) ? normalizedHash : null;
+        }
 
         function attachTabListeners(root = document) {
             root.querySelectorAll(TAB_SELECTOR).forEach((a) => {
                 if (a.dataset.syncTabsBound) return;
                 a.addEventListener("click", function (e) {
                     const a = e.currentTarget;
-                    const hash = a.getAttribute("href");
+                    const hash = getTabHash(a);
 
-                    if (!TAB_HASHES.has(hash)) return;
+                    if (!hash) return;
                     if (a.dataset[SYNC_FLAG]) return;
 
                     setTimeout(() => {
-                        const peers = document.querySelectorAll(`a[href="${hash}"]`);
+                        const peers = Array.from(document.querySelectorAll(TAB_SELECTOR)).filter((peer) => getTabHash(peer) === hash);
                         peers.forEach((peer) => {
                             if (peer === a) return;
                             if (peer.dataset[SYNC_FLAG]) return;
@@ -64,4 +72,5 @@
     })();
 </script>
 
-<script async data-agent="c98c082e-4887-42a2-bcb6-b6d448c38e87" src="https://helply.com/helply-agent.js"></script>
+<!-- original snippet blocks page load -->
+<script async data-agent="c98c082e-4887-42a2-bcb6-b6d448c38e87" src="https://cdn.helply.com/helply-agent.js"></script>

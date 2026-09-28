@@ -8,7 +8,7 @@
       "name": "Kameleo Team",
       "url": "https://developer.kameleo.io"
     },
-    "version": "5.2.0"
+    "version": "5.3.0"
   },
   "servers": [
     {
@@ -3557,7 +3557,7 @@
         "description": "Summarizes the overall outcome of a proxy connectivity test. Possible values:\r\n'success': Every test step passed.\r\n'partial_success': The website could be reached through at least one of IPv4, IPv6 or DNS name, and the IP location lookup succeeded.\r\n'failure': None of the connectivity checks succeeded."
       },
       "ProxyTestStepResponse": {
-        "required": ["comment", "name", "step", "successful"],
+        "required": ["name", "step", "successful"],
         "type": "object",
         "properties": {
           "step": {
@@ -3582,6 +3582,7 @@
           "comment": {
             "type": "string",
             "description": "Any additional details about the test case, such as error messages.",
+            "nullable": true,
             "example": "Proxy authentication failed"
           }
         },
