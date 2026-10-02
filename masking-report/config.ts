@@ -8,7 +8,7 @@ dotenv.config({ path: path.resolve(import.meta.dirname, ".env"), quiet: true });
 export const kameleo = {
     // Core settings
     get version(): string {
-        return envOptional("KAM_VERSION") ?? "5.2.1";
+        return envOptional("KAM_VERSION") ?? "5.3.1";
     },
     get port(): number {
         return envNumberOptional("KAM_PORT") ?? 5050;
