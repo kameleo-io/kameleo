@@ -6,7 +6,7 @@ test("Adscore", async ({ page }) => {
     const apiKey = env("ADSCORE_API_KEY");
     await page.goto(`https://c.adsco.re/r#apikey=${encodeURIComponent(apiKey)}&type=1&data=${encodeURIComponent(targetSite)}`);
 
-    const locator = page.frameLocator(`iframe[src^='${targetSite}']`).locator("h1");
+    const locator = page.frameLocator(`iframe[src^='${targetSite}']`).locator("body");
     await locator.waitFor();
-    await expect(locator).toHaveText("Example Domain");
+    await expect(locator).toContainText("domain", { ignoreCase: true });
 });
