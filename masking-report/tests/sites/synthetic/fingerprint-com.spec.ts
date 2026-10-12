@@ -8,14 +8,12 @@ test.describe(() => {
     test("Fingerprint.com", async ({ page }) => {
         await page.goto("https://demo.fingerprint.com/playground", { waitUntil: "networkidle" });
 
-        const successSelector = "[class*='SignalTable_green']",
-            suspiciousSelector = "[class*='SignalTable_red']";
+        const successSelector = "tr:has(td[class*='_green'])",
+            suspiciousSelector = "tr:has(td[class*='_red'])";
         await page.locator(`${successSelector}, ${suspiciousSelector}`).first().waitFor();
 
         const successCount = await page.locator(successSelector).count();
-        const suspiciousRows = (await page.locator(`tr:has(${suspiciousSelector})`).allInnerTexts()).map((row) =>
-            row.replace("\t\n", ": "),
-        );
+        const suspiciousRows = (await page.locator(suspiciousSelector).allInnerTexts()).map((row) => row.replace("\t\n", ": "));
         const failedRows = suspiciousRows.filter((row) =>
             ["Bot", "Browser Tampering", "Virtual Machine"].some((issue) => row.startsWith(issue)),
         );
