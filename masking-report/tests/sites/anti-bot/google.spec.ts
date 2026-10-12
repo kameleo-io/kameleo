@@ -7,7 +7,7 @@ test.describe(() => {
     test("Google Search", async ({ page }) => {
         await page.goto("https://google.com/?hl=en");
 
-        // Dismiss consent popup if present
+        // Dismiss cookie consent popup if present
         await page.click("button:has-text('Accept all')").catch(() => undefined);
 
         await page.fill("[name='q']", "google wikipedia");

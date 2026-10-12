@@ -4,7 +4,7 @@ import { scrollDown } from "../../../utils/pageUtils.ts";
 test("BrowserScan", async ({ page }) => {
     await page.goto("https://www.browserscan.net/");
 
-    // Dismiss consent popup if present
+    // Dismiss cookie consent popup if present
     await page.click("button.fc-close").catch(() => undefined);
 
     // Wait for the "Unexpand" button which appears on <100% results after loading
