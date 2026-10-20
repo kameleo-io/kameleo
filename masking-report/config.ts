@@ -5,6 +5,12 @@ import { env, envNumberOptional, envOptional } from "./utils/common.ts";
 
 dotenv.config({ path: path.resolve(import.meta.dirname, ".env"), quiet: true });
 
+export const PLATFORMS = [
+    { nodePlatform: "win32", id: "win-x64", label: "Windows", videoName: "windows" },
+    { nodePlatform: "darwin", id: "osx-arm64", label: "macOS", videoName: "macos" },
+    { nodePlatform: "linux", id: "linux-x64", label: "Linux", videoName: "linux" },
+];
+
 export const kameleo = {
     // Core settings
     get version(): string {
@@ -37,6 +43,16 @@ export const proxy = {
     },
     get password(): string {
         return env("PROXY_PASSWORD");
+    },
+};
+
+// Playwright runtime settings
+export const playwright = {
+    get retries(): number {
+        return envNumberOptional("PW_RETRIES") ?? (process.env.CI ? 2 : 0);
+    },
+    get workers(): number {
+        return envNumberOptional("PW_WORKERS") ?? (process.env.CI ? 4 : 1);
     },
 };
 
@@ -88,15 +104,5 @@ export const r2 = {
     /** public base URL of the bucket (custom domain or r2.dev URL), used to build video links */
     get publicBaseUrl(): string {
         return env("R2_PUBLIC_BASE_URL");
-    },
-};
-
-// Playwright runtime settings
-export const playwright = {
-    get retries(): number {
-        return envNumberOptional("PW_RETRIES") ?? (process.env.CI ? 2 : 0);
-    },
-    get workers(): number {
-        return envNumberOptional("PW_WORKERS") ?? (process.env.CI ? 4 : 1);
     },
 };

@@ -13,14 +13,14 @@ import { randomInt } from "crypto";
 import { kameleo, proxy } from "../config.ts";
 import { generateVideoName } from "./common.ts";
 
-function getProxy(): ProxyChoice {
+function getProxy(type: "http" | "socks5" = "http"): ProxyChoice {
     const sessionId = Array.from({ length: 6 }, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[randomInt(0, 36)]).join("");
     console.log(`using proxy with session id ${sessionId}`);
     return {
-        value: "http",
+        value: type,
         extra: {
             host: "network.joinmassive.com",
-            port: 65534,
+            port: type === "http" ? 65534 : 65533,
             id: `${proxy.username}-sessionmode-norotate-session-${sessionId}`,
             secret: proxy.password,
         },
