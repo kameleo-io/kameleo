@@ -105,19 +105,35 @@ pipeline {
                                 withCredentials([
                                     string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
                                     usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
-                                    string(credentialsId: 'brevo-api-key', variable: 'BREVO_API_KEY'),
-                                    string(credentialsId: 'ma-email-sender', variable: 'REPORT_EMAIL_SENDER'),
-                                    string(credentialsId: 'ma-email-recipient', variable: 'REPORT_EMAIL_RECIPIENT_DEFAULT'),
                                 ]) {
-                                    script {
-                                        if (artifactUrlOverrides) env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides
-                                        if (kernelsOverride) env.KAM_KERNELS_OVERRIDE = kernelsOverride.join(',')
-                                        env.REPORT_EMAIL_RECIPIENT = emailOverride ?: env.REPORT_EMAIL_RECIPIENT_DEFAULT
-
-                                        runCommand 'node build/sendEmail.ts'
-                                    }
+                                    runCommand 'node build/uploadTestResults.ts'
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                node('ubuntu') {
+                    def gitVars = checkout scm
+                    runCommand 'npm ci'
+                    withEnv(gitVars.collect { key, value -> "${key}=${value}" }) {
+                        withCredentials([
+                            string(credentialsId: 'nexus-artifactory-hostname', variable: 'ARTIFACTORY_HOSTNAME'),
+                            usernamePassword(credentialsId: 'nexus-artifactory', usernameVariable: 'ARTIFACTORY_USERNAME', passwordVariable: 'ARTIFACTORY_PASSWORD'),
+                            string(credentialsId: 'brevo-api-key', variable: 'BREVO_API_KEY'),
+                            string(credentialsId: 'ma-email-sender', variable: 'REPORT_EMAIL_SENDER'),
+                            string(credentialsId: 'ma-email-recipient', variable: 'REPORT_EMAIL_RECIPIENT_DEFAULT'),
+                        ]) {
+                            env.ARTIFACT_URL_OVERRIDES = artifactUrlOverrides ?: ''
+                            env.KAM_KERNELS_OVERRIDE = kernelsOverride.join(',')
+                            env.REPORT_EMAIL_RECIPIENT = emailOverride ?: env.REPORT_EMAIL_RECIPIENT_DEFAULT
+
+                            runCommand 'node build/sendEmail.ts'
                         }
                     }
                 }
