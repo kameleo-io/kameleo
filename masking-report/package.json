@@ -16,24 +16,27 @@
   },
   "dependencies": {
     "@kameleo/local-api-client": "^5.2.0",
-    "dotenv": "^17.4.2",
-    "tslib": "^2.8.1"
+    "dotenv": "^18.0.9",
+    "tslib": "^2.9.1"
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "^3.1136.0",
-    "@eslint/js": "^9.39.5",
+    "@aws-sdk/client-s3": "^3.1161.0",
+    "@eslint/js": "^10.0.1",
     "@getbrevo/brevo": "^4.0.1",
+    "@google-cloud/local-auth": "^3.0.1",
+    "@googleapis/sheets": "^18.1.1",
     "@octokit/rest": "^22.0.1",
     "@playwright/test": "~1.62.1",
     "@types/node": "~24.11.0",
-    "eslint": "^9.39.5",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-prettier": "^5.5.7",
     "eslint-plugin-simple-import-sort": "^14.0.0",
-    "prettier": "^3.9.6",
+    "google-auth-library": "^11.3.1",
+    "prettier": "^3.9.10",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.66.0",
+    "typescript-eslint": "^8.72.1",
     "webflow-api": "3.3.4"
   }
 }

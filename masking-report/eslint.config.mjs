@@ -1,12 +1,11 @@
 import eslint from "@eslint/js";
-import importPlugin from "eslint-plugin-import";
+import { defineConfig } from "eslint/config";
+import importPlugin from "eslint-plugin-import-x";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import tseslint from "typescript-eslint";
 
-/* eslint-disable-next-line @typescript-eslint/no-deprecated --
- * TODO: fix deprecated, see: https://typescript-eslint.io/packages/typescript-eslint/#config-deprecated. */
-export default tseslint.config(
+export default defineConfig(
     { ignores: ["dist", "playwright-report"] },
     {
         files: ["**/*.{ts,mts,js,mjs}"],
@@ -16,7 +15,7 @@ export default tseslint.config(
             tseslint.configs.stylisticTypeChecked,
             eslintPluginPrettierRecommended,
         ],
-        plugins: { import: importPlugin, "simple-import-sort": simpleImportSort },
+        plugins: { "import-x": importPlugin, "simple-import-sort": simpleImportSort },
         languageOptions: { parserOptions: { projectService: true } },
         rules: {
             // additional rules
@@ -25,9 +24,9 @@ export default tseslint.config(
             eqeqeq: ["error"],
 
             /// stylistic rules
-            "import/first": "warn",
-            "import/newline-after-import": "warn",
-            "import/no-duplicates": "warn",
+            "import-x/first": "warn",
+            "import-x/newline-after-import": "warn",
+            "import-x/no-duplicates": "warn",
             "simple-import-sort/imports": "warn",
             "simple-import-sort/exports": "warn",
 

@@ -89,6 +89,7 @@ export function runCommand(command: string, args: string[] = [], cwd?: string, e
 
         return output.stdout;
     } catch (error) {
+        // eslint-disable-next-line preserve-caught-error -- TODO
         throw new Error(`Command "${commandString}" failed:\n${String(error instanceof Error ? error.message : error)}`);
     }
 }
