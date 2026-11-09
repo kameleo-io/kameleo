@@ -32,18 +32,22 @@ async def main():
     browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
     page = await browser.newPage()
 
-    # Use any Puppeteer command to drive the browser
-    # and enjoy full protection from bot detection products
-    await page.goto('https://wikipedia.org')
-    await page.click('[name=search')
-    await page.keyboard.type('Chameleon')
-    await page.keyboard.press('Enter')
+    try:
+        # Use any Puppeteer command to drive the browser
+        # and enjoy full protection from bot detection products
+        await page.goto('https://wikipedia.org')
+        await page.click('[name=search]')
+        await page.keyboard.type('Chameleon')
+        await page.keyboard.press('Enter')
 
-    # Wait for 5 seconds
-    time.sleep(5)
+        # Wait for 5 seconds
+        time.sleep(5)
+    finally:
+        # Disconnect from the browser (leaves the browser running)
+        await browser.disconnect()
 
-    # Stop the browser by stopping the Kameleo profile
-    client.profile.stop_profile(profile.id)
+        # Stop the browser by stopping the Kameleo profile
+        client.profile.stop_profile(profile.id)
 
 
 asyncio.run(main())

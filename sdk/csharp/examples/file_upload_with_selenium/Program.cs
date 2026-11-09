@@ -26,29 +26,33 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 };
 
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
+try
+{
+    // Start the Kameleo profile and connect using WebDriver protocol
+    var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
+    var opts = new ChromeOptions();
+    opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
+    using var driver = new RemoteWebDriver(uri, opts);
+    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
 
-// Start the Kameleo profile and connect using WebDriver protocol
-var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
-var opts = new ChromeOptions();
-opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var driver = new RemoteWebDriver(uri, opts);
-driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(15);
+    // Open uplad site
+    driver.Url = "https://the-internet.herokuapp.com/upload";
+    await Task.Delay(3_000);
 
-// Open uplad site
-driver.Url = "https://the-internet.herokuapp.com/upload";
-await Task.Delay(3_000);
+    // Upload file
+    var filePath = Path.Combine(Environment.CurrentDirectory, "kameleo.png");
+    var fileInput = driver.FindElementByCssSelector("input[type=file]");
+    fileInput.SendKeys(filePath);
+    driver.FindElementById("file-submit").Click();
 
-// Upload file
-var filePath = Path.Combine(Environment.CurrentDirectory, "kameleo.png");
-var fileInput = driver.FindElementByCssSelector("input[type=file]");
-fileInput.SendKeys(filePath);
-driver.FindElementById("file-submit").Click();
+    // Check file upload success
+    var fileNameElement = driver.FindElementById("uploaded-files");
+    Console.WriteLine("uploaded file name: " + fileNameElement.Text);
 
-// Check file upload success
-var fileNameElement = driver.FindElementById("uploaded-files");
-Console.WriteLine("uploaded file name: " + fileNameElement.Text);
-
-await Task.Delay(5_000);
-
-// Stop the browser by stopping the Kameleo profile
-await client.Profile.StopProfileAsync(profile.Id);
+    await Task.Delay(5_000);
+}
+finally
+{
+    // Stop the browser by stopping the Kameleo profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}

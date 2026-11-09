@@ -30,7 +30,7 @@ var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
 var opts = new FirefoxOptions();
 opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var driver = new RemoteWebDriver(uri, opts);
+using var driver = new RemoteWebDriver(uri, opts);
 
 var allSites = new List<string>
 {
@@ -60,15 +60,20 @@ while (sitesToVisit.Count < 5)
     }
 }
 
-// Warm up profile by visiting the randomly selected sites
-foreach (var site in sitesToVisit)
+try
 {
-    // Navigate to the site
-    await driver.Navigate().GoToUrlAsync($"https://{site}");
+    // Warm up profile by visiting the randomly selected sites
+    foreach (var site in sitesToVisit)
+    {
+        // Navigate to the site
+        await driver.Navigate().GoToUrlAsync($"https://{site}");
 
-    // Wait for some random time
-    await Task.Delay(Random.Shared.Next(5_000, 15_000));
+        // Wait for some random time
+        await Task.Delay(Random.Shared.Next(5_000, 15_000));
+    }
 }
-
-// Stop the profile
-await client.Profile.StopProfileAsync(profile.Id);
+finally
+{
+    // Stop the profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}

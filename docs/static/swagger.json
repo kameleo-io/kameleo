@@ -8,7 +8,7 @@
       "name": "Kameleo Team",
       "url": "https://developer.kameleo.io"
     },
-    "version": "5.3.0"
+    "version": "5.4.0"
   },
   "servers": [
     {
@@ -1234,6 +1234,60 @@
         }
       }
     },
+    "/profiles/search": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Retrieve a page of profile previews with server-side filtering and sorting to optimize querying profiles.\r\nOnly the properties of ProfilePreview can be filtered and sorted.",
+        "description": "This is an experimental endpoint, may change in the future without any notice.",
+        "operationId": "SearchProfiles",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TableRequest"
+                  }
+                ],
+                "description": "TanStack Table compatible server-side state (pagination, sorting, columnFilters, globalFilter) used to query any list of items."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfilePreviewPagedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filter or sorting.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/profiles/new": {
       "post": {
         "tags": ["Profile"],
@@ -2273,6 +2327,18 @@
         },
         "additionalProperties": false
       },
+      "ColumnFilterState": {
+        "required": ["id"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {}
+        },
+        "additionalProperties": false
+      },
       "CookieRequest": {
         "required": ["domain", "name", "path", "value"],
         "type": "object",
@@ -3066,6 +3132,26 @@
         },
         "additionalProperties": false
       },
+      "PaginationState": {
+        "type": "object",
+        "properties": {
+          "pageIndex": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Zero-based page index.",
+            "format": "int32"
+          },
+          "pageSize": {
+            "maximum": 1000,
+            "minimum": 1,
+            "type": "integer",
+            "description": "Number of rows per page.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "PasswordManagerType": {
         "enum": ["enabled", "disabled"],
         "type": "string",
@@ -3287,6 +3373,41 @@
         },
         "additionalProperties": false,
         "description": "A preview about the profile with some of its properties."
+      },
+      "ProfilePreviewPagedResponse": {
+        "required": ["items", "pageCount", "pageIndex", "pageSize", "totalCount"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProfilePreview"
+            },
+            "description": "The items of the current page."
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total number of rows after filtering.",
+            "format": "int32"
+          },
+          "pageCount": {
+            "type": "integer",
+            "description": "Total number of pages.",
+            "format": "int32"
+          },
+          "pageIndex": {
+            "type": "integer",
+            "description": "Zero-based index of the current page.",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Number of rows per page.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "A page of items together with the metadata in TanStack Table compatible format."
       },
       "ProfileResponse": {
         "required": [
@@ -3622,7 +3743,7 @@
                 "$ref": "#/components/schemas/RunningProfilesStatistics"
               }
             ],
-            "description": "Current usage and maximum limit of running automated, manual, mobile and total profiles for the logged-in user."
+            "description": "Current usage and maximum limit of running profiles for the logged-in user."
           },
           "tenant": {
             "required": ["automated", "manual", "mobile", "total"],
@@ -3631,7 +3752,7 @@
                 "$ref": "#/components/schemas/RunningProfilesStatistics"
               }
             ],
-            "description": "Current usage and maximum limit of running automated, manual, mobile and total profiles across the tenant."
+            "description": "Current usage and maximum limit of running profiles across the tenant."
           }
         },
         "additionalProperties": false
@@ -3647,7 +3768,8 @@
                 "$ref": "#/components/schemas/QuotaStatistics"
               }
             ],
-            "description": "Quota usage of the profiles that are running with an automation framework."
+            "description": "Quota usage of the profiles that are running with an automation framework.\r\nThis property is deprecated, will be removed in future versions, use the total property instead.",
+            "deprecated": true
           },
           "manual": {
             "required": ["currentUsage", "maximumLimit"],
@@ -3656,7 +3778,8 @@
                 "$ref": "#/components/schemas/QuotaStatistics"
               }
             ],
-            "description": "Quota usage of the profiles that are running manually (were started from GUI or API)."
+            "description": "Quota usage of the profiles that are running manually (were started from GUI or API).\r\nThis property is deprecated, will be removed in future versions, use the total property instead.",
+            "deprecated": true
           },
           "mobile": {
             "required": ["currentUsage", "maximumLimit"],
@@ -3674,7 +3797,7 @@
                 "$ref": "#/components/schemas/QuotaStatistics"
               }
             ],
-            "description": "Quota usage of the profiles that are running either manually or with an automation framework."
+            "description": "Quota usage of running profiles."
           }
         },
         "additionalProperties": false
@@ -3818,6 +3941,20 @@
         },
         "additionalProperties": false
       },
+      "SortingState": {
+        "required": ["id"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "desc": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "StatusResponse": {
         "required": ["lifetimeState"],
         "type": "object",
@@ -3834,6 +3971,40 @@
         },
         "additionalProperties": false,
         "description": "Status information about the profile"
+      },
+      "TableRequest": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaginationState"
+              }
+            ],
+            "description": "Pagination state."
+          },
+          "sorting": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortingState"
+            },
+            "description": "Sorting state. Column ids are property names of the queried item type (case-insensitive)."
+          },
+          "columnFilters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ColumnFilterState"
+            },
+            "description": "Column filters. Column ids are property names of the queried item type (case-insensitive).\r\nThe value can be a scalar, an array of values (any-of), or a two element array for ranges (dates, numbers; null means open ended)."
+          },
+          "globalFilter": {
+            "type": "string",
+            "description": "Value matched against every filterable column.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "TanStack Table compatible server-side state (pagination, sorting, columnFilters, globalFilter) used to query any list of items."
       },
       "TestProxyRequest": {
         "required": ["proxy"],

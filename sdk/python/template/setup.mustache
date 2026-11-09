@@ -1,7 +1,8 @@
-{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.11.0/modules/openapi-generator/src/main/resources/python/setup.mustache }}
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/python/setup.mustache }}
 # coding: utf-8
 
 {{>partial_header}}
+
 
 from setuptools import setup, find_packages  # noqa: H301
 from setuptools.command.install import install
@@ -18,42 +19,13 @@ class PostInstallCommand(install):
 #
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
-NAME = "{{{projectName}}}"
-VERSION = "{{packageVersion}}"
-PYTHON_REQUIRES = ">= 3.8"
-REQUIRES = [
-    "urllib3 >= 1.25.3, < 3.0.0",
-    "python-dateutil >= 2.8.2",
-{{#asyncio}}
-    "aiohttp >= 3.8.4",
-    "aiohttp-retry >= 2.8.3",
-{{/asyncio}}
-{{#tornado}}
-    "tornado>=4.2, < 5",
-{{/tornado}}
-{{#hasHttpSignatureMethods}}
-    "pem >= 19.3.0",
-    "pycryptodome >= 3.9.0",
-{{/hasHttpSignatureMethods}}
-    "pydantic >= 2",
-    "typing-extensions >= 4.7.1",
-]
+#
+# the package metadata is in pyproject.toml
 
 setup(
-    name=NAME,
-    version=VERSION,
     cmdclass={"install": PostInstallCommand},
-    description="This Python package provides convenient access to the Local API REST interface of the Kameleo Client.",
-    author="{{infoName}}{{^infoName}}OpenAPI Generator community{{/infoName}}",
-    author_email="{{infoEmail}}{{^infoEmail}}support@kameleo.io{{/infoEmail}}",
-    url="{{packageUrl}}",
-    keywords=["{{projectName}}", "kameleo", "stealth browsing platform", "anti-detect browser", "selenium", "webdriver", "browser automation", "web scraping", "puppeteer", "playwright", "headless", "chrome", "firefox", "chromium", "edge"],
-    install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]) + ["kameleo.local_api_client.bin"],
     include_package_data=True,
-    {{#licenseInfo}}license="{{.}}",
-    {{/licenseInfo}}long_description_content_type='text/markdown',
-    long_description=open("README.md", encoding="utf-8").read(),
     package_data={
         "kameleo.local_api_client": [
             "py.typed",
@@ -62,8 +34,4 @@ setup(
             "bin/osx-arm64/pw-bridge",
         ]
     },
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ]
 )

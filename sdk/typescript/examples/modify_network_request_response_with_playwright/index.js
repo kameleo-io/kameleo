@@ -32,39 +32,44 @@ const context = browser.contexts()[0];
 const page = await context.newPage();
 const svgBytes = await fs.promises.readFile(path.join(import.meta.dirname, "kameleo.svg"));
 
-// Set up network interceptor, see: https://playwright.dev/docs/network
-await page.route("**/*", async (route) => {
-    const request = route.request();
-    console.log(`[${request.method()}] ${request.url()}`);
+try {
+    // Set up network interceptor, see: https://playwright.dev/docs/network
+    await page.route("**/*", async (route) => {
+        const request = route.request();
+        console.log(`[${request.method()}] ${request.url()}`);
 
-    // Redirect from main to French Wikipedia home page
-    if (request.url().replace(/\/$/, "") === "https://www.wikipedia.org") {
-        console.log("Changing url");
-        await route.fulfill({
-            status: 302,
-            headers: { Location: "https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal" },
-        });
-        return;
-    }
+        // Redirect from main to French Wikipedia home page
+        if (request.url().replace(/\/$/, "") === "https://www.wikipedia.org") {
+            console.log("Changing url");
+            await route.fulfill({
+                status: 302,
+                headers: { Location: "https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal" },
+            });
+            return;
+        }
 
-    // Replace Wikipedia's logo with Kameleo's logo
-    if (request.url().includes("wikipedia-wordmark-fr.svg")) {
-        await route.fulfill({
-            status: 200,
-            body: svgBytes,
-            headers: { "Content-Type": "image/svg+xml" },
-        });
-        return;
-    }
+        // Replace Wikipedia's logo with Kameleo's logo
+        if (request.url().includes("wikipedia-wordmark-fr.svg")) {
+            await route.fulfill({
+                status: 200,
+                body: svgBytes,
+                headers: { "Content-Type": "image/svg+xml" },
+            });
+            return;
+        }
 
-    await route.continue();
-});
+        await route.continue();
+    });
 
-// Navigate to the main Wikipedia home page and observe that the French one is loaded
-await page.goto("https://www.wikipedia.org/");
+    // Navigate to the main Wikipedia home page and observe that the French one is loaded
+    await page.goto("https://www.wikipedia.org/");
 
-// Wait for 10 seconds
-await setTimeout(10_000);
+    // Wait for 10 seconds
+    await setTimeout(10_000);
+} finally {
+    // Close the browser connection (leaves the browser running)
+    await browser.close();
 
-// Stop the browser by stopping the Kameleo profile
-await client.profile.stopProfile(profile.id);
+    // Stop the browser by stopping the Kameleo profile
+    await client.profile.stopProfile(profile.id);
+}

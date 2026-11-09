@@ -33,49 +33,54 @@ const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, { no
 const context = browser.contexts()[0];
 const page = await context.newPage();
 
-// --- page.addInitScript ---
-// Init scripts run before any page script executes, on every navigation.
-// see: https://playwright.dev/docs/api/class-page#page-add-init-script
-// @ts-expect-error - custom property
-await page.addInitScript(() => (window.customProperty = "kameleo"));
+try {
+    // --- page.addInitScript ---
+    // Init scripts run before any page script executes, on every navigation.
+    // see: https://playwright.dev/docs/api/class-page#page-add-init-script
+    // @ts-expect-error - custom property
+    await page.addInitScript(() => (window.customProperty = "kameleo"));
 
-await page.goto("https://wikipedia.org");
+    await page.goto("https://wikipedia.org");
 
-// --- page.evaluate ---
-// runs a function in the browser context and returns the result to the host application
-// see: https://playwright.dev/docs/api/class-page#page-evaluate
-// @ts-expect-error - custom property
-// eslint-disable-next-line
-const customProperty = await page.evaluate(() => window.customProperty);
+    // --- page.evaluate ---
+    // runs a function in the browser context and returns the result to the host application
+    // see: https://playwright.dev/docs/api/class-page#page-evaluate
+    // @ts-expect-error - custom property
+    // eslint-disable-next-line
+    const customProperty = await page.evaluate(() => window.customProperty);
 
-console.log("customProperty:", customProperty); // kameleo
+    console.log("customProperty:", customProperty); // kameleo
 
-// --- page.exposeFunction ---
-// makes a host application function callable from the browser's JavaScript context.
-// see: https://playwright.dev/docs/api/class-page#page-expose-function
-await page.exposeFunction("addNumbers", (/**@type {number}*/ a, /**@type {number}*/ b) => a + b);
+    // --- page.exposeFunction ---
+    // makes a host application function callable from the browser's JavaScript context.
+    // see: https://playwright.dev/docs/api/class-page#page-expose-function
+    await page.exposeFunction("addNumbers", (/**@type {number}*/ a, /**@type {number}*/ b) => a + b);
 
-// @ts-expect-error - custom exposed function
-// eslint-disable-next-line
-const pageResult = await page.evaluate(() => window.addNumbers(7, 3));
+    // @ts-expect-error - custom exposed function
+    // eslint-disable-next-line
+    const pageResult = await page.evaluate(() => window.addNumbers(7, 3));
 
-console.log("addNumbers(7, 3):", pageResult); // 10
+    console.log("addNumbers(7, 3):", pageResult); // 10
 
-// --- Take a screenshot ---
-// see: https://playwright.dev/docs/api/class-page#page-screenshot
-await page.screenshot({ path: "screenshot.png", fullPage: true });
-console.log("Screenshot saved to: screenshot.png");
+    // --- Take a screenshot ---
+    // see: https://playwright.dev/docs/api/class-page#page-screenshot
+    await page.screenshot({ path: "screenshot.png", fullPage: true });
+    console.log("Screenshot saved to: screenshot.png");
 
-// --- Record a video ---
-// You can record video by creating a new browser context with the recordVideo option.
-// see: https://playwright.dev/docs/api/class-browser#browser-new-context-option-record-video
-const videoContext = await browser.newContext({ recordVideo: { dir: "videos" } });
-const videoPage = await videoContext.newPage();
-await videoPage.goto("https://wikipedia.org");
-await setTimeout(3_000);
-await videoContext.close();
-const videoPath = await videoPage.video()?.path();
-console.log("Video saved to:", videoPath);
+    // --- Record a video ---
+    // You can record video by creating a new browser context with the recordVideo option.
+    // see: https://playwright.dev/docs/api/class-browser#browser-new-context-option-record-video
+    const videoContext = await browser.newContext({ recordVideo: { dir: "videos" } });
+    const videoPage = await videoContext.newPage();
+    await videoPage.goto("https://wikipedia.org");
+    await setTimeout(3_000);
+    await videoContext.close();
+    const videoPath = await videoPage.video()?.path();
+    console.log("Video saved to:", videoPath);
+} finally {
+    // Close the browser connection (leaves the browser running)
+    await browser.close();
 
-// Stop the browser by stopping the Kameleo profile
-await client.profile.stopProfile(profile.id);
+    // Stop the browser by stopping the Kameleo profile
+    await client.profile.stopProfile(profile.id);
+}

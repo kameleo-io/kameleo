@@ -53,9 +53,13 @@ while len(sites_to_visit) < 5:
         sites_to_visit.append(site)
 
 # Warm up profile by visiting the randomly selected sites
-for site in sites_to_visit:
-    driver.get(f'https://{site}')
-    time.sleep(random.randint(5, 15))
+try:
+    for site in sites_to_visit:
+        driver.get(f'https://{site}')
+        time.sleep(random.randint(5, 15))
+finally:
+    # Quit the WebDriver session
+    driver.quit()
 
-# Stop the browser by stopping the Kameleo profile
-client.profile.stop_profile(profile.id)
+    # Stop the browser by stopping the Kameleo profile
+    client.profile.stop_profile(profile.id)

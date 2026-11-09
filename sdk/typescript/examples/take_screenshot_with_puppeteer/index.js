@@ -32,18 +32,23 @@ const browser = await puppeteer.connect({
 });
 const page = await browser.newPage();
 
-// Use any Puppeteer command to drive the browser
-// and enjoy full protection from bot detection products
-await page.goto("https://en.wikipedia.org/wiki/Special:Random");
+try {
+    // Use any Puppeteer command to drive the browser
+    // and enjoy full protection from bot detection products
+    await page.goto("https://en.wikipedia.org/wiki/Special:Random");
 
-const randomString = randomstring.generate({ length: 12, charset: "alphabetic" });
-/**@type {`${string}.png`}*/
-const fileName = `screenshot-${randomString}.png`;
+    const randomString = randomstring.generate({ length: 12, charset: "alphabetic" });
+    /**@type {`${string}.png`}*/
+    const fileName = `screenshot-${randomString}.png`;
 
-// Take screenshot
-await page.screenshot({ path: fileName });
+    // Take screenshot
+    await page.screenshot({ path: fileName });
 
-console.log(`Screenshot saved to: ${fileName}`);
+    console.log(`Screenshot saved to: ${fileName}`);
+} finally {
+    // Disconnect from the browser (leaves the browser running)
+    await browser.disconnect();
 
-// Stop the browser by stopping the Kameleo profile
-await client.profile.stopProfile(profile.id);
+    // Stop the browser by stopping the Kameleo profile
+    await client.profile.stopProfile(profile.id);
+}

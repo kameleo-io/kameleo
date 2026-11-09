@@ -1,13 +1,35 @@
-{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.11.0/modules/openapi-generator/src/main/resources/python/pyproject.mustache }}
+{{! source: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/python/pyproject.mustache }}
+{{#poetry1}}
 [tool.poetry]
-name = "{{{packageName}}}"
+{{/poetry1}}
+{{^poetry1}}
+[project]
+{{/poetry1}}
+name = "{{{projectName}}}"
 version = "{{{packageVersion}}}"
-description = "{{{appName}}}"
+description = "This Python package provides convenient access to the Local API REST interface of the Kameleo Client."
+{{#poetry1}}
 authors = ["{{infoName}}{{^infoName}}OpenAPI Generator Community{{/infoName}} <{{infoEmail}}{{^infoEmail}}support@kameleo.io{{/infoEmail}}>"]
-license = "{{{licenseInfo}}}{{^licenseInfo}}NoLicense{{/licenseInfo}}"
+{{/poetry1}}
+{{^poetry1}}
+authors = [
+  {name = "{{infoName}}{{^infoName}}OpenAPI Generator Community{{/infoName}}",email = "{{infoEmail}}{{^infoEmail}}support@kameleo.io{{/infoEmail}}"},
+]
+{{/poetry1}}
+{{#licenseInfo}}
+{{#poetry1}}
+license = "{{{licenseInfo}}}"
+{{/poetry1}}
+{{^poetry1}}
+license = "{{{licenseInfo}}}"
+{{/poetry1}}
+{{/licenseInfo}}
 readme = "README.md"
+{{#poetry1}}
 repository = "{{{packageUrl}}}"
-keywords = ["OpenAPI", "OpenAPI-Generator", "{{{appName}}}"]
+{{/poetry1}}
+keywords = ["{{{projectName}}}", "kameleo", "stealth browsing platform", "anti-detect browser", "selenium", "webdriver", "browser automation", "web scraping", "puppeteer", "playwright", "headless", "chrome", "firefox", "chromium", "edge"]
+{{#poetry1}}
 include = [
     "kameleo.local_api_client/py.typed",
     "kameleo/local_api_client/bin/win-x64/pw-bridge.exe",
@@ -16,14 +38,18 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-
-urllib3 = ">= 1.25.3, < 3.0.0"
+python = "^3.9"
+{{^async}}
+urllib3 = ">= 2.1.0, < 3.0.0"
+{{/async}}
 python-dateutil = ">= 2.8.2"
 {{#asyncio}}
 aiohttp = ">= 3.8.4"
 aiohttp-retry = ">= 2.8.3"
 {{/asyncio}}
+{{#httpx}}
+httpx = ">= 0.28.1"
+{{/httpx}}
 {{#tornado}}
 tornado = ">=4.2, <5"
 {{/tornado}}
@@ -33,8 +59,58 @@ pycryptodome = ">= 3.9.0"
 {{/hasHttpSignatureMethods}}
 pydantic = ">= 2"
 typing-extensions = ">= 4.7.1"
+{{#lazyImports}}
+lazy-imports = ">= 1, < 2"
+{{/lazyImports}}
+{{/poetry1}}
+{{^poetry1}}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+requires-python = ">=3.9"
 
+dependencies = [
+{{^async}}
+  "urllib3 (>=2.1.0,<3.0.0)",
+{{/async}}
+  "python-dateutil (>=2.8.2)",
+{{#httpx}}
+  "httpx (>=0.28.1)",
+{{/httpx}}
+{{#asyncio}}
+  "aiohttp (>=3.8.4)",
+  "aiohttp-retry (>=2.8.3)",
+{{/asyncio}}
+{{#tornado}}
+  "tornado (>=4.2,<5)",
+{{/tornado}}
+{{#hasHttpSignatureMethods}}
+  "pem (>=19.3.0)",
+  "pycryptodome (>=3.9.0)",
+{{/hasHttpSignatureMethods}}
+  "pydantic (>=2)",
+  "typing-extensions (>=4.7.1)",
+{{#lazyImports}}
+  "lazy-imports (>=1,<2)"
+{{/lazyImports}}
+]
+
+[project.urls]
+Repository = "{{{packageUrl}}}"
+
+{{/poetry1}}
+{{^poetry1}}
+[tool.poetry]
+requires-poetry = ">=2.0"
+{{/poetry1}}
+
+{{#poetry1}}
 [tool.poetry.dev-dependencies]
+{{/poetry1}}
+{{^poetry1}}
+[tool.poetry.group.dev.dependencies]
+{{/poetry1}}
 pytest = ">= 7.2.1"
 pytest-cov = ">= 2.8.1"
 tox = ">= 3.9.0"
@@ -44,7 +120,7 @@ mypy = ">= 1.5"
 
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.pylint.'MESSAGES CONTROL']

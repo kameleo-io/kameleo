@@ -28,18 +28,23 @@ const builder = new Builder().usingServer(`http://localhost:${kameleoPort}/webdr
 });
 const driver = await builder.build();
 
-// Navigate to a site which give you cookies
-await driver.get("https://www.nytimes.com");
-await driver.sleep(5_000);
+try {
+    // Navigate to a site which give you cookies
+    await driver.get("https://www.nytimes.com");
+    await driver.sleep(5_000);
 
-await driver.get("https://whoer.net");
-await driver.sleep(5_000);
+    await driver.get("https://whoer.net");
+    await driver.sleep(5_000);
 
-await driver.get("https://www.youtube.com");
-await driver.sleep(5_000);
+    await driver.get("https://www.youtube.com");
+    await driver.sleep(5_000);
+} finally {
+    // Quit the WebDriver session
+    await driver.quit();
 
-// Stop the profile
-await client.profile.stopProfile(profile.id);
+    // Stop the profile
+    await client.profile.stopProfile(profile.id);
+}
 
 // You can list all of your cookies
 const cookieList = await client.cookie.listCookies(profile.id);

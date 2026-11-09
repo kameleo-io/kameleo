@@ -1,0 +1,9 @@
+{
+  "name": "search_profiles",
+  "description": "Filter, sort and page the profiles on the Kameleo Engine.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

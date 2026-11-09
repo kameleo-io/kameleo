@@ -35,20 +35,22 @@ const context = await playwright.firefox.launchPersistentContext("", {
     timeout: 90_000,
 });
 
-// Kameleo will open the a new page in the default browser context.
-// NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
-//       with Kameleo's browser fingerprint modification features.
-const page = await context.newPage();
+try {
+    // Kameleo will open the a new page in the default browser context.
+    // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
+    //       with Kameleo's browser fingerprint modification features.
+    const page = await context.newPage();
 
-// Use any Playwright command to drive the browser
-// and enjoy full protection from bot detection products
-await page.goto("https://wikipedia.org");
-await page.click("[name=search]");
-await page.keyboard.type("Chameleon");
-await page.keyboard.press("Enter");
+    // Use any Playwright command to drive the browser
+    // and enjoy full protection from bot detection products
+    await page.goto("https://wikipedia.org");
+    await page.click("[name=search]");
+    await page.keyboard.type("Chameleon");
+    await page.keyboard.press("Enter");
 
-// Wait for 5 seconds
-await setTimeout(5_000);
-
-// Stop the browser by stopping the Kameleo profile
-await client.profile.stopProfile(profile.id);
+    // Wait for 5 seconds
+    await setTimeout(5_000);
+} finally {
+    // Stop the browser by stopping the Kameleo profile
+    await client.profile.stopProfile(profile.id);
+}

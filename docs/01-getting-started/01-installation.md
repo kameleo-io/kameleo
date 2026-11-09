@@ -12,7 +12,7 @@ This page walks you through installing Kameleo, starting the Local API, adding a
 
 | Component | Minimum                                                                                               | Recommended                                   |
 | --------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| OS        | Windows 10+, Windows Server 2016+<br>macOS 12+ (Apple Silicon)<br>Docker (Linux or Windows container) | Latest stable OS version                      |
+| OS        | Windows 10+, Windows Server 2016+<br>macOS 13+ (Apple Silicon)<br>Docker (Linux or Windows container) | Latest stable OS version                      |
 | RAM       | 4 GB                                                                                                  | 8+ GB for multi-profile automation            |
 | Disk      | 5 GB free                                                                                             | 20+ GB (to cache multiple kernels & profiles) |
 | Network   | Stable broadband                                                                                      | Low‑latency connection for high concurrency   |

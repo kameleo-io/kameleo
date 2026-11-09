@@ -39,23 +39,28 @@ await client.Profile.StartProfileAsync(profile.Id, new BrowserSettings()
     ]
 });
 
-// Connect to the running browser instance using WebDriver
-var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
-var opts = new ChromeOptions();
-opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var driver = new RemoteWebDriver(uri, opts);
-driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+try
+{
+    // Connect to the running browser instance using WebDriver
+    var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
+    var opts = new ChromeOptions();
+    opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
+    using var driver = new RemoteWebDriver(uri, opts);
+    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
-// Use any WebDriver command to drive the browser
-// and enjoy full protection from bot detection products
-await driver.Navigate().GoToUrlAsync("https://wikipedia.org");
-driver.FindElement(By.Name("search")).SendKeys("Chameleon");
-driver.FindElement(By.Name("search")).SendKeys(Keys.Enter);
-driver.FindElement(By.Id("content"));
-var title = driver.Title;
-Console.WriteLine($"The title is {title}");
+    // Use any WebDriver command to drive the browser
+    // and enjoy full protection from bot detection products
+    await driver.Navigate().GoToUrlAsync("https://wikipedia.org");
+    driver.FindElement(By.Name("search")).SendKeys("Chameleon");
+    driver.FindElement(By.Name("search")).SendKeys(Keys.Enter);
+    driver.FindElement(By.Id("content"));
+    var title = driver.Title;
+    Console.WriteLine($"The title is {title}");
 
-await Task.Delay(TimeSpan.FromSeconds(5));
-
-// Stop the browser by stopping the Kameleo profile
-await client.Profile.StopProfileAsync(profile.Id);
+    await Task.Delay(TimeSpan.FromSeconds(5));
+}
+finally
+{
+    // Stop the browser by stopping the Kameleo profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}

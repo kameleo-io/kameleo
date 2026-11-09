@@ -29,16 +29,21 @@ const builder = new Builder().usingServer(`${kameleoEngineUri}/webdriver`).withC
 });
 const driver = await builder.build();
 
-// Use any WebDriver command to drive the browser
-// and enjoy full protection from bot detection products
-await driver.get("https://wikipedia.org");
-await driver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
-await driver.wait(until.elementLocated(By.id("content")));
-const title = await driver.getTitle();
-console.log(`The title is ${title}`);
+try {
+    // Use any WebDriver command to drive the browser
+    // and enjoy full protection from bot detection products
+    await driver.get("https://wikipedia.org");
+    await driver.findElement(By.name("search")).sendKeys("Chameleon", Key.ENTER);
+    await driver.wait(until.elementLocated(By.id("content")));
+    const title = await driver.getTitle();
+    console.log(`The title is ${title}`);
 
-// Wait for 5 seconds
-await driver.sleep(5_000);
+    // Wait for 5 seconds
+    await driver.sleep(5_000);
+} finally {
+    // Quit the WebDriver session
+    await driver.quit();
 
-// Stop the browser by stopping the Kameleo profile
-await client.profile.stopProfile(profile.id);
+    // Stop the browser by stopping the Kameleo profile
+    await client.profile.stopProfile(profile.id);
+}

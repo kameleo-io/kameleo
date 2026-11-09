@@ -25,26 +25,31 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
 
-// Start the Kameleo profile and connect with Playwright through CDP
-var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
-var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new() { NoDefaults = true, Timeout = 90_000 });
+try
+{
+    // Start the Kameleo profile and connect with Playwright through CDP
+    var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
+    using var playwright = await Playwright.CreateAsync();
+    await using var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new() { NoDefaults = true, Timeout = 90_000 });
 
-// It is recommended to work on the default context.
-// NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
-//       with Kameleo's browser fingerprint modification features.
-var context = browser.Contexts[0];
-var page = await context.NewPageAsync();
+    // It is recommended to work on the default context.
+    // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
+    //       with Kameleo's browser fingerprint modification features.
+    var context = browser.Contexts[0];
+    var page = await context.NewPageAsync();
 
-// Use any Playwright command to drive the browser
-// and enjoy full protection from bot detection products
-await page.GotoAsync("https://wikipedia.org");
-await page.ClickAsync("[name=search]");
-await page.Keyboard.TypeAsync("Chameleon");
-await page.Keyboard.PressAsync("Enter");
+    // Use any Playwright command to drive the browser
+    // and enjoy full protection from bot detection products
+    await page.GotoAsync("https://wikipedia.org");
+    await page.ClickAsync("[name=search]");
+    await page.Keyboard.TypeAsync("Chameleon");
+    await page.Keyboard.PressAsync("Enter");
 
-// Wait for 5 seconds
-await Task.Delay(5_000);
-
-// Stop the browser by stopping the Kameleo profile
-await client.Profile.StopProfileAsync(profile.Id);
+    // Wait for 5 seconds
+    await Task.Delay(5_000);
+}
+finally
+{
+    // Stop the browser by stopping the Kameleo profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}

@@ -30,6 +30,7 @@ src/Kameleo.LocalApiClient/Model/BrowserCookie.cs
 src/Kameleo.LocalApiClient/Model/BrowserSettings.cs
 src/Kameleo.LocalApiClient/Model/CanvasSpoofingType.cs
 src/Kameleo.LocalApiClient/Model/CloudTrafficQuota.cs
+src/Kameleo.LocalApiClient/Model/ColumnFilterState.cs
 src/Kameleo.LocalApiClient/Model/CookieRequest.cs
 src/Kameleo.LocalApiClient/Model/CreateFolderRequest.cs
 src/Kameleo.LocalApiClient/Model/CreateProfileRequest.cs
@@ -53,6 +54,7 @@ src/Kameleo.LocalApiClient/Model/ImportProfileRequest.cs
 src/Kameleo.LocalApiClient/Model/KernelResponse.cs
 src/Kameleo.LocalApiClient/Model/ListFoldersResponse.cs
 src/Kameleo.LocalApiClient/Model/Os.cs
+src/Kameleo.LocalApiClient/Model/PaginationState.cs
 src/Kameleo.LocalApiClient/Model/PasswordManagerType.cs
 src/Kameleo.LocalApiClient/Model/Preference.cs
 src/Kameleo.LocalApiClient/Model/ProblemDetails.cs
@@ -60,6 +62,7 @@ src/Kameleo.LocalApiClient/Model/ProblemResponse.cs
 src/Kameleo.LocalApiClient/Model/ProfileLifetimeState.cs
 src/Kameleo.LocalApiClient/Model/ProfileMinutesQuota.cs
 src/Kameleo.LocalApiClient/Model/ProfilePreview.cs
+src/Kameleo.LocalApiClient/Model/ProfilePreviewPagedResponse.cs
 src/Kameleo.LocalApiClient/Model/ProfileResponse.cs
 src/Kameleo.LocalApiClient/Model/ProfileStorageLocation.cs
 src/Kameleo.LocalApiClient/Model/ProxyChoice.cs
@@ -77,7 +80,9 @@ src/Kameleo.LocalApiClient/Model/ShareAccess.cs
 src/Kameleo.LocalApiClient/Model/ShareAccessRequest.cs
 src/Kameleo.LocalApiClient/Model/ShareGroupRequest.cs
 src/Kameleo.LocalApiClient/Model/SharingOptionsResponse.cs
+src/Kameleo.LocalApiClient/Model/SortingState.cs
 src/Kameleo.LocalApiClient/Model/StatusResponse.cs
+src/Kameleo.LocalApiClient/Model/TableRequest.cs
 src/Kameleo.LocalApiClient/Model/TestProxyRequest.cs
 src/Kameleo.LocalApiClient/Model/TestProxyResponse.cs
 src/Kameleo.LocalApiClient/Model/TimezoneChoice.cs

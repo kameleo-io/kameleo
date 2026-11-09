@@ -27,62 +27,68 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 };
 
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
-
-// Start the Kameleo profile and connect using WebDriver protocol
-var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
-var opts = new ChromeOptions();
-opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
-var driver = new RemoteWebDriver(uri, opts);
-
-// Set up network interceptor
-var interceptor = driver.Manage().Network;
-interceptor.NetworkRequestSent += Interceptor_NetworkRequestSent;
-interceptor.NetworkResponseReceived += Interceptor_NetworkResponseReceived;
-
-// Redirect from main to French Wikipedia home page
-interceptor.AddRequestHandler(new NetworkRequestHandler
+try
 {
-    RequestMatcher = request => request.Url?.Trim('/') == "https://www.wikipedia.org",
-    RequestTransformer = request =>
-    {
-        Console.WriteLine("Changing url");
-        request.Url = "https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal";
-        return request;
-    }
-});
+    // Start the Kameleo profile and connect using WebDriver protocol
+    var uri = new Uri($"http://localhost:{KameleoPort}/webdriver");
+    var opts = new ChromeOptions();
+    opts.AddAdditionalOption("kameleo:profileId", profile.Id.ToString());
+    using var driver = new RemoteWebDriver(uri, opts);
 
-var svgBytes = File.ReadAllBytes("kameleo.svg");
+    // Set up network interceptor
+    var interceptor = driver.Manage().Network;
+    interceptor.NetworkRequestSent += Interceptor_NetworkRequestSent;
+    interceptor.NetworkResponseReceived += Interceptor_NetworkResponseReceived;
 
-// Replace Wikipedia's logo with Kameleo's logo
-interceptor.AddRequestHandler(new NetworkRequestHandler
-{
-    RequestMatcher = request => request.Url?.Contains("wikipedia-wordmark-fr.svg") ?? false,
-    ResponseSupplier = request =>
+    // Redirect from main to French Wikipedia home page
+    interceptor.AddRequestHandler(new NetworkRequestHandler
     {
-        var response = new HttpResponseData
+        RequestMatcher = request => request.Url?.Trim('/') == "https://www.wikipedia.org",
+        RequestTransformer = request =>
         {
-            StatusCode = 200,
-            Content = new HttpResponseContent(svgBytes),
-            Url = request.Url,
-            RequestId = request.RequestId
-        };
-        response.Headers.Add("Content-Type", "image/svg+xml");
+            Console.WriteLine("Changing url");
+            request.Url = "https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal";
+            return request;
+        }
+    });
 
-        return response;
-    }
-});
+    var svgBytes = File.ReadAllBytes("kameleo.svg");
 
-await interceptor.StartMonitoring();
+    // Replace Wikipedia's logo with Kameleo's logo
+    interceptor.AddRequestHandler(new NetworkRequestHandler
+    {
+        RequestMatcher = request => request.Url?.Contains("wikipedia-wordmark-fr.svg") ?? false,
+        ResponseSupplier = request =>
+        {
+            var response = new HttpResponseData
+            {
+                StatusCode = 200,
+                Content = new HttpResponseContent(svgBytes),
+                Url = request.Url,
+                RequestId = request.RequestId
+            };
+            response.Headers.Add("Content-Type", "image/svg+xml");
 
-// Navigate to the main Wikipedia home page and observe that the French one is loaded
-await driver.Navigate().GoToUrlAsync("https://www.wikipedia.org/");
+            return response;
+        }
+    });
 
-await Task.Delay(10_000);
+    await interceptor.StartMonitoring();
 
-await interceptor.StopMonitoring();
+    // Navigate to the main Wikipedia home page and observe that the French one is loaded
+    await driver.Navigate().GoToUrlAsync("https://www.wikipedia.org/");
 
-// Stop the browser by stopping the Kameleo profile
-await client.Profile.StopProfileAsync(profile.Id);
+    await Task.Delay(10_000);
+
+    await interceptor.StopMonitoring();
+
+    // Stop the browser by stopping the Kameleo profile
+}
+finally
+{
+    // Stop the browser by stopping the Kameleo profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}
 
 void Interceptor_NetworkRequestSent(object sender, NetworkRequestSentEventArgs e)
      => Console.WriteLine($"[{e.RequestMethod}] {e.RequestUrl}");
