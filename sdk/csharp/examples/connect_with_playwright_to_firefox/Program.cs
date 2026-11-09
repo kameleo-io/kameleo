@@ -24,35 +24,39 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 };
 
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
-
-// Start the Kameleo profile and connect with Playwright
-
-// The Playwright framework can't connect to an already running Firefox instance directly.
-// The Kameleo SDK provides an executable (pw-bridge) that bridges this gap,
-// allowing Playwright to control the browser launched by Kameleo.
-var playwright = await Playwright.CreateAsync();
-var context = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
+try
 {
-    ExecutablePath = JunglefoxHelper.GetBridgePath(),
-    Args = JunglefoxHelper.GetBridgeArgs(client, profile),
-    ViewportSize = ViewportSize.NoViewport,
-    Timeout = 90_000,
-});
+    // Start the Kameleo profile and connect with Playwright
 
-// Kameleo will open the a new page in the default browser context.
-// NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
-//       with Kameleo's browser fingerprint modification features.
-var page = await context.NewPageAsync();
+    // The Playwright framework can't connect to an already running Firefox instance directly.
+    // The Kameleo SDK provides an executable (pw-bridge) that bridges this gap,
+    // allowing Playwright to control the browser launched by Kameleo.
+    using var playwright = await Playwright.CreateAsync();
+    var context = await playwright.Firefox.LaunchPersistentContextAsync("", new BrowserTypeLaunchPersistentContextOptions
+    {
+        ExecutablePath = JunglefoxHelper.GetBridgePath(),
+        Args = JunglefoxHelper.GetBridgeArgs(client, profile),
+        ViewportSize = ViewportSize.NoViewport,
+        Timeout = 90_000,
+    });
 
-// Use any Playwright command to drive the browser
-// and enjoy full protection from bot detection products
-await page.GotoAsync("https://wikipedia.org");
-await page.ClickAsync("[name=search]");
-await page.Keyboard.TypeAsync("Chameleon");
-await page.Keyboard.PressAsync("Enter");
+    // Kameleo will open the a new page in the default browser context.
+    // NOTE: We DO NOT recommend using multiple browser contexts, as this might interfere
+    //       with Kameleo's browser fingerprint modification features.
+    var page = await context.NewPageAsync();
 
-// Wait for 5 seconds
-await Task.Delay(5_000);
+    // Use any Playwright command to drive the browser
+    // and enjoy full protection from bot detection products
+    await page.GotoAsync("https://wikipedia.org");
+    await page.ClickAsync("[name=search]");
+    await page.Keyboard.TypeAsync("Chameleon");
+    await page.Keyboard.PressAsync("Enter");
 
-// Stop the browser by stopping the Kameleo profile
-await client.Profile.StopProfileAsync(profile.Id);
+    // Wait for 5 seconds
+    await Task.Delay(5_000);
+}
+finally
+{
+    // Stop the browser by stopping the Kameleo profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}

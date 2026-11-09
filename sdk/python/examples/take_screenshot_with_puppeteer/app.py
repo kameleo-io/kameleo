@@ -31,18 +31,22 @@ async def main():
     browser = await connect(browserWSEndpoint=browser_ws_endpoint, defaultViewport=None)
     page = await browser.newPage()
 
-    # Open a random page from wikipedia
-    await page.goto('https://en.wikipedia.org/wiki/Special:Random')
+    try:
+        # Open a random page from wikipedia
+        await page.goto('https://en.wikipedia.org/wiki/Special:Random')
 
-    res = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-    path = f'screenshot-{res}.png'
+        res = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+        path = f'screenshot-{res}.png'
 
-    # Take screenshot
-    await page.screenshot({'path': path, 'fullPage': True})
-    print(f'Screenshot saved to: {path}')
+        # Take screenshot
+        await page.screenshot(path=path, fullPage=True)
+        print(f'Screenshot saved to: {path}')
+    finally:
+        # Disconnect from the browser (leaves the browser running)
+        await browser.disconnect()
 
-    # Stop the browser by stopping the Kameleo profile
-    client.profile.stop_profile(profile.id)
+        # Stop the browser by stopping the Kameleo profile
+        client.profile.stop_profile(profile.id)
 
 
 asyncio.run(main())

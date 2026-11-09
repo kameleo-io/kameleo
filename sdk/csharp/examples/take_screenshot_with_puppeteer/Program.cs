@@ -24,25 +24,29 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 };
 
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
-
-// Start the Kameleo profile and connect through CDP
-var browserWsEndpoint = $"ws://localhost:{KameleoPort}/puppeteer/{profile.Id}";
-var browser = await Puppeteer.ConnectAsync(new ConnectOptions
+try
 {
-    BrowserWSEndpoint = browserWsEndpoint,
-    DefaultViewport = null
-});
-var page = await browser.NewPageAsync();
+    // Start the Kameleo profile and connect through CDP
+    var browserWsEndpoint = $"ws://localhost:{KameleoPort}/puppeteer/{profile.Id}";
+    await using var browser = await Puppeteer.ConnectAsync(new ConnectOptions
+    {
+        BrowserWSEndpoint = browserWsEndpoint,
+        DefaultViewport = null
+    });
+    var page = await browser.NewPageAsync();
 
-// Open a random page from wikipedia
-await page.GoToAsync("https://en.wikipedia.org/wiki/Special:Random", WaitUntilNavigation.DOMContentLoaded);
+    // Open a random page from wikipedia
+    await page.GoToAsync("https://en.wikipedia.org/wiki/Special:Random", WaitUntilNavigation.DOMContentLoaded);
 
-var targetFile = Path.Combine(Environment.CurrentDirectory, $"screenshot-{Path.ChangeExtension(Path.GetRandomFileName(), ".png")}");
+    var targetFile = Path.Combine(Environment.CurrentDirectory, $"screenshot-{Path.ChangeExtension(Path.GetRandomFileName(), ".png")}");
 
-// Take screenshot
-await page.ScreenshotAsync(targetFile, new ScreenshotOptions { Type = ScreenshotType.Png });
+    // Take screenshot
+    await page.ScreenshotAsync(targetFile, new ScreenshotOptions { Type = ScreenshotType.Png });
 
-Console.WriteLine($"Screenshot saved to: {targetFile}");
-
-// Stop the browser by stopping the Kameleo profile
-await client.Profile.StopProfileAsync(profile.Id);
+    Console.WriteLine($"Screenshot saved to: {targetFile}");
+}
+finally
+{
+    // Stop the browser by stopping the Kameleo profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}

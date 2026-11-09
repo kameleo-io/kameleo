@@ -36,15 +36,19 @@ with sync_playwright() as playwright:
     context = browser.contexts[0]
     page = context.new_page()
 
-    # Use any Playwright command to drive the browser
-    # and enjoy full protection from bot detection products
-    page.goto('https://wikipedia.org')
-    page.click('[name=search]')
-    page.keyboard.type('Chameleon')
-    page.keyboard.press('Enter')
+    try:
+        # Use any Playwright command to drive the browser
+        # and enjoy full protection from bot detection products
+        page.goto('https://wikipedia.org')
+        page.click('[name=search]')
+        page.keyboard.type('Chameleon')
+        page.keyboard.press('Enter')
 
-# Wait for 5 seconds
-time.sleep(5)
+        # Wait for 5 seconds
+        time.sleep(5)
+    finally:
+        # Close the browser connection (leaves the browser running)
+        browser.close()
 
-# Stop the browser by stopping the Kameleo profile
-client.profile.stop_profile(profile.id)
+        # Stop the browser by stopping the Kameleo profile
+        client.profile.stop_profile(profile.id)

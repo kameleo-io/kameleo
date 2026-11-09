@@ -19,6 +19,7 @@ kameleo/local_api_client/models/browser_cookie.py
 kameleo/local_api_client/models/browser_settings.py
 kameleo/local_api_client/models/canvas_spoofing_type.py
 kameleo/local_api_client/models/cloud_traffic_quota.py
+kameleo/local_api_client/models/column_filter_state.py
 kameleo/local_api_client/models/cookie_request.py
 kameleo/local_api_client/models/create_folder_request.py
 kameleo/local_api_client/models/create_profile_request.py
@@ -42,6 +43,7 @@ kameleo/local_api_client/models/import_profile_request.py
 kameleo/local_api_client/models/kernel_response.py
 kameleo/local_api_client/models/list_folders_response.py
 kameleo/local_api_client/models/os.py
+kameleo/local_api_client/models/pagination_state.py
 kameleo/local_api_client/models/password_manager_type.py
 kameleo/local_api_client/models/preference.py
 kameleo/local_api_client/models/problem_details.py
@@ -49,6 +51,7 @@ kameleo/local_api_client/models/problem_response.py
 kameleo/local_api_client/models/profile_lifetime_state.py
 kameleo/local_api_client/models/profile_minutes_quota.py
 kameleo/local_api_client/models/profile_preview.py
+kameleo/local_api_client/models/profile_preview_paged_response.py
 kameleo/local_api_client/models/profile_response.py
 kameleo/local_api_client/models/profile_storage_location.py
 kameleo/local_api_client/models/proxy_choice.py
@@ -66,7 +69,9 @@ kameleo/local_api_client/models/share_access.py
 kameleo/local_api_client/models/share_access_request.py
 kameleo/local_api_client/models/share_group_request.py
 kameleo/local_api_client/models/sharing_options_response.py
+kameleo/local_api_client/models/sorting_state.py
 kameleo/local_api_client/models/status_response.py
+kameleo/local_api_client/models/table_request.py
 kameleo/local_api_client/models/test_proxy_request.py
 kameleo/local_api_client/models/test_proxy_response.py
 kameleo/local_api_client/models/timezone_choice.py

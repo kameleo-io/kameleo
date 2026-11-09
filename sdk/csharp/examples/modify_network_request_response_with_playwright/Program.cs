@@ -26,52 +26,56 @@ var createProfileRequest = new CreateProfileRequest(fingerprints[0].Id)
 };
 
 var profile = await client.Profile.CreateProfileAsync(createProfileRequest);
-
-// Start the Kameleo profile and connect with Playwright through CDP
-var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
-var playwright = await Playwright.CreateAsync();
-var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new() { NoDefaults = true, Timeout = 90_000 });
-var context = browser.Contexts[0];
-var page = await context.NewPageAsync();
-var svgBytes = File.ReadAllBytes("kameleo.svg");
-
-// Set up network interceptor, see: https://playwright.dev/dotnet/docs/network
-await page.RouteAsync("**/*", async route =>
+try
 {
-    var request = route.Request;
-    Console.WriteLine($"[{request.Method}] {request.Url}");
+    // Start the Kameleo profile and connect with Playwright through CDP
+    var browserWsEndpoint = $"ws://localhost:{KameleoPort}/playwright/{profile.Id}";
+    using var playwright = await Playwright.CreateAsync();
+    await using var browser = await playwright.Chromium.ConnectOverCDPAsync(browserWsEndpoint, new() { NoDefaults = true, Timeout = 90_000 });
+    var context = browser.Contexts[0];
+    var page = await context.NewPageAsync();
+    var svgBytes = File.ReadAllBytes("kameleo.svg");
 
-    // Redirect from main to French Wikipedia home page
-    if (request.Url.TrimEnd('/') == "https://www.wikipedia.org")
+    // Set up network interceptor, see: https://playwright.dev/dotnet/docs/network
+    await page.RouteAsync("**/*", async route =>
     {
-        Console.WriteLine("Changing url");
-        await route.FulfillAsync(new RouteFulfillOptions
+        var request = route.Request;
+        Console.WriteLine($"[{request.Method}] {request.Url}");
+
+        // Redirect from main to French Wikipedia home page
+        if (request.Url.TrimEnd('/') == "https://www.wikipedia.org")
         {
-            Status = 302,
-            Headers = new Dictionary<string, string> { { "Location", "https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal" } }
-        });
-        return;
-    }
+            Console.WriteLine("Changing url");
+            await route.FulfillAsync(new RouteFulfillOptions
+            {
+                Status = 302,
+                Headers = new Dictionary<string, string> { { "Location", "https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal" } }
+            });
+            return;
+        }
 
-    // Replace Wikipedia's logo with Kameleo's logo
-    if (request.Url.Contains("wikipedia-wordmark-fr.svg"))
-    {
-        await route.FulfillAsync(new RouteFulfillOptions
+        // Replace Wikipedia's logo with Kameleo's logo
+        if (request.Url.Contains("wikipedia-wordmark-fr.svg"))
         {
-            Status = 200,
-            BodyBytes = svgBytes,
-            Headers = new Dictionary<string, string> { { "Content-Type", "image/svg+xml" } }
-        });
-        return;
-    }
+            await route.FulfillAsync(new RouteFulfillOptions
+            {
+                Status = 200,
+                BodyBytes = svgBytes,
+                Headers = new Dictionary<string, string> { { "Content-Type", "image/svg+xml" } }
+            });
+            return;
+        }
 
-    await route.ContinueAsync();
-});
+        await route.ContinueAsync();
+    });
 
-// Navigate to the main Wikipedia home page and observe that the French one is loaded
-await page.GotoAsync("https://www.wikipedia.org/");
+    // Navigate to the main Wikipedia home page and observe that the French one is loaded
+    await page.GotoAsync("https://www.wikipedia.org/");
 
-await Task.Delay(10_000);
-
-// Stop the browser by stopping the Kameleo profile
-await client.Profile.StopProfileAsync(profile.Id);
+    await Task.Delay(10_000);
+}
+finally
+{
+    // Stop the browser by stopping the Kameleo profile
+    await client.Profile.StopProfileAsync(profile.Id);
+}

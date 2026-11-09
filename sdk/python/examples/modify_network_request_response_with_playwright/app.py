@@ -58,10 +58,14 @@ with sync_playwright() as playwright:
 
     page.route('**/*', route_handler)
 
-    # Navigate to the main Wikipedia home page and observe that the French one is loaded
-    page.goto('https://www.wikipedia.org/')
+    try:
+        # Navigate to the main Wikipedia home page and observe that the French one is loaded
+        page.goto('https://www.wikipedia.org/')
 
-time.sleep(10)
+        time.sleep(10)
+    finally:
+        # Close the browser connection (leaves the browser running)
+        browser.close()
 
-# Stop the browser by stopping the Kameleo profile
-client.profile.stop_profile(profile.id)
+        # Stop the browser by stopping the Kameleo profile
+        client.profile.stop_profile(profile.id)

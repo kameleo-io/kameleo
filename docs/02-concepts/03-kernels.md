@@ -31,7 +31,7 @@ For the always up-to-date list of shipped Chroma and Junglefox kernel versions, 
 4. If the chosen kernel isn’t cached yet, download it once and store it for reuse.
 5. Launch the kernel with the profile’s configuration (fingerprint details, proxy, command-line switches, etc.).
 
-You can trigger this selection and download step explicitly ahead of time, so the browser launches immediately when you start the profile instead of waiting for an implicit kernel download.
+You can trigger this selection and download step explicitly ahead of time, so the browser launches immediately when you start the profile instead of waiting for an implicit kernel download. This is useful on slow connections, where starting the profile might time out because the kernel download takes too long.
 
 Example:
 

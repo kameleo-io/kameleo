@@ -32,15 +32,20 @@ const browser = await puppeteer.connect({
 });
 const page = await browser.newPage();
 
-// Use any Puppeteer command to drive the browser
-// and enjoy full protection from bot detection products
-await page.goto("https://wikipedia.org");
-await page.click("[name=search]");
-await page.keyboard.type("Chameleon");
-await page.keyboard.press("Enter");
+try {
+    // Use any Puppeteer command to drive the browser
+    // and enjoy full protection from bot detection products
+    await page.goto("https://wikipedia.org");
+    await page.click("[name=search]");
+    await page.keyboard.type("Chameleon");
+    await page.keyboard.press("Enter");
 
-// Wait for 5 seconds
-await setTimeout(5_000);
+    // Wait for 5 seconds
+    await setTimeout(5_000);
+} finally {
+    // Disconnect from the browser (leaves the browser running)
+    await browser.disconnect();
 
-// Stop the browser by stopping the Kameleo profile
-await client.profile.stopProfile(profile.id);
+    // Stop the browser by stopping the Kameleo profile
+    await client.profile.stopProfile(profile.id);
+}

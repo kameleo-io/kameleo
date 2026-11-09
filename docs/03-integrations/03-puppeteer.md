@@ -19,6 +19,7 @@ After either approach, you control the browser with normal Puppeteer commands, t
 
 - Completion of the [Quickstart](../01-getting-started/02-quickstart.md) guide
 - A Puppeteer-compatible environment (Python, JavaScript, or C# with [Puppeteer library](https://pptr.dev/) installed)
+    - For Python, use [pyppeteer-ng](https://pypi.org/project/pyppeteer-ng/), the maintained successor of pyppeteer. It keeps the `pyppeteer` import name. Version 2 is only available as a release candidate, so pin it: `pip install pyppeteer-ng==2.0.0rc16`
 
 ## Limitations & best practices
 

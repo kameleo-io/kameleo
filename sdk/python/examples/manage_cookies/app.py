@@ -31,17 +31,21 @@ driver = webdriver.Remote(
 )
 
 # Navigate to a site which give you cookies
-driver.get('https://whoer.net')
-time.sleep(5)
+try:
+    driver.get('https://whoer.net')
+    time.sleep(5)
 
-driver.get('https://youtube.com')
-time.sleep(5)
+    driver.get('https://youtube.com')
+    time.sleep(5)
 
-driver.get('https://www.nytimes.com')
-time.sleep(5)
+    driver.get('https://www.nytimes.com')
+    time.sleep(5)
+finally:
+    # Quit the WebDriver session
+    driver.quit()
 
-# Stop the browser by stopping the Kameleo profile
-client.profile.stop_profile(profile.id)
+    # Stop the browser by stopping the Kameleo profile
+    client.profile.stop_profile(profile.id)
 
 # You can list all of your cookies
 cookie_list = client.cookie.list_cookies(profile.id)

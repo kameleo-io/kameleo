@@ -52,13 +52,17 @@ driver = webdriver.Remote(
 
 # Use any WebDriver command to drive the browser
 # and enjoy full protection from bot detection products
-driver.get('https://wikipedia.org')
-driver.find_element(By.NAME, 'search').send_keys('Chameleon', Keys.ENTER)
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'content')))
-print(f'The title is {driver.title}')
+try:
+    driver.get('https://wikipedia.org')
+    driver.find_element(By.NAME, 'search').send_keys('Chameleon', Keys.ENTER)
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'content')))
+    print(f'The title is {driver.title}')
 
-# Wait for 5 seconds
-time.sleep(5)
+    # Wait for 5 seconds
+    time.sleep(5)
+finally:
+    # Quit the WebDriver session
+    driver.quit()
 
-# Stop the browser by stopping the Kameleo profile
-client.profile.stop_profile(profile.id)
+    # Stop the browser by stopping the Kameleo profile
+    client.profile.stop_profile(profile.id)

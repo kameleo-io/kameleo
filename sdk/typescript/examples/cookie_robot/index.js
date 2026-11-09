@@ -53,11 +53,16 @@ while (sitesToVisit.length < 5) {
     }
 }
 
-// Warm up profile by visiting the randomly selected sites
-for (const site of sitesToVisit) {
-    await driver.get(`https://${site}`);
-    await driver.sleep(randomInteger(5_000, 15_000));
-}
+try {
+    // Warm up profile by visiting the randomly selected sites
+    for (const site of sitesToVisit) {
+        await driver.get(`https://${site}`);
+        await driver.sleep(randomInteger(5_000, 15_000));
+    }
+} finally {
+    // Quit the WebDriver session
+    await driver.quit();
 
-// Stop the profile
-await client.profile.stopProfile(profile.id);
+    // Stop the profile
+    await client.profile.stopProfile(profile.id);
+}

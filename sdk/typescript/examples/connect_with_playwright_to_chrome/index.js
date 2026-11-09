@@ -33,15 +33,20 @@ const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint, { no
 const context = browser.contexts()[0];
 const page = await context.newPage();
 
-// Use any Playwright command to drive the browser
-// and enjoy full protection from bot detection products
-await page.goto("https://wikipedia.org");
-await page.click("[name=search]");
-await page.keyboard.type("Chameleon");
-await page.keyboard.press("Enter");
+try {
+    // Use any Playwright command to drive the browser
+    // and enjoy full protection from bot detection products
+    await page.goto("https://wikipedia.org");
+    await page.click("[name=search]");
+    await page.keyboard.type("Chameleon");
+    await page.keyboard.press("Enter");
 
-// Wait for 5 seconds
-await setTimeout(5_000);
+    // Wait for 5 seconds
+    await setTimeout(5_000);
+} finally {
+    // Close the browser connection (leaves the browser running)
+    await browser.close();
 
-// Stop the browser by stopping the Kameleo profile
-await client.profile.stopProfile(profile.id);
+    // Stop the browser by stopping the Kameleo profile
+    await client.profile.stopProfile(profile.id);
+}
