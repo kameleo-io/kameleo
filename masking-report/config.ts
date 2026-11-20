@@ -14,7 +14,7 @@ export const PLATFORMS = [
 export const kameleo = {
     // Core settings
     get version(): string {
-        return envOptional("KAM_VERSION") ?? "5.4.0";
+        return envOptional("KAM_VERSION") ?? "5.5.0";
     },
     get port(): number {
         return envNumberOptional("KAM_PORT") ?? 5050;
