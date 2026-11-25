@@ -15,7 +15,7 @@
     "lint:fix": "eslint --fix"
   },
   "dependencies": {
-    "@kameleo/local-api-client": "^5.2.0",
+    "@kameleo/local-api-client": "^5.4.0",
     "dotenv": "^18.0.9",
     "tslib": "^2.9.1"
   },
