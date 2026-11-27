@@ -4,8 +4,6 @@ import { mkdir, rm } from "fs/promises";
 import path from "path";
 import { Writable } from "stream";
 
-import { PLATFORMS } from "../config.ts";
-
 export function envOptional(key: string): string | undefined {
     const trimmed = process.env[key]?.trim();
     return trimmed === "" ? undefined : trimmed;
@@ -93,6 +91,12 @@ export function runCommand(command: string, args: string[] = [], cwd?: string, e
         throw new Error(`Command "${commandString}" failed:\n${String(error instanceof Error ? error.message : error)}`);
     }
 }
+
+const PLATFORMS = [
+    { nodePlatform: "win32", id: "win-x64", label: "Windows", videoName: "windows" },
+    { nodePlatform: "darwin", id: "osx-arm64", label: "macOS", videoName: "macos" },
+    { nodePlatform: "linux", id: "linux-x64", label: "Linux", videoName: "linux" },
+];
 
 export function generateVideoName(testTitle: string, browserProject: string, status?: string): string {
     const timestamp = new Date().toISOString().slice(0, 19).replaceAll(/\W/g, "_");
