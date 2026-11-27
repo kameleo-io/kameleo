@@ -18,7 +18,7 @@ pipeline {
         string(name: 'previousRunIdOverride', defaultValue: '', description: 'Optional CI job number to compare against instead of the automatically detected previous run')
         booleanParam(name: 'updateWebflowCms', defaultValue: true, description: 'Update the Webflow CMS with the run results')
         booleanParam(name: 'sendDiscordMessage', defaultValue: true, description: 'Send the combined masking status report to Discord')
-        choice(name: 'channel', choices: ['internal', 'public'], description: 'Discord channel to send the message to (used only if sendDiscordMessage is checked)')
+        choice(name: 'channel', choices: ['public', 'internal'], description: 'Discord channel to send the message to (used only if sendDiscordMessage is checked)')
         booleanParam(name: 'updateVideos', defaultValue: true, description: 'Publish the run videos to Cloudflare R2')
     }
 

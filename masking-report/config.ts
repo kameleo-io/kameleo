@@ -5,12 +5,6 @@ import { env, envNumberOptional, envOptional } from "./utils/common.ts";
 
 dotenv.config({ path: path.resolve(import.meta.dirname, ".env"), quiet: true });
 
-export const PLATFORMS = [
-    { nodePlatform: "win32", id: "win-x64", label: "Windows", videoName: "windows" },
-    { nodePlatform: "darwin", id: "osx-arm64", label: "macOS", videoName: "macos" },
-    { nodePlatform: "linux", id: "linux-x64", label: "Linux", videoName: "linux" },
-];
-
 export const kameleo = {
     // Core settings
     get version(): string {
